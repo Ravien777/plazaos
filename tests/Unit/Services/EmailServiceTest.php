@@ -21,7 +21,7 @@ class EmailServiceTest extends TestCase
         $this->emailService = app(EmailService::class);
         $this->user = User::factory()->create();
 
-        config(['mail.from.address' => 'noreply@agencyos.test']);
+        config(['mail.from.address' => 'noreply@plazaos.test']);
     }
 
     public function test_send_custom_creates_email_on_success(): void

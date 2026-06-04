@@ -514,7 +514,7 @@ class DemoSeeder extends Seeder
     private function createEmails(array $leads, array $clients, array $projects): void
     {
         $emailData = [
-            [$leads[0], 'john@example.com', 'Introduction to AgencyOS', 'Hi John, thanks for your interest in AgencyOS.'],
+            [$leads[0], 'john@example.com', 'Introduction to PlazaOS', 'Hi John, thanks for your interest in PlazaOS.'],
             [$leads[1], 'jane@example.com', 'Proposal Follow-up', 'Hi Jane, I wanted to follow up on the proposal.'],
             [$leads[5], 'tony@example.com', 'Meeting Confirmation', 'Hi Tony, confirmed our meeting for next Tuesday.'],
             [$leads[16], 'lex@example.com', 'Demo Invitation', 'Hi Lex, we would like to invite you to a demo.'],

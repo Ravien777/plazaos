@@ -70,7 +70,7 @@
 
 - User-owned cluster at `docker/pgdata/`, started via `bash bin/pg-start.sh`, stopped via `bash bin/pg-stop.sh`.
 - Runs on port **5433** with Unix socket at `/run/user/1000`, `trust` auth.
-- Database: `agencyos`, username: `raviensewpal`.
+- Database: `plazaos`, username: `raviensewpal`.
 - Must use `bash artisan.sh` (or `bash bin/php.sh`) for any PHP command — these set `LD_LIBRARY_PATH` for `libpq.so.5` and `PHP_INI_SCAN_DIR` for `pdo_pgsql.so`.
 - `composer.json` scripts `setup`, `dev`, `test` all use `bash artisan.sh` internally.
 - `pdo_pgsql.so` and `libpq.so.5` live in `docker/8.4/ext-override/`.

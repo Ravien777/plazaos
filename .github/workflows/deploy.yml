@@ -56,4 +56,4 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
             set -e
-            bash /var/www/agencyos/bin/deploy.sh
+            bash /var/www/plazaos/bin/deploy.sh

@@ -175,7 +175,7 @@ class GoogleCalendarService implements MeetingProviderInterface
             $credentialsPath = $this->setting('credentials_path');
 
             $client = new GoogleClient();
-            $client->setApplicationName(config('app.name', 'AgencyOS'));
+            $client->setApplicationName(config('app.name', 'PlazaOS'));
             $client->setScopes([Calendar::CALENDAR_EVENTS]);
 
             if ($credentialsJson && json_decode($credentialsJson, true)) {

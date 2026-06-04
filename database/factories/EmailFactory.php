@@ -12,7 +12,7 @@ class EmailFactory extends Factory
     public function definition(): array
     {
         return [
-            'from' => 'noreply@agencyos.test',
+            'from' => 'noreply@plazaos.test',
             'to' => fake()->safeEmail(),
             'subject' => fake()->sentence(),
             'body' => fake()->paragraph(),

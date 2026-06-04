@@ -8,15 +8,15 @@ const props = defineProps<{
 }>();
 
 const form = useForm({
-    zoom_enabled: props.settings.zoom_enabled === 'true' || props.settings.zoom_enabled === true ? 'true' : 'false',
+    zoom_enabled: props.settings.zoom_enabled === 'true' ? 'true' : 'false',
     zoom_client_id: props.settings.zoom_client_id ?? '',
     zoom_client_secret: props.settings.zoom_client_secret ?? '',
     zoom_account_id: props.settings.zoom_account_id ?? '',
-    teams_enabled: props.settings.teams_enabled === 'true' || props.settings.teams_enabled === true ? 'true' : 'false',
+    teams_enabled: props.settings.teams_enabled === 'true' ? 'true' : 'false',
     teams_client_id: props.settings.teams_client_id ?? '',
     teams_client_secret: props.settings.teams_client_secret ?? '',
     teams_tenant_id: props.settings.teams_tenant_id ?? '',
-    google_calendar_enabled: props.settings.google_calendar_enabled === 'true' || props.settings.google_calendar_enabled === true ? 'true' : 'false',
+    google_calendar_enabled: props.settings.google_calendar_enabled === 'true' ? 'true' : 'false',
     google_calendar_id: props.settings.google_calendar_id ?? '',
     google_calendar_credentials: props.settings.google_calendar_credentials ?? '',
 });

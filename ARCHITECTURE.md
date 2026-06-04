@@ -1,10 +1,10 @@
 # ARCHITECTURE.md
 
-# AgencyOS Architecture
+# PlazaOS Architecture
 
 ## Purpose
 
-This document defines the technical architecture of AgencyOS.
+This document defines the technical architecture of PlazaOS.
 
 All development decisions should prioritize:
 
@@ -136,7 +136,7 @@ resources/
 
 # Modules
 
-AgencyOS consists of the following modules:
+PlazaOS consists of the following modules:
 
 1. Dashboard
 2. Leads
@@ -817,5 +817,5 @@ A simple feature that solves 80% of the problem
 
 Always choose the simpler solution.
 
-AgencyOS is intended to be an operational tool, not an enterprise platform.
+PlazaOS is intended to be an operational tool, not an enterprise platform.
 

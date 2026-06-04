@@ -36,7 +36,7 @@
 
 ---
 
-## Task 3 — AgencyOS Landing Page
+## Task 3 — PlazaOS Landing Page
 
 **Problem**: Root `/` shows generic Laravel Welcome page.
 

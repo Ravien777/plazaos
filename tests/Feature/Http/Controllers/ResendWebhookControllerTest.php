@@ -21,7 +21,7 @@ class ResendWebhookControllerTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        config(['mail.from.address' => 'noreply@agencyos.test']);
+        config(['mail.from.address' => 'noreply@plazaos.test']);
     }
 
     public function test_handles_email_opened_event(): void

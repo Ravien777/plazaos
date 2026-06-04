@@ -22,7 +22,7 @@ defineProps<{
                         <circle cx="248" cy="186" r="28" fill="currentColor" />
                         <circle cx="68" cy="186" r="28" fill="currentColor" />
                     </svg>
-                    <span class="text-xl font-bold text-gray-900">AgencyOS</span>
+                    <span class="text-xl font-bold text-gray-900">PlazaOS</span>
                 </Link>
 
                 <nav v-if="canLogin" class="flex items-center gap-4">
@@ -160,7 +160,7 @@ defineProps<{
         <footer class="border-t border-gray-200">
             <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                 <p class="text-center text-sm text-gray-500">
-                    &copy; {{ new Date().getFullYear() }} AgencyOS. All rights reserved.
+                    &copy; {{ new Date().getFullYear() }} PlazaOS. All rights reserved.
                 </p>
             </div>
         </footer>

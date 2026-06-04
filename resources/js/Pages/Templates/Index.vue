@@ -64,7 +64,7 @@ function destroy(id: string): void {
                                             </Link>
                                             <button
                                                 class="text-red-600 hover:text-red-900"
-                                                @click="destroy(tpl.id)"
+                                                @click="destroy(tpl.id!)"
                                             >
                                                 Delete
                                             </button>

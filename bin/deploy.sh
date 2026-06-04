@@ -2,14 +2,14 @@
 set -euo pipefail
 
 # ─── Configuration ───────────────────────────────────────────────────────────
-DEPLOY_PATH="${DEPLOY_PATH:-/var/www/agencyos}"
+DEPLOY_PATH="${DEPLOY_PATH:-/var/www/plazaos}"
 RELEASE_DIR="${DEPLOY_PATH}/releases"
 SHARED_DIR="${DEPLOY_PATH}/shared"
 CURRENT_DIR="${DEPLOY_PATH}/current"
 RELEASE="$(date +%Y%m%d%H%M%S)"
 RELEASE_PATH="${RELEASE_DIR}/${RELEASE}"
 
-REPO_URL="${REPO_URL:-git@github.com:raviensewpal/agencyos.git}"
+REPO_URL="${REPO_URL:-git@github.com:raviensewpal/plazaos.git}"
 BRANCH="${BRANCH:-production}"
 
 COMPOSER="${COMPOSER:-composer}"
@@ -98,7 +98,7 @@ ok "Symlinked current → ${RELEASE}"
 
 # ─── Restart services ────────────────────────────────────────────────────────
 if command -v supervisorctl &>/dev/null; then
-    supervisorctl restart agencyos-queue:* 2>/dev/null || true
+    supervisorctl restart plazaos-queue:* 2>/dev/null || true
     ok "Queue worker restarted"
 fi
 

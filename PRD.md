@@ -1,8 +1,8 @@
-# AgencyOS - Product Requirements Document (PRD)
+# PlazaOS - Product Requirements Document (PRD)
 
 ## Overview
 
-AgencyOS is a desktop-focused web application designed for solo entrepreneurs and small agencies.
+PlazaOS is a desktop-focused web application designed for solo entrepreneurs and small agencies.
 
 The purpose of the platform is to:
 

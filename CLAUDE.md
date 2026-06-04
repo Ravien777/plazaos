@@ -1,8 +1,8 @@
-# CLAUDE.md — AgencyOS
+# CLAUDE.md — PlazaOS
 
 ## Identity
 
-- **Ravien Sewpal** — solo founder, full-stack developer building AgencyOS
+- **Ravien Sewpal** — solo founder, full-stack developer building PlazaOS
 - **Strong in:** Full-stack SaaS, API design, database modelling, Stripe, cron automation
 - **Learning:** Advanced AI/ML, React Server Components, WebSocket real-time patterns
 
@@ -213,9 +213,9 @@ Note for next time:
 
 ## Project Identity
 
-**AgencyOS is:** desktop-first, single-user, solo entrepreneur-focused CRM and lead generation tool.
+**PlazaOS is:** desktop-first, single-user, solo entrepreneur-focused CRM and lead generation tool.
 
-**AgencyOS is not:** ERP, HR, accounting, team collaboration, or enterprise software.
+**PlazaOS is not:** ERP, HR, accounting, team collaboration, or enterprise software.
 
 **Design rule:** A 15-year-old should understand every screen without training.
 

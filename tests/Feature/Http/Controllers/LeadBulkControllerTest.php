@@ -79,7 +79,7 @@ class LeadBulkControllerTest extends TestCase
 
     public function test_bulk_email_sends_to_selected_leads(): void
     {
-        config(['mail.from.address' => 'noreply@agencyos.test']);
+        config(['mail.from.address' => 'noreply@plazaos.test']);
 
         $leads = Lead::factory()->count(3)->create(['email' => 'lead@example.com']);
 
@@ -106,7 +106,7 @@ class LeadBulkControllerTest extends TestCase
 
     public function test_bulk_email_skips_leads_without_email(): void
     {
-        config(['mail.from.address' => 'noreply@agencyos.test']);
+        config(['mail.from.address' => 'noreply@plazaos.test']);
 
         $withEmail = Lead::factory()->create(['email' => 'has@email.com']);
         $withoutEmail = Lead::factory()->create(['email' => null]);

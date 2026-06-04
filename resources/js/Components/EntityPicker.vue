@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { route } from '../../vendor/tightenco/ziggy';
+import { route } from 'ziggy-js';
 
 interface Entity {
     id: string;

@@ -29,7 +29,7 @@ services:
             - '${FORWARD_DB_PORT:-5432}:5432'
         environment:
             PGPASSWORD: '${DB_PASSWORD:-password}'
-            POSTGRES_DB: '${DB_DATABASE:-agencyos}'
+            POSTGRES_DB: '${DB_DATABASE:-plazaos}'
             POSTGRES_USER: '${DB_USERNAME:-sail}'
             POSTGRES_PASSWORD: '${DB_PASSWORD:-password}'
         volumes:

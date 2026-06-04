@@ -1,4 +1,4 @@
-# AgencyOS
+# PlazaOS
 
 Single-user CRM & lead generation tool for solo entrepreneurs. Track leads, clients, projects, meetings, documents, and emails — all in one place.
 
@@ -10,8 +10,8 @@ Built with Laravel 12, Vue 3, Inertia.js, TypeScript, Tailwind CSS, and PostgreS
 
 ```bash
 # 1. Clone the repo
-git clone <repo-url> agencyos
-cd agencyos
+git clone <repo-url> plazaos
+cd plazaos
 
 # 2. Copy and edit the environment file
 cp .env.example .env
@@ -332,9 +332,9 @@ rm composer-setup.php
 **3. Create the database**
 
 ```bash
-sudo -u postgres psql -c "CREATE DATABASE agencyos;"
-sudo -u postgres psql -c "CREATE USER agencyos WITH PASSWORD 'your-strong-password';"
-sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE agencyos TO agencyos;"
+sudo -u postgres psql -c "CREATE DATABASE plazaos;"
+sudo -u postgres psql -c "CREATE USER plazaos WITH PASSWORD 'your-strong-password';"
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE plazaos TO plazaos;"
 ```
 
 **4. Set up the deploy user**
@@ -356,31 +356,31 @@ echo "deploy ALL=(ALL) NOPASSWD: /usr/bin/supervisorctl" | \
 
 ```bash
 # Create directory structure
-sudo mkdir -p /var/www/agencyos/{releases,shared}
-sudo chown -R deploy:www-data /var/www/agencyos
+sudo mkdir -p /var/www/plazaos/{releases,shared}
+sudo chown -R deploy:www-data /var/www/plazaos
 
 # Create shared storage skeleton
-mkdir -p /var/www/agencyos/shared/storage/app/{public,private}
-mkdir -p /var/www/agencyos/shared/storage/framework/{cache/data,sessions,views}
-mkdir -p /var/www/agencyos/shared/storage/logs
+mkdir -p /var/www/plazaos/shared/storage/app/{public,private}
+mkdir -p /var/www/plazaos/shared/storage/framework/{cache/data,sessions,views}
+mkdir -p /var/www/plazaos/shared/storage/logs
 
 # Clone the repo (as the deploy user)
 sudo -u deploy git clone \
   --branch production \
-  git@github.com:raviensewpal/agencyos.git \
-  /var/www/agencyos
+  git@github.com:raviensewpal/plazaos.git \
+  /var/www/plazaos
 
 # Create the production .env file
-cp /var/www/agencyos/.env.example /var/www/agencyos/shared/.env
-# Edit /var/www/agencyos/shared/.env with your production values
+cp /var/www/plazaos/.env.example /var/www/plazaos/shared/.env
+# Edit /var/www/plazaos/shared/.env with your production values
 # (see Environment Variables below)
 
 # Run the deploy script for the first time
-sudo -u deploy bash /var/www/agencyos/bin/deploy.sh
+sudo -u deploy bash /var/www/plazaos/bin/deploy.sh
 
 # Set proper permissions on bootstrap/cache + storage
-sudo chown -R www-data:www-data /var/www/agencyos/shared/storage
-sudo chown -R www-data:www-data /var/www/agencyos/current/bootstrap/cache
+sudo chown -R www-data:www-data /var/www/plazaos/shared/storage
+sudo chown -R www-data:www-data /var/www/plazaos/current/bootstrap/cache
 ```
 
 **6. Configure Caddy**
@@ -389,7 +389,7 @@ Copy `supervisor/Caddyfile` to `/etc/caddy/Caddyfile` and edit the domain name:
 
 ```
 yourdomain.com {
-    root * /var/www/agencyos/current/public
+    root * /var/www/plazaos/current/public
     php_fastcgi unix//run/php/php8.4-fpm.sock {
         resolve_root_symlink
     }
@@ -404,7 +404,7 @@ yourdomain.com {
     }
     encode gzip
     log {
-        output file /var/log/caddy/agencyos.log
+        output file /var/log/caddy/plazaos.log
     }
 }
 ```
@@ -413,12 +413,12 @@ Then: `sudo systemctl reload caddy`
 
 **7. Configure Supervisor for the queue worker**
 
-Copy `supervisor/queue-worker.conf` to `/etc/supervisor/conf.d/agencyos-queue.conf`:
+Copy `supervisor/queue-worker.conf` to `/etc/supervisor/conf.d/plazaos-queue.conf`:
 
 ```ini
-[program:agencyos-queue]
+[program:plazaos-queue]
 process_name=%(program_name)s_%(process_num)02d
-command=php /var/www/agencyos/current/artisan queue:work redis --sleep=3 --max-jobs=100 --tries=3 --timeout=60
+command=php /var/www/plazaos/current/artisan queue:work redis --sleep=3 --max-jobs=100 --tries=3 --timeout=60
 autostart=true
 autorestart=true
 stopasgroup=true
@@ -426,7 +426,7 @@ killasgroup=true
 user=www-data
 numprocs=1
 redirect_stderr=true
-stdout_logfile=/var/log/agencyos-queue.log
+stdout_logfile=/var/log/plazaos-queue.log
 stdout_logfile_maxbytes=10MB
 ```
 
@@ -434,7 +434,7 @@ Then:
 ```bash
 sudo supervisorctl reread
 sudo supervisorctl update
-sudo supervisorctl start agencyos-queue:*
+sudo supervisorctl start plazaos-queue:*
 ```
 
 **8. Set up cron for scheduled tasks**
@@ -442,7 +442,7 @@ sudo supervisorctl start agencyos-queue:*
 ```bash
 sudo -u deploy crontab -e
 # Add this line:
-* * * * * cd /var/www/agencyos/current && php artisan schedule:run >> /dev/null 2>&1
+* * * * * cd /var/www/plazaos/current && php artisan schedule:run >> /dev/null 2>&1
 ```
 
 **9. Set up a GitHub deploy key**
@@ -484,7 +484,7 @@ Caddy automatically provisions a Let's Encrypt SSL certificate. Your site should
 | `LOG_LEVEL` | `warning` | Reduce log verbosity |
 | `DB_HOST` | `127.0.0.1` | PostgreSQL host |
 | `DB_PORT` | `5432` | PostgreSQL port |
-| `DB_DATABASE` | `agencyos` | Database name |
+| `DB_DATABASE` | `plazaos` | Database name |
 | `DB_USERNAME` | (app database user) | Database user |
 | `DB_PASSWORD` | (strong password) | Database password |
 | `DB_SSLMODE` | `require` | Enforce TLS for database |
@@ -621,7 +621,7 @@ bash artisan.sh queue:work
 In production, check Supervisor:
 
 ```bash
-sudo supervisorctl status agencyos-queue:*
+sudo supervisorctl status plazaos-queue:*
 ```
 
 ### Emails aren't sending in local dev

@@ -1,9 +1,9 @@
-# ─── Caddyfile for AgencyOS ──────────────────────────────────────────────────
+# ─── Caddyfile for PlazaOS ───────────────────────────────────────────────────
 # Copy to /etc/caddy/Caddyfile on the Hetzner VPS.
 
 yourdomain.com {
     # Reverse proxy to PHP-FPM
-    root * /var/www/agencyos/current/public
+    root * /var/www/plazaos/current/public
     php_fastcgi unix//run/php/php8.4-fpm.sock {
         resolve_root_symlink
     }
@@ -32,6 +32,6 @@ yourdomain.com {
 
     # Logs
     log {
-        output file /var/log/caddy/agencyos.log
+        output file /var/log/caddy/plazaos.log
     }
 }
