@@ -2,10 +2,11 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import StatCard from '@/Components/StatCard.vue';
 import ActivityFeed from '@/Components/ActivityFeed.vue';
+import { ref } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
 import type { Activity, Meeting } from '@/Types';
 
-defineProps<{
+const props = defineProps<{
     hasTeam: boolean;
     stats: {
         newLeads: number;
@@ -18,6 +19,13 @@ defineProps<{
     recentActivities: Activity[];
     upcomingMeetings: Meeting[];
 }>();
+
+const showBanner = ref(localStorage.getItem('dismissed_team_banner') !== '1');
+
+function dismissBanner(): void {
+    localStorage.setItem('dismissed_team_banner', '1');
+    showBanner.value = false;
+}
 
 function statusLabel(s: string): string {
     const labels: Record<string, string> = {
@@ -62,7 +70,7 @@ function formatDate(dt: string): string {
         <div class="py-12">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div
-                    v-if="!hasTeam"
+                    v-if="!hasTeam && showBanner"
                     class="mb-6 flex items-center justify-between rounded-lg border border-indigo-200 bg-indigo-50 p-4"
                 >
                     <div>
@@ -73,12 +81,24 @@ function formatDate(dt: string): string {
                             Create a team to invite teammates and collaborate.
                         </p>
                     </div>
-                    <Link
-                        :href="route('team.create')"
-                        class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-500"
-                    >
-                        Create Team
-                    </Link>
+                    <div class="flex items-center gap-2">
+                        <Link
+                            :href="route('team.create')"
+                            class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-500"
+                        >
+                            Create Team
+                        </Link>
+                        <button
+                            type="button"
+                            class="inline-flex h-8 w-8 items-center justify-center rounded-md text-indigo-500 transition hover:bg-indigo-100 hover:text-indigo-700"
+                            @click="dismissBanner"
+                            aria-label="Dismiss"
+                        >
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
