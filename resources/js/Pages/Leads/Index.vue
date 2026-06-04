@@ -201,20 +201,20 @@ function exportLeads(): void {
                 <template #actions>
                     <Link
                         href="/leads/export?search=&status=&source="
-                        class="mr-2 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 transition hover:bg-gray-50"
+                        class="mr-2 inline-flex items-center rounded-md border border-gray-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 transition hover:bg-gray-50"
                         @click.prevent="exportLeads"
                     >
                         Export
                     </Link>
                     <Link
                         href="/leads/import"
-                        class="mr-2 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 transition hover:bg-gray-50"
+                        class="mr-2 inline-flex items-center rounded-md border border-gray-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 transition hover:bg-gray-50"
                     >
                         Import
                     </Link>
                     <Link
                         href="/leads/create"
-                        class="inline-flex items-center rounded-md bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-700"
+                        class="inline-flex items-center rounded-md bg-gray-700 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-600"
                     >
                         New Lead
                     </Link>
@@ -230,7 +230,7 @@ function exportLeads(): void {
                             <SearchInput v-model="search" />
                             <select
                                 v-model="status"
-                                class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                class="rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                                 @change="applyFilters"
                             >
                                 <option value="">All Statuses</option>
@@ -245,7 +245,7 @@ function exportLeads(): void {
                             </select>
                             <select
                                 v-model="source"
-                                class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                class="rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                                 @change="applyFilters"
                             >
                                 <option value="">All Sources</option>
@@ -280,7 +280,7 @@ function exportLeads(): void {
                             v-if="selectedIds.length > 0"
                             class="mb-4 flex items-center gap-3 rounded-md bg-indigo-50 px-4 py-3"
                         >
-                            <span class="text-sm font-medium text-indigo-700">
+                            <span class="text-sm font-medium text-indigo-600">
                                 {{ selectedIds.length }} selected
                             </span>
                             <button
@@ -292,7 +292,7 @@ function exportLeads(): void {
                             </button>
                             <select
                                 v-model="bulkStatus"
-                                class="rounded-md border-gray-300 text-xs shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                class="rounded-md border-gray-200 text-xs shadow-sm focus:border-indigo-400 focus:ring-indigo-400"
                             >
                                 <option value="">Change Status…</option>
                                 <option value="new">New</option>
@@ -307,21 +307,21 @@ function exportLeads(): void {
                             <button
                                 type="button"
                                 :disabled="!bulkStatus"
-                                class="rounded-md bg-indigo-600 px-3 py-1 text-xs font-semibold text-white hover:bg-indigo-500 disabled:opacity-50"
+                                class="rounded-md bg-indigo-500 px-3 py-1 text-xs font-semibold text-white hover:bg-indigo-400 disabled:opacity-50"
                                 @click="bulkUpdateStatus"
                             >
                                 Apply
                             </button>
                             <button
                                 type="button"
-                                class="rounded-md border border-gray-300 bg-white px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+                                class="rounded-md border border-gray-200 bg-white px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50"
                                 @click="exportSelected"
                             >
                                 Export Selected
                             </button>
                             <button
                                 type="button"
-                                class="rounded-md bg-indigo-600 px-3 py-1 text-xs font-semibold text-white hover:bg-indigo-500"
+                                class="rounded-md bg-indigo-500 px-3 py-1 text-xs font-semibold text-white hover:bg-indigo-400"
                                 @click="showBulkEmail = true"
                             >
                                 Email
@@ -329,7 +329,7 @@ function exportLeads(): void {
                         </div>
 
                         <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
+                            <table class="min-w-full divide-y divide-gray-100">
                                 <thead class="bg-gray-50">
                                     <tr>
                                         <th class="w-10 px-3 py-3">
@@ -337,41 +337,41 @@ function exportLeads(): void {
                                                 type="checkbox"
                                                 :checked="allSelected"
                                                 :indeterminate="someSelected"
-                                                class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
+                                                class="rounded border-gray-200 text-indigo-500 shadow-sm focus:ring-indigo-400"
                                                 @change="toggleSelectAll"
                                             />
                                         </th>
-                                        <th class="cursor-pointer px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 hover:text-gray-700" @click="toggleSort('company_name')">
+                                        <th class="cursor-pointer px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600 hover:text-gray-700" @click="toggleSort('company_name')">
                                             Company <span v-if="sortIndicator('company_name')" class="ml-1">{{ sortIndicator('company_name') }}</span>
                                         </th>
-                                        <th class="cursor-pointer px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 hover:text-gray-700" @click="toggleSort('contact_name')">
+                                        <th class="cursor-pointer px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600 hover:text-gray-700" @click="toggleSort('contact_name')">
                                             Contact <span v-if="sortIndicator('contact_name')" class="ml-1">{{ sortIndicator('contact_name') }}</span>
                                         </th>
-                                        <th class="cursor-pointer px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 hover:text-gray-700" @click="toggleSort('email')">
+                                        <th class="cursor-pointer px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600 hover:text-gray-700" @click="toggleSort('email')">
                                             Email <span v-if="sortIndicator('email')" class="ml-1">{{ sortIndicator('email') }}</span>
                                         </th>
-                                        <th class="cursor-pointer px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 hover:text-gray-700" @click="toggleSort('website')">
+                                        <th class="cursor-pointer px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600 hover:text-gray-700" @click="toggleSort('website')">
                                             Website <span v-if="sortIndicator('website')" class="ml-1">{{ sortIndicator('website') }}</span>
                                         </th>
-                                        <th class="cursor-pointer px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 hover:text-gray-700" @click="toggleSort('industry')">
+                                        <th class="cursor-pointer px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600 hover:text-gray-700" @click="toggleSort('industry')">
                                             Industry <span v-if="sortIndicator('industry')" class="ml-1">{{ sortIndicator('industry') }}</span>
                                         </th>
-                                        <th class="cursor-pointer px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 hover:text-gray-700" @click="toggleSort('country')">
+                                        <th class="cursor-pointer px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600 hover:text-gray-700" @click="toggleSort('country')">
                                             Country <span v-if="sortIndicator('country')" class="ml-1">{{ sortIndicator('country') }}</span>
                                         </th>
-                                        <th class="cursor-pointer px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 hover:text-gray-700" @click="toggleSort('last_contacted_at')">
+                                        <th class="cursor-pointer px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600 hover:text-gray-700" @click="toggleSort('last_contacted_at')">
                                             Last Contacted <span v-if="sortIndicator('last_contacted_at')" class="ml-1">{{ sortIndicator('last_contacted_at') }}</span>
                                         </th>
-                                        <th class="cursor-pointer px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 hover:text-gray-700" @click="toggleSort('status')">
+                                        <th class="cursor-pointer px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600 hover:text-gray-700" @click="toggleSort('status')">
                                             Status <span v-if="sortIndicator('status')" class="ml-1">{{ sortIndicator('status') }}</span>
                                         </th>
-                                        <th class="cursor-pointer px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 hover:text-gray-700" @click="toggleSort('source')">
+                                        <th class="cursor-pointer px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600 hover:text-gray-700" @click="toggleSort('source')">
                                             Source <span v-if="sortIndicator('source')" class="ml-1">{{ sortIndicator('source') }}</span>
                                         </th>
-                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Actions</th>
+                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-gray-200 bg-white">
+                                <tbody class="divide-y divide-gray-100 bg-white">
                                     <tr
                                         v-for="lead in leads.data"
                                         :key="lead.id"
@@ -382,33 +382,33 @@ function exportLeads(): void {
                                             <input
                                                 type="checkbox"
                                                 :checked="selectedIds.includes(lead.id)"
-                                                class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
+                                                class="rounded border-gray-200 text-indigo-500 shadow-sm focus:ring-indigo-400"
                                                 @change="toggleSelect(lead.id)"
                                             />
                                         </td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-900">
-                                            <Link :href="`/leads/${lead.id}`" class="text-indigo-600 hover:text-indigo-900">
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800">
+                                            <Link :href="`/leads/${lead.id}`" class="text-indigo-500 hover:text-indigo-600">
                                                 {{ lead.company_name }}
                                             </Link>
                                         </td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
                                             {{ lead.contact_name }}
                                         </td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
                                             {{ lead.email }}
                                         </td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                            <a v-if="lead.website" :href="lead.website" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:text-indigo-900">
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
+                                            <a v-if="lead.website" :href="lead.website" target="_blank" rel="noopener noreferrer" class="text-indigo-500 hover:text-indigo-600">
                                                 {{ lead.website }}
                                             </a>
                                         </td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
                                             {{ lead.industry }}
                                         </td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
                                             {{ lead.country }}
                                         </td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
                                             {{ lead.last_contacted_at ? new Date(lead.last_contacted_at).toLocaleDateString() : '—' }}
                                         </td>
                                         <td class="whitespace-nowrap px-3 py-4">
@@ -416,14 +416,14 @@ function exportLeads(): void {
                                                 {{ statusLabel(lead.status) }}
                                             </StatusBadge>
                                         </td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
                                             {{ lead.source }}
                                         </td>
                                         <td class="whitespace-nowrap px-3 py-4 text-sm">
                                             <div class="flex gap-2">
                                                 <Link
                                                     :href="`/leads/${lead.id}/edit`"
-                                                    class="text-indigo-600 hover:text-indigo-900"
+                                                    class="text-indigo-500 hover:text-indigo-600"
                                                 >
                                                     Edit
                                                 </Link>
@@ -438,7 +438,7 @@ function exportLeads(): void {
                                         </td>
                                     </tr>
                                     <tr v-if="leads.data.length === 0">
-                                        <td colspan="11" class="px-3 py-8 text-center text-sm text-gray-500">
+                                        <td colspan="11" class="px-3 py-8 text-center text-sm text-gray-600">
                                             No leads found.
                                         </td>
                                     </tr>
@@ -447,7 +447,7 @@ function exportLeads(): void {
                         </div>
 
                         <div v-if="leads.last_page > 1" class="mt-4 flex items-center justify-between">
-                            <div class="text-sm text-gray-500">
+                            <div class="text-sm text-gray-600">
                                 Showing {{ leads.from }} to {{ leads.to }} of {{ leads.total }} results
                             </div>
                             <div class="flex gap-2">

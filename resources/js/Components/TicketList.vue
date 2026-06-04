@@ -16,10 +16,10 @@ function statusLabel(s: string): string {
 <template>
     <div>
         <div class="flex items-center justify-between">
-            <h3 class="text-lg font-medium text-gray-900">Tickets</h3>
-            <Link :href="`/tickets/create`" class="text-sm text-indigo-600 hover:text-indigo-900">New Ticket</Link>
+            <h3 class="text-lg font-medium text-gray-800">Tickets</h3>
+            <Link :href="`/tickets/create`" class="text-sm text-indigo-500 hover:text-indigo-600">New Ticket</Link>
         </div>
-        <div v-if="tickets.length === 0" class="mt-4 text-sm text-gray-500">No tickets.</div>
+        <div v-if="tickets.length === 0" class="mt-4 text-sm text-gray-600">No tickets.</div>
         <div v-else class="mt-4 space-y-3">
             <div
                 v-for="ticket in tickets"
@@ -27,15 +27,15 @@ function statusLabel(s: string): string {
                 class="flex items-center justify-between rounded-md border border-gray-200 p-3"
             >
                 <div>
-                    <Link :href="`/tickets/${ticket.id}`" class="text-sm font-medium text-indigo-600 hover:text-indigo-900">
+                    <Link :href="`/tickets/${ticket.id}`" class="text-sm font-medium text-indigo-500 hover:text-indigo-600">
                         {{ ticket.subject }}
                     </Link>
                     <div class="mt-1 flex items-center gap-2">
                         <StatusBadge :status="ticket.status">{{ statusLabel(ticket.status) }}</StatusBadge>
-                        <span class="text-xs text-gray-500">{{ ticket.priority }} / {{ ticket.category }}</span>
+                        <span class="text-xs text-gray-600">{{ ticket.priority }} / {{ ticket.category }}</span>
                     </div>
                 </div>
-                <span class="text-xs text-gray-400">{{ ticket.created_at }}</span>
+                <span class="text-xs text-gray-500">{{ ticket.created_at }}</span>
             </div>
         </div>
     </div>

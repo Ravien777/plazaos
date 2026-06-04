@@ -87,13 +87,13 @@ function onFocus(): void {
                 @blur="onBlur"
                 type="text"
                 :placeholder="placeholder"
-                class="block w-full rounded-md border-gray-300 pr-8 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                class="block w-full rounded-md border-gray-200 pr-8 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
             />
             <button
                 v-if="query"
                 type="button"
                 @click="clear"
-                class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-600"
             >
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -101,7 +101,7 @@ function onFocus(): void {
             </button>
             <svg
                 v-if="loading"
-                class="absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-gray-400"
+                class="absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-gray-500"
                 fill="none" viewBox="0 0 24 24"
             >
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
@@ -119,7 +119,7 @@ function onFocus(): void {
                 class="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm hover:bg-indigo-50"
             >
                 <span class="flex-1 truncate">{{ entity.label }}</span>
-                <span class="rounded bg-gray-100 px-1.5 py-0.5 text-xs uppercase text-gray-500">{{ entity.type }}</span>
+                <span class="rounded bg-gray-100 px-1.5 py-0.5 text-xs uppercase text-gray-600">{{ entity.type }}</span>
             </li>
         </ul>
     </div>

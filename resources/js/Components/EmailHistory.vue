@@ -54,17 +54,17 @@ function formatDate(dt: string | null): string {
 <template>
     <div>
         <div class="mb-4 flex items-center justify-between">
-            <h3 class="text-lg font-medium text-gray-900">Email History</h3>
+            <h3 class="text-lg font-medium text-gray-800">Email History</h3>
             <button
                 type="button"
-                class="rounded-md bg-gray-800 px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-700"
+                class="rounded-md bg-gray-700 px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-600"
                 @click="showCompose = true"
             >
                 Compose
             </button>
         </div>
 
-        <div v-if="emails.length === 0" class="py-6 text-center text-sm text-gray-500">
+        <div v-if="emails.length === 0" class="py-6 text-center text-sm text-gray-600">
             No emails sent yet.
         </div>
 
@@ -80,8 +80,8 @@ function formatDate(dt: string | null): string {
                     @click="toggleExpand(email.id)"
                 >
                     <div class="min-w-0 flex-1">
-                        <p class="truncate text-sm font-medium text-gray-900">{{ email.subject }}</p>
-                        <p class="text-xs text-gray-500">To: {{ email.to }}</p>
+                        <p class="truncate text-sm font-medium text-gray-800">{{ email.subject }}</p>
+                        <p class="text-xs text-gray-600">To: {{ email.to }}</p>
                     </div>
                     <div class="ml-3 flex items-center gap-3">
                         <span
@@ -96,9 +96,9 @@ function formatDate(dt: string | null): string {
                         >
                             Opened {{ formatDate(email.opened_at) }}
                         </span>
-                        <span class="text-xs text-gray-400">{{ email.sent_at ?? email.created_at }}</span>
+                        <span class="text-xs text-gray-500">{{ email.sent_at ?? email.created_at }}</span>
                         <svg
-                            class="h-4 w-4 text-gray-400 transition-transform"
+                            class="h-4 w-4 text-gray-500 transition-transform"
                             :class="{ 'rotate-180': expandedId === email.id }"
                             fill="none"
                             viewBox="0 0 24 24"

@@ -77,7 +77,7 @@ function nextRun(source: LeadSource): string {
                 <template #actions>
                     <Link
                         href="/lead-sources/create"
-                        class="inline-flex items-center rounded-md bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-700"
+                        class="inline-flex items-center rounded-md bg-gray-700 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-600"
                     >
                         New Source
                     </Link>
@@ -90,34 +90,34 @@ function nextRun(source: LeadSource): string {
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
+                            <table class="min-w-full divide-y divide-gray-100">
                                 <thead class="bg-gray-50">
                                     <tr>
-                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Name</th>
-                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Type</th>
-                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Active</th>
-                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Frequency</th>
-                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Last Run</th>
-                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Next Run</th>
-                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Actions</th>
+                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">Name</th>
+                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">Type</th>
+                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">Active</th>
+                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">Frequency</th>
+                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">Last Run</th>
+                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">Next Run</th>
+                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-gray-200 bg-white">
+                                <tbody class="divide-y divide-gray-100 bg-white">
                                     <tr
                                         v-for="source in sources.data"
                                         :key="source.id"
                                         class="hover:bg-gray-50"
                                     >
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-900">
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800">
                                             {{ source.name }}
                                         </td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
                                             {{ typeLabels[source.type] ?? source.type }}
                                         </td>
                                         <td class="whitespace-nowrap px-3 py-4">
                                             <span
                                                 class="inline-flex rounded-full px-2 py-1 text-xs font-medium"
-                                                :class="source.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'"
+                                                :class="source.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'"
                                             >
                                                 {{ source.is_active ? 'Yes' : 'No' }}
                                             </span>
@@ -126,7 +126,7 @@ function nextRun(source: LeadSource): string {
                                             <span
                                                 class="inline-flex rounded-full px-2 py-1 text-xs font-medium"
                                                 :class="{
-                                                    'bg-gray-100 text-gray-500': source.frequency === 'manual',
+                                                    'bg-gray-100 text-gray-600': source.frequency === 'manual',
                                                     'bg-blue-100 text-blue-700': source.frequency === 'hourly',
                                                     'bg-purple-100 text-purple-700': source.frequency === 'daily',
                                                     'bg-orange-100 text-orange-700': source.frequency === 'weekly',
@@ -135,24 +135,24 @@ function nextRun(source: LeadSource): string {
                                                 {{ frequencyLabels[source.frequency] ?? source.frequency }}
                                             </span>
                                         </td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
                                             {{ source.last_run_at ?? 'Never' }}
                                         </td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
                                             {{ nextRun(source) }}
                                         </td>
                                         <td class="whitespace-nowrap px-3 py-4 text-sm">
                                             <div class="flex gap-2">
                                                 <button
                                                     type="button"
-                                                    class="text-indigo-600 hover:text-indigo-900"
+                                                    class="text-indigo-500 hover:text-indigo-600"
                                                     @click="runSource(source)"
                                                 >
                                                     Run
                                                 </button>
                                                 <Link
                                                     :href="`/lead-sources/${source.id}/edit`"
-                                                    class="text-indigo-600 hover:text-indigo-900"
+                                                    class="text-indigo-500 hover:text-indigo-600"
                                                 >
                                                     Edit
                                                 </Link>
@@ -167,7 +167,7 @@ function nextRun(source: LeadSource): string {
                                         </td>
                                     </tr>
                                     <tr v-if="sources.data.length === 0">
-                                        <td colspan="7" class="px-3 py-8 text-center text-sm text-gray-500">
+                                        <td colspan="7" class="px-3 py-8 text-center text-sm text-gray-600">
                                             No lead sources found.
                                         </td>
                                     </tr>
@@ -176,7 +176,7 @@ function nextRun(source: LeadSource): string {
                         </div>
 
                         <div v-if="sources.last_page > 1" class="mt-4 flex items-center justify-between">
-                            <div class="text-sm text-gray-500">
+                            <div class="text-sm text-gray-600">
                                 Showing {{ sources.from }} to {{ sources.to }} of {{ sources.total }} results
                             </div>
                             <div class="flex gap-2">

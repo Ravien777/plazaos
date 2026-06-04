@@ -9,8 +9,8 @@ defineProps<{
 
 <template>
     <div>
-        <h3 class="text-lg font-medium text-gray-900">Intake Form Submissions</h3>
-        <div v-if="submissions.length === 0" class="mt-4 text-sm text-gray-500">No submissions yet.</div>
+        <h3 class="text-lg font-medium text-gray-800">Intake Form Submissions</h3>
+        <div v-if="submissions.length === 0" class="mt-4 text-sm text-gray-600">No submissions yet.</div>
         <div v-else class="mt-4 space-y-3">
             <div
                 v-for="sub in submissions"
@@ -18,16 +18,16 @@ defineProps<{
                 class="flex items-center justify-between rounded-md border border-gray-200 p-3"
             >
                 <div>
-                    <span class="text-sm font-medium text-gray-900">
+                    <span class="text-sm font-medium text-gray-800">
                         {{ sub.form?.title ?? 'Unknown Form' }}
                     </span>
-                    <div class="mt-1 text-xs text-gray-500">
+                    <div class="mt-1 text-xs text-gray-600">
                         Submitted {{ sub.submitted_at }}
                     </div>
                 </div>
                 <Link
                     :href="`/intake-forms/submissions/${sub.id}`"
-                    class="text-sm text-indigo-600 hover:text-indigo-900"
+                    class="text-sm text-indigo-500 hover:text-indigo-600"
                 >
                     View
                 </Link>

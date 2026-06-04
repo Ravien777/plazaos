@@ -13,7 +13,7 @@ defineProps<{
             'bg-yellow-100 text-yellow-700': status === 'contacted' || status === 'inactive' || status === 'development',
             'bg-green-100 text-green-700': status === 'interested' || status === 'active' || status === 'completed',
             'bg-purple-100 text-purple-700': status === 'meeting_scheduled' || status === 'design',
-            'bg-indigo-100 text-indigo-700': status === 'proposal_sent' || status === 'testing',
+            'bg-indigo-100 text-indigo-600': status === 'proposal_sent' || status === 'testing',
             'bg-emerald-100 text-emerald-700': status === 'won' || status === 'launch',
             'bg-red-100 text-red-700': status === 'lost',
         }"

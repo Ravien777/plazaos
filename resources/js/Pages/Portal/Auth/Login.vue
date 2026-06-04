@@ -24,8 +24,8 @@ function submit(): void {
         <Head title="Client Login" />
 
         <div class="mb-6 text-center">
-            <h2 class="text-xl font-semibold text-gray-900">Client Portal</h2>
-            <p class="mt-1 text-sm text-gray-500">Sign in to access your information</p>
+            <h2 class="text-xl font-semibold text-gray-800">Client Portal</h2>
+            <p class="mt-1 text-sm text-gray-600">Sign in to access your information</p>
         </div>
 
         <div v-if="status" class="mb-4 text-sm font-medium text-green-600">
@@ -39,7 +39,7 @@ function submit(): void {
                     id="email"
                     v-model="form.email"
                     type="email"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                     required
                     autofocus
                     autocomplete="username"
@@ -53,7 +53,7 @@ function submit(): void {
                     id="password"
                     v-model="form.password"
                     type="password"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                     required
                     autocomplete="current-password"
                 />
@@ -62,7 +62,7 @@ function submit(): void {
 
             <div class="mt-4 block">
                 <label class="flex items-center">
-                    <input type="checkbox" v-model="form.remember" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" />
+                    <input type="checkbox" v-model="form.remember" class="rounded border-gray-200 text-indigo-500 shadow-sm focus:ring-indigo-400" />
                     <span class="ms-2 text-sm text-gray-600">Remember me</span>
                 </label>
             </div>
@@ -71,7 +71,7 @@ function submit(): void {
                 <button
                     type="submit"
                     :disabled="form.processing"
-                    class="w-full rounded-md bg-gray-800 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-700 disabled:opacity-50"
+                    class="w-full rounded-md bg-gray-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-600 disabled:opacity-50"
                 >
                     Sign In
                 </button>

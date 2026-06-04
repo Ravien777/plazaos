@@ -73,14 +73,14 @@ function submit(): void {
 
     <PortalLayout>
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">{{ form.title }}</h2>
+            <h2 class="text-xl font-semibold leading-tight text-gray-700">{{ form.title }}</h2>
         </template>
 
         <div class="py-6">
             <div class="mx-auto max-w-3xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
-                        <p v-if="form.description" class="mb-6 text-sm text-gray-500">{{ form.description }}</p>
+                        <p v-if="form.description" class="mb-6 text-sm text-gray-600">{{ form.description }}</p>
 
                         <form @submit.prevent="submit">
                             <div v-for="field in props.form.fields" :key="field.id" class="mb-4">
@@ -95,7 +95,7 @@ function submit(): void {
                                     v-model="intakeForm[field.id]"
                                     :type="field.field_type === 'email' ? 'email' : 'text'"
                                     :placeholder="field.placeholder ?? undefined"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                                 />
 
                                 <!-- Textarea -->
@@ -104,14 +104,14 @@ function submit(): void {
                                     v-model="intakeForm[field.id]"
                                     :placeholder="field.placeholder ?? undefined"
                                     rows="4"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                                 />
 
                                 <!-- Select -->
                                 <select
                                     v-else-if="field.field_type === 'select'"
                                     v-model="intakeForm[field.id]"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                                 >
                                     <option value="" disabled>Select...</option>
                                     <option v-for="opt in field.options ?? []" :key="opt" :value="opt">{{ opt }}</option>
@@ -125,7 +125,7 @@ function submit(): void {
                                             :value="opt"
                                             :checked="isMultiSelectChecked(field.id, opt)"
                                             @change="toggleMultiSelect(field.id, opt, $event)"
-                                            class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
+                                            class="rounded border-gray-200 text-indigo-500 shadow-sm focus:ring-indigo-400"
                                         />
                                         {{ opt }}
                                     </label>
@@ -136,7 +136,7 @@ function submit(): void {
                                     v-else-if="field.field_type === 'file'"
                                     type="file"
                                     @change="onFileChange(field.id, $event)"
-                                    class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:rounded-md file:border-0 file:bg-gray-800 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white file:transition hover:file:bg-gray-700"
+                                    class="mt-1 block w-full text-sm text-gray-600 file:mr-4 file:rounded-md file:border-0 file:bg-gray-700 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white file:transition hover:file:bg-gray-700"
                                 />
 
                                 <!-- Checkbox -->
@@ -146,7 +146,7 @@ function submit(): void {
                                         type="checkbox"
                                         :true-value="'1'"
                                         :false-value="'0'"
-                                        class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
+                                        class="rounded border-gray-200 text-indigo-500 shadow-sm focus:ring-indigo-400"
                                     />
                                     {{ field.placeholder || field.label }}
                                 </label>
@@ -156,20 +156,20 @@ function submit(): void {
                                     v-else-if="field.field_type === 'date'"
                                     v-model="intakeForm[field.id]"
                                     type="date"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                                 />
 
                                 <p v-if="intakeForm.errors[field.id]" class="mt-1 text-xs text-red-600">{{ intakeForm.errors[field.id] }}</p>
                             </div>
 
                             <div class="mt-6 flex justify-end gap-3">
-                                <Link href="/portal/intake-forms" class="rounded-md border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                <Link href="/portal/intake-forms" class="rounded-md border border-gray-200 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                                     Cancel
                                 </Link>
                                 <button
                                     type="submit"
                                     :disabled="intakeForm.processing"
-                                    class="rounded-md bg-gray-800 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-700 disabled:opacity-25"
+                                    class="rounded-md bg-gray-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-600 disabled:opacity-25"
                                 >
                                     Submit
                                 </button>

@@ -66,7 +66,7 @@ async function summarizeWebsite(): Promise<void> {
                 <template #actions>
                     <Link
                         :href="`/leads/${lead.id}/edit`"
-                        class="inline-flex items-center rounded-md bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-700"
+                        class="inline-flex items-center rounded-md bg-gray-700 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-600"
                     >
                         Edit
                     </Link>
@@ -93,25 +93,25 @@ async function summarizeWebsite(): Promise<void> {
                     <div class="p-6">
                         <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                             <div>
-                                <dt class="text-sm font-medium text-gray-500">Company Name</dt>
-                                <dd class="mt-1 text-sm text-gray-900">{{ lead.company_name }}</dd>
+                                <dt class="text-sm font-medium text-gray-600">Company Name</dt>
+                                <dd class="mt-1 text-sm text-gray-800">{{ lead.company_name }}</dd>
                             </div>
                             <div>
-                                <dt class="text-sm font-medium text-gray-500">Contact Name</dt>
-                                <dd class="mt-1 text-sm text-gray-900">{{ lead.contact_name }}</dd>
+                                <dt class="text-sm font-medium text-gray-600">Contact Name</dt>
+                                <dd class="mt-1 text-sm text-gray-800">{{ lead.contact_name }}</dd>
                             </div>
                             <div>
-                                <dt class="text-sm font-medium text-gray-500">Email</dt>
-                                <dd class="mt-1 text-sm text-gray-900">{{ lead.email ?? '-' }}</dd>
+                                <dt class="text-sm font-medium text-gray-600">Email</dt>
+                                <dd class="mt-1 text-sm text-gray-800">{{ lead.email ?? '-' }}</dd>
                             </div>
                             <div>
-                                <dt class="text-sm font-medium text-gray-500">Phone</dt>
-                                <dd class="mt-1 text-sm text-gray-900">{{ lead.phone ?? '-' }}</dd>
+                                <dt class="text-sm font-medium text-gray-600">Phone</dt>
+                                <dd class="mt-1 text-sm text-gray-800">{{ lead.phone ?? '-' }}</dd>
                             </div>
                             <div>
-                                <dt class="text-sm font-medium text-gray-500">Website</dt>
-                                <dd class="mt-1 text-sm text-gray-900">
-                                    <a v-if="lead.website" :href="lead.website" target="_blank" class="text-indigo-600 hover:text-indigo-900">
+                                <dt class="text-sm font-medium text-gray-600">Website</dt>
+                                <dd class="mt-1 text-sm text-gray-800">
+                                    <a v-if="lead.website" :href="lead.website" target="_blank" class="text-indigo-500 hover:text-indigo-600">
                                         {{ lead.website }}
                                     </a>
                                     <span v-else>-</span>
@@ -120,7 +120,7 @@ async function summarizeWebsite(): Promise<void> {
                                     <button
                                         type="button"
                                         :disabled="summarizing"
-                                        class="rounded-md bg-indigo-600 px-2.5 py-1 text-xs font-medium text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
+                                        class="rounded-md bg-indigo-500 px-2.5 py-1 text-xs font-medium text-white transition hover:bg-indigo-400 disabled:cursor-not-allowed disabled:opacity-50"
                                         @click="summarizeWebsite"
                                     >
                                         {{ summarizing ? 'Summarizing...' : 'Summarize Website' }}
@@ -131,39 +131,39 @@ async function summarizeWebsite(): Promise<void> {
                                 </dd>
                             </div>
                             <div>
-                                <dt class="text-sm font-medium text-gray-500">Industry</dt>
-                                <dd class="mt-1 text-sm text-gray-900">{{ lead.industry ?? '-' }}</dd>
+                                <dt class="text-sm font-medium text-gray-600">Industry</dt>
+                                <dd class="mt-1 text-sm text-gray-800">{{ lead.industry ?? '-' }}</dd>
                             </div>
                             <div>
-                                <dt class="text-sm font-medium text-gray-500">City</dt>
-                                <dd class="mt-1 text-sm text-gray-900">{{ lead.city ?? '-' }}</dd>
+                                <dt class="text-sm font-medium text-gray-600">City</dt>
+                                <dd class="mt-1 text-sm text-gray-800">{{ lead.city ?? '-' }}</dd>
                             </div>
                             <div>
-                                <dt class="text-sm font-medium text-gray-500">Country</dt>
-                                <dd class="mt-1 text-sm text-gray-900">{{ lead.country ?? '-' }}</dd>
+                                <dt class="text-sm font-medium text-gray-600">Country</dt>
+                                <dd class="mt-1 text-sm text-gray-800">{{ lead.country ?? '-' }}</dd>
                             </div>
                             <div>
-                                <dt class="text-sm font-medium text-gray-500">Source</dt>
-                                <dd class="mt-1 text-sm text-gray-900">{{ lead.source ?? '-' }}</dd>
+                                <dt class="text-sm font-medium text-gray-600">Source</dt>
+                                <dd class="mt-1 text-sm text-gray-800">{{ lead.source ?? '-' }}</dd>
                             </div>
                             <div>
-                                <dt class="text-sm font-medium text-gray-500">Status</dt>
+                                <dt class="text-sm font-medium text-gray-600">Status</dt>
                                 <dd class="mt-1">
                                     <StatusBadge :status="lead.status">{{ statusLabel(lead.status) }}</StatusBadge>
                                 </dd>
                             </div>
                             <div>
-                                <dt class="text-sm font-medium text-gray-500">Last Contacted</dt>
-                                <dd class="mt-1 text-sm text-gray-900">{{ lead.last_contacted_at ?? '-' }}</dd>
+                                <dt class="text-sm font-medium text-gray-600">Last Contacted</dt>
+                                <dd class="mt-1 text-sm text-gray-800">{{ lead.last_contacted_at ?? '-' }}</dd>
                             </div>
                             <div>
-                                <dt class="text-sm font-medium text-gray-500">Created</dt>
-                                <dd class="mt-1 text-sm text-gray-900">{{ lead.created_at }}</dd>
+                                <dt class="text-sm font-medium text-gray-600">Created</dt>
+                                <dd class="mt-1 text-sm text-gray-800">{{ lead.created_at }}</dd>
                             </div>
                         </dl>
                         <div v-if="lead.notes" class="mt-6">
-                            <dt class="text-sm font-medium text-gray-500">Notes</dt>
-                            <dd class="mt-1 text-sm text-gray-900 whitespace-pre-wrap">{{ lead.notes }}</dd>
+                            <dt class="text-sm font-medium text-gray-600">Notes</dt>
+                            <dd class="mt-1 text-sm text-gray-800 whitespace-pre-wrap">{{ lead.notes }}</dd>
                         </div>
                     </div>
                 </div>
@@ -188,7 +188,7 @@ async function summarizeWebsite(): Promise<void> {
 
                 <div class="mt-6 overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
-                        <h3 class="text-lg font-medium text-gray-900">Activity</h3>
+                        <h3 class="text-lg font-medium text-gray-800">Activity</h3>
                         <div class="mt-4">
                             <ActivityFeed :activities="lead.activities ?? []" />
                         </div>

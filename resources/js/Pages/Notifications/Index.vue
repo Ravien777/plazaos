@@ -47,7 +47,7 @@ function pageUrl(url: string | null): string {
             <PageHeader title="Notifications">
                 <template #actions>
                     <button
-                        class="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 shadow-sm hover:bg-gray-50"
+                        class="inline-flex items-center rounded-md border border-gray-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 shadow-sm hover:bg-gray-50"
                         @click="markAllAsRead"
                     >
                         Mark All Read
@@ -60,11 +60,11 @@ function pageUrl(url: string | null): string {
             <div class="mx-auto max-w-4xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
-                        <div v-if="notifications.data.length === 0" class="py-8 text-center text-sm text-gray-500">
+                        <div v-if="notifications.data.length === 0" class="py-8 text-center text-sm text-gray-600">
                             No notifications.
                         </div>
 
-                        <div v-else class="divide-y divide-gray-200">
+                        <div v-else class="divide-y divide-gray-100">
                             <div
                                 v-for="n in notifications.data"
                                 :key="n.id"
@@ -76,17 +76,17 @@ function pageUrl(url: string | null): string {
                                         <span v-if="!n.read_at" class="h-2 w-2 rounded-full bg-indigo-500" />
                                         <Link
                                             :href="n.data.link"
-                                            class="text-sm font-medium text-gray-900 hover:text-indigo-600"
+                                            class="text-sm font-medium text-gray-800 hover:text-indigo-500"
                                         >
                                             {{ n.data.title }}
                                         </Link>
                                     </div>
                                     <p class="mt-1 text-sm text-gray-600">{{ n.data.message }}</p>
-                                    <p class="mt-1 text-xs text-gray-400">{{ formatTime(n.created_at) }}</p>
+                                    <p class="mt-1 text-xs text-gray-500">{{ formatTime(n.created_at) }}</p>
                                 </div>
                                 <button
                                     v-if="!n.read_at"
-                                    class="ml-4 text-xs text-indigo-600 hover:text-indigo-900"
+                                    class="ml-4 text-xs text-indigo-500 hover:text-indigo-600"
                                     @click="markAsRead(n.id)"
                                 >
                                     Mark read
@@ -95,7 +95,7 @@ function pageUrl(url: string | null): string {
                         </div>
 
                         <div v-if="notifications.last_page > 1" class="mt-4 flex items-center justify-between">
-                            <div class="text-sm text-gray-500">
+                            <div class="text-sm text-gray-600">
                                 Showing {{ notifications.from }} to {{ notifications.to }} of {{ notifications.total }} results
                             </div>
                             <div class="flex gap-2">

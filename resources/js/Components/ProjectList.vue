@@ -22,11 +22,11 @@ function statusLabel(s: string): string {
 
 <template>
     <div>
-        <h3 class="mb-4 text-lg font-medium text-gray-900">Projects</h3>
+        <h3 class="mb-4 text-lg font-medium text-gray-800">Projects</h3>
 
-        <div v-if="projects.length === 0" class="text-sm text-gray-500">
+        <div v-if="projects.length === 0" class="text-sm text-gray-600">
             No projects yet.
-            <Link :href="`/projects/create`" class="text-indigo-600 hover:text-indigo-900">Create one</Link>.
+            <Link :href="`/projects/create`" class="text-indigo-500 hover:text-indigo-600">Create one</Link>.
         </div>
 
         <div v-else class="space-y-2">
@@ -38,11 +38,11 @@ function statusLabel(s: string): string {
                 <div>
                     <Link
                         :href="`/projects/${project.id}`"
-                        class="text-sm font-medium text-indigo-600 hover:text-indigo-900"
+                        class="text-sm font-medium text-indigo-500 hover:text-indigo-600"
                     >
                         {{ project.name }}
                     </Link>
-                    <p v-if="project.start_date || project.due_date" class="text-xs text-gray-500">
+                    <p v-if="project.start_date || project.due_date" class="text-xs text-gray-600">
                         {{ project.start_date ?? '?' }} → {{ project.due_date ?? '?' }}
                     </p>
                 </div>

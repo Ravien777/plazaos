@@ -7,6 +7,7 @@ namespace App\Notifications;
 use App\Models\LeadImport;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
+use Illuminate\Notifications\Slack\SlackMessage;
 
 class ImportCompleted extends Notification
 {
@@ -18,7 +19,32 @@ class ImportCompleted extends Notification
 
     public function via(object $notifiable): array
     {
-        return ['database'];
+        $channels = ['database'];
+
+        if (config('services.slack.notifications.bot_user_oauth_token')) {
+            $channels[] = 'slack';
+        }
+
+        return $channels;
+    }
+
+    public function toSlack(object $notifiable): SlackMessage
+    {
+        $filename = $this->import->filename;
+        $processed = (string) $this->import->processed;
+        $failed = (string) $this->import->failed;
+
+        return (new SlackMessage)
+            ->text(":file_cabinet: *CSV Import Completed*")
+            ->sectionBlock(function ($section) use ($filename, $processed, $failed) {
+                $section->field("*File*\n{$filename}");
+                $section->field("*Processed*\n{$processed}");
+                $section->field("*Failed*\n{$failed}");
+            })
+            ->actionsBlock(fn ($actions) => $actions
+                ->button('View Import')
+                ->url(url("/leads/import/{$this->import->id}"))
+            );
     }
 
     public function toDatabase(object $notifiable): array

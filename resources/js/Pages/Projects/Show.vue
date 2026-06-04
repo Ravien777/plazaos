@@ -42,7 +42,7 @@ function destroy(): void {
                 <template #actions>
                     <Link
                         :href="`/projects/${project.id}/edit`"
-                        class="inline-flex items-center rounded-md bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-700"
+                        class="inline-flex items-center rounded-md bg-gray-700 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-600"
                     >
                         Edit
                     </Link>
@@ -62,44 +62,44 @@ function destroy(): void {
                     <div class="p-6">
                         <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                             <div>
-                                <dt class="text-sm font-medium text-gray-500">Project Name</dt>
-                                <dd class="mt-1 text-sm text-gray-900">{{ project.name }}</dd>
+                                <dt class="text-sm font-medium text-gray-600">Project Name</dt>
+                                <dd class="mt-1 text-sm text-gray-800">{{ project.name }}</dd>
                             </div>
                             <div>
-                                <dt class="text-sm font-medium text-gray-500">Client</dt>
-                                <dd class="mt-1 text-sm text-gray-900">
-                                    <Link v-if="project.client" :href="`/clients/${project.client.id}`" class="text-indigo-600 hover:text-indigo-900">
+                                <dt class="text-sm font-medium text-gray-600">Client</dt>
+                                <dd class="mt-1 text-sm text-gray-800">
+                                    <Link v-if="project.client" :href="`/clients/${project.client.id}`" class="text-indigo-500 hover:text-indigo-600">
                                         {{ project.client.company_name }}
                                     </Link>
                                     <span v-else>-</span>
                                 </dd>
                             </div>
                             <div>
-                                <dt class="text-sm font-medium text-gray-500">Status</dt>
+                                <dt class="text-sm font-medium text-gray-600">Status</dt>
                                 <dd class="mt-1">
                                     <StatusBadge :status="project.status">{{ statusLabel(project.status) }}</StatusBadge>
                                 </dd>
                             </div>
                             <div>
-                                <dt class="text-sm font-medium text-gray-500">Budget</dt>
-                                <dd class="mt-1 text-sm text-gray-900">{{ project.budget ? `$${project.budget}` : '-' }}</dd>
+                                <dt class="text-sm font-medium text-gray-600">Budget</dt>
+                                <dd class="mt-1 text-sm text-gray-800">{{ project.budget ? `$${project.budget}` : '-' }}</dd>
                             </div>
                             <div>
-                                <dt class="text-sm font-medium text-gray-500">Start Date</dt>
-                                <dd class="mt-1 text-sm text-gray-900">{{ project.start_date ?? '-' }}</dd>
+                                <dt class="text-sm font-medium text-gray-600">Start Date</dt>
+                                <dd class="mt-1 text-sm text-gray-800">{{ project.start_date ?? '-' }}</dd>
                             </div>
                             <div>
-                                <dt class="text-sm font-medium text-gray-500">Due Date</dt>
-                                <dd class="mt-1 text-sm text-gray-900">{{ project.due_date ?? '-' }}</dd>
+                                <dt class="text-sm font-medium text-gray-600">Due Date</dt>
+                                <dd class="mt-1 text-sm text-gray-800">{{ project.due_date ?? '-' }}</dd>
                             </div>
                             <div>
-                                <dt class="text-sm font-medium text-gray-500">Created</dt>
-                                <dd class="mt-1 text-sm text-gray-900">{{ project.created_at }}</dd>
+                                <dt class="text-sm font-medium text-gray-600">Created</dt>
+                                <dd class="mt-1 text-sm text-gray-800">{{ project.created_at }}</dd>
                             </div>
                         </dl>
                         <div v-if="project.description" class="mt-6">
-                            <dt class="text-sm font-medium text-gray-500">Description</dt>
-                            <dd class="mt-1 text-sm text-gray-900 whitespace-pre-wrap">{{ project.description }}</dd>
+                            <dt class="text-sm font-medium text-gray-600">Description</dt>
+                            <dd class="mt-1 text-sm text-gray-800 whitespace-pre-wrap">{{ project.description }}</dd>
                         </div>
                     </div>
                 </div>
@@ -136,7 +136,7 @@ function destroy(): void {
 
                 <div class="mt-6 overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
-                        <h3 class="text-lg font-medium text-gray-900">Activity</h3>
+                        <h3 class="text-lg font-medium text-gray-800">Activity</h3>
                         <div class="mt-4">
                             <ActivityFeed :activities="project.activities ?? []" />
                         </div>

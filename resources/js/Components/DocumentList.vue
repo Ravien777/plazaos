@@ -70,10 +70,10 @@ onMounted(fetchDocuments);
 
 <template>
     <div>
-        <h3 class="mb-4 text-lg font-medium text-gray-900">Documents</h3>
+        <h3 class="mb-4 text-lg font-medium text-gray-800">Documents</h3>
 
         <div class="mb-4">
-            <label class="cursor-pointer rounded-md border border-gray-300 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 shadow-sm hover:bg-gray-50">
+            <label class="cursor-pointer rounded-md border border-gray-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 shadow-sm hover:bg-gray-50">
                 {{ uploading ? 'Uploading...' : 'Upload File' }}
                 <input
                     type="file"
@@ -85,28 +85,28 @@ onMounted(fetchDocuments);
             <p v-if="uploadError" class="mt-1 text-sm text-red-600">{{ uploadError }}</p>
         </div>
 
-        <div v-if="documents.length === 0" class="text-sm text-gray-500">
+        <div v-if="documents.length === 0" class="text-sm text-gray-600">
             No documents uploaded yet.
         </div>
 
-        <ul v-else class="divide-y divide-gray-200">
+        <ul v-else class="divide-y divide-gray-100">
             <li
                 v-for="doc in documents"
                 :key="doc.id"
                 class="flex items-center justify-between py-2"
             >
                 <div class="flex items-center gap-3">
-                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                     <div>
                         <a
                             :href="`/documents/${doc.id}/download`"
-                            class="text-sm font-medium text-indigo-600 hover:text-indigo-900"
+                            class="text-sm font-medium text-indigo-500 hover:text-indigo-600"
                         >
                             {{ doc.name }}
                         </a>
-                        <p class="text-xs text-gray-500">{{ formatSize(doc.size) }}</p>
+                        <p class="text-xs text-gray-600">{{ formatSize(doc.size) }}</p>
                     </div>
                 </div>
                 <button

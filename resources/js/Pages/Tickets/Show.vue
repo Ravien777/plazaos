@@ -69,7 +69,7 @@ function destroy(): void {
         <template #header>
             <PageHeader :title="ticket.subject">
                 <template #actions>
-                    <Link :href="`/tickets/${ticket.id}/edit`" class="inline-flex items-center rounded-md bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-700">Edit</Link>
+                    <Link :href="`/tickets/${ticket.id}/edit`" class="inline-flex items-center rounded-md bg-gray-700 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-600">Edit</Link>
                     <button v-if="ticket.status !== 'closed'" class="inline-flex items-center rounded-md border border-green-300 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-green-700 shadow-sm hover:bg-green-50" @click="closeTicket">Close</button>
                     <button v-else class="inline-flex items-center rounded-md border border-yellow-300 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-yellow-700 shadow-sm hover:bg-yellow-50" @click="reopenTicket">Reopen</button>
                     <button class="inline-flex items-center rounded-md border border-red-300 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-red-700 shadow-sm hover:bg-red-50" @click="destroy">Delete</button>
@@ -83,59 +83,59 @@ function destroy(): void {
                     <div class="p-6">
                         <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                             <div>
-                                <dt class="text-sm font-medium text-gray-500">Subject</dt>
-                                <dd class="mt-1 text-sm text-gray-900">{{ ticket.subject }}</dd>
+                                <dt class="text-sm font-medium text-gray-600">Subject</dt>
+                                <dd class="mt-1 text-sm text-gray-800">{{ ticket.subject }}</dd>
                             </div>
                             <div>
-                                <dt class="text-sm font-medium text-gray-500">Related To</dt>
-                                <dd class="mt-1 text-sm text-gray-900">
-                                    <Link v-if="ticket.ticketable && ticket.ticketable_id" :href="ticketableLink()" class="text-indigo-600 hover:text-indigo-900">{{ ticketableName() }}</Link>
+                                <dt class="text-sm font-medium text-gray-600">Related To</dt>
+                                <dd class="mt-1 text-sm text-gray-800">
+                                    <Link v-if="ticket.ticketable && ticket.ticketable_id" :href="ticketableLink()" class="text-indigo-500 hover:text-indigo-600">{{ ticketableName() }}</Link>
                                     <span v-else>-</span>
                                 </dd>
                             </div>
                             <div>
-                                <dt class="text-sm font-medium text-gray-500">Status</dt>
+                                <dt class="text-sm font-medium text-gray-600">Status</dt>
                                 <dd class="mt-1"><StatusBadge :status="ticket.status">{{ statusLabel(ticket.status) }}</StatusBadge></dd>
                             </div>
                             <div>
-                                <dt class="text-sm font-medium text-gray-500">Priority</dt>
-                                <dd class="mt-1 text-sm text-gray-900">{{ priorityLabel(ticket.priority) }}</dd>
+                                <dt class="text-sm font-medium text-gray-600">Priority</dt>
+                                <dd class="mt-1 text-sm text-gray-800">{{ priorityLabel(ticket.priority) }}</dd>
                             </div>
                             <div>
-                                <dt class="text-sm font-medium text-gray-500">Category</dt>
-                                <dd class="mt-1 text-sm text-gray-900">{{ categoryLabel(ticket.category) }}</dd>
+                                <dt class="text-sm font-medium text-gray-600">Category</dt>
+                                <dd class="mt-1 text-sm text-gray-800">{{ categoryLabel(ticket.category) }}</dd>
                             </div>
                             <div>
-                                <dt class="text-sm font-medium text-gray-500">Created</dt>
-                                <dd class="mt-1 text-sm text-gray-900">{{ ticket.created_at }}</dd>
+                                <dt class="text-sm font-medium text-gray-600">Created</dt>
+                                <dd class="mt-1 text-sm text-gray-800">{{ ticket.created_at }}</dd>
                             </div>
                         </dl>
                         <div v-if="ticket.description" class="mt-6">
-                            <dt class="text-sm font-medium text-gray-500">Description</dt>
-                            <dd class="mt-1 text-sm text-gray-900 whitespace-pre-wrap">{{ ticket.description }}</dd>
+                            <dt class="text-sm font-medium text-gray-600">Description</dt>
+                            <dd class="mt-1 text-sm text-gray-800 whitespace-pre-wrap">{{ ticket.description }}</dd>
                         </div>
                     </div>
                 </div>
 
                 <div class="mt-6 overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
-                        <h3 class="text-lg font-medium text-gray-900">Replies</h3>
+                        <h3 class="text-lg font-medium text-gray-800">Replies</h3>
                         <div v-if="ticket.replies && ticket.replies.length > 0" class="mt-4 space-y-4">
                             <div v-for="reply in ticket.replies" :key="reply.id" class="rounded-md border border-gray-200 p-4">
                                 <div class="flex items-center justify-between">
-                                    <span class="text-sm font-medium text-gray-900">{{ reply.user?.name ?? 'Unknown' }}</span>
-                                    <span class="text-xs text-gray-500">{{ reply.created_at }}</span>
+                                    <span class="text-sm font-medium text-gray-800">{{ reply.user?.name ?? 'Unknown' }}</span>
+                                    <span class="text-xs text-gray-600">{{ reply.created_at }}</span>
                                 </div>
                                 <p class="mt-2 text-sm text-gray-700 whitespace-pre-wrap">{{ reply.body }}</p>
                             </div>
                         </div>
-                        <div v-else class="mt-4 text-sm text-gray-500">No replies yet.</div>
+                        <div v-else class="mt-4 text-sm text-gray-600">No replies yet.</div>
 
                         <form @submit.prevent="submitReply" class="mt-6">
                             <textarea
                                 v-model="form.body"
                                 rows="3"
-                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                class="block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                                 placeholder="Write a reply..."
                                 required
                             ></textarea>
@@ -144,7 +144,7 @@ function destroy(): void {
                                 <button
                                     type="submit"
                                     :disabled="form.processing"
-                                    class="inline-flex items-center rounded-md bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-700 disabled:opacity-50"
+                                    class="inline-flex items-center rounded-md bg-gray-700 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-600 disabled:opacity-50"
                                 >
                                     Add Reply
                                 </button>
@@ -155,7 +155,7 @@ function destroy(): void {
 
                 <div class="mt-6 overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
-                        <h3 class="text-lg font-medium text-gray-900">Activity</h3>
+                        <h3 class="text-lg font-medium text-gray-800">Activity</h3>
                         <div class="mt-4">
                             <ActivityFeed :activities="ticket.activities ?? []" />
                         </div>

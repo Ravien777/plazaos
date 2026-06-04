@@ -133,23 +133,23 @@ function goToLeads(): void {
                     <div class="p-6">
                         <!-- Step 1: Upload -->
                         <div v-if="step === 'upload'">
-                            <h3 class="mb-4 text-lg font-medium text-gray-900">Upload CSV File</h3>
+                            <h3 class="mb-4 text-lg font-medium text-gray-800">Upload CSV File</h3>
                             <p class="mb-4 text-sm text-gray-600">Upload a CSV file with your leads. The first row must contain column headers.</p>
                             <div
-                                class="flex cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-12 hover:border-indigo-400"
+                                class="flex cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-gray-200 p-12 hover:border-indigo-400"
                                 @click="fileInput?.click()"
                                 @dragover.prevent
                                 @drop.prevent="file = ($event.dataTransfer?.files[0] ?? null) as File | null"
                             >
                                 <div class="text-center">
-                                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg class="mx-auto h-12 w-12 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                                     </svg>
                                     <p class="mt-2 text-sm text-gray-600">
                                         <span v-if="!file">Drag and drop a CSV file here, or click to browse</span>
-                                        <span v-else class="font-medium text-indigo-600">{{ file.name }}</span>
+                                        <span v-else class="font-medium text-indigo-500">{{ file.name }}</span>
                                     </p>
-                                    <p v-if="!file" class="mt-1 text-xs text-gray-500">CSV files only, max 256MB</p>
+                                    <p v-if="!file" class="mt-1 text-xs text-gray-600">CSV files only, max 256MB</p>
                                 </div>
                             </div>
                             <input ref="fileInput" type="file" accept=".csv,.txt" class="hidden" @change="file = (($event.target as HTMLInputElement).files?.[0]) ?? null" />
@@ -157,7 +157,7 @@ function goToLeads(): void {
                             <div class="mt-4 flex justify-end gap-3">
                                 <button
                                     type="button"
-                                    class="rounded-md border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                    class="rounded-md border border-gray-200 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                                     @click="goToLeads"
                                 >
                                     Cancel
@@ -165,7 +165,7 @@ function goToLeads(): void {
                                 <button
                                     type="button"
                                     :disabled="!file"
-                                    class="rounded-md bg-gray-800 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
+                                    class="rounded-md bg-gray-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
                                     @click="uploadFile"
                                 >
                                     Preview & Map Columns
@@ -175,7 +175,7 @@ function goToLeads(): void {
 
                         <!-- Step 2: Map Columns -->
                         <div v-else-if="step === 'map' && preview">
-                            <h3 class="mb-4 text-lg font-medium text-gray-900">Map Columns</h3>
+                            <h3 class="mb-4 text-lg font-medium text-gray-800">Map Columns</h3>
                             <p class="mb-4 text-sm text-gray-600">Map each CSV column to the corresponding lead field. Choose "— Skip —" for columns you don't want to import.</p>
 
                             <div class="mb-4 flex items-center gap-4">
@@ -190,26 +190,26 @@ function goToLeads(): void {
                             </div>
 
                             <div class="overflow-x-auto">
-                                <table class="min-w-full divide-y divide-gray-200">
+                                <table class="min-w-full divide-y divide-gray-100">
                                     <thead class="bg-gray-50">
                                         <tr>
-                                            <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">CSV Column</th>
-                                            <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Lead Field</th>
-                                            <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Sample Value</th>
+                                            <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">CSV Column</th>
+                                            <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">Lead Field</th>
+                                            <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">Sample Value</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="divide-y divide-gray-200">
+                                    <tbody class="divide-y divide-gray-100">
                                         <tr v-for="header in preview.headers" :key="header">
-                                            <td class="whitespace-nowrap px-3 py-3 text-sm font-medium text-gray-900">{{ header }}</td>
+                                            <td class="whitespace-nowrap px-3 py-3 text-sm font-medium text-gray-800">{{ header }}</td>
                                             <td class="px-3 py-3">
                                                 <select
                                                     v-model="mapping[header]"
-                                                    class="w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                                    class="w-full rounded-md border-gray-200 text-sm shadow-sm focus:border-indigo-400 focus:ring-indigo-400"
                                                 >
                                                     <option v-for="f in leadFields" :key="f.value" :value="f.value">{{ f.label }}</option>
                                                 </select>
                                             </td>
-                                            <td class="whitespace-nowrap px-3 py-3 text-sm text-gray-500">
+                                            <td class="whitespace-nowrap px-3 py-3 text-sm text-gray-600">
                                                 {{ preview.sample_rows[0]?.[header] ?? '' }}
                                             </td>
                                         </tr>
@@ -220,14 +220,14 @@ function goToLeads(): void {
                             <div class="mt-4 flex justify-end gap-3">
                                 <button
                                     type="button"
-                                    class="rounded-md border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                    class="rounded-md border border-gray-200 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                                     @click="reset"
                                 >
                                     Back
                                 </button>
                                 <button
                                     type="button"
-                                    class="rounded-md bg-gray-800 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-700"
+                                    class="rounded-md bg-gray-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-600"
                                     @click="startImport"
                                 >
                                     Start Import
@@ -237,38 +237,38 @@ function goToLeads(): void {
 
                         <!-- Step 3: Progress -->
                         <div v-else-if="step === 'progress' && importRecord">
-                            <h3 class="mb-4 text-lg font-medium text-gray-900">Importing...</h3>
+                            <h3 class="mb-4 text-lg font-medium text-gray-800">Importing...</h3>
                             <div class="mb-2 flex justify-between text-sm text-gray-600">
                                 <span>{{ importRecord.processed }} processed, {{ importRecord.failed }} failed</span>
                                 <span>{{ progressPercent }}%</span>
                             </div>
                             <div class="h-2 w-full overflow-hidden rounded-full bg-gray-200">
                                 <div
-                                    class="h-full rounded-full bg-indigo-600 transition-all duration-500"
+                                    class="h-full rounded-full bg-indigo-500 transition-all duration-500"
                                     :style="{ width: `${progressPercent}%` }"
                                 ></div>
                             </div>
-                            <p class="mt-2 text-sm text-gray-500">Processing {{ importRecord.total_rows }} rows...</p>
+                            <p class="mt-2 text-sm text-gray-600">Processing {{ importRecord.total_rows }} rows...</p>
                         </div>
 
                         <!-- Step 4: Done -->
                         <div v-else-if="step === 'done' && importRecord">
-                            <h3 class="mb-4 text-lg font-medium text-gray-900">Import Complete</h3>
+                            <h3 class="mb-4 text-lg font-medium text-gray-800">Import Complete</h3>
                             <div class="rounded-lg bg-gray-50 p-4">
                                 <div class="grid grid-cols-3 gap-4 text-center">
                                     <div>
-                                        <p class="text-2xl font-bold text-gray-900">{{ importRecord.total_rows }}</p>
-                                        <p class="text-sm text-gray-500">Total Rows</p>
+                                        <p class="text-2xl font-bold text-gray-800">{{ importRecord.total_rows }}</p>
+                                        <p class="text-sm text-gray-600">Total Rows</p>
                                     </div>
                                     <div>
                                         <p class="text-2xl font-bold text-green-600">{{ importRecord.processed }}</p>
-                                        <p class="text-sm text-gray-500">Imported</p>
+                                        <p class="text-sm text-gray-600">Imported</p>
                                     </div>
                                     <div>
                                         <p class="text-2xl font-bold" :class="importRecord.failed > 0 ? 'text-red-600' : 'text-green-600'">
                                             {{ importRecord.failed }}
                                         </p>
-                                        <p class="text-sm text-gray-500">Failed</p>
+                                        <p class="text-sm text-gray-600">Failed</p>
                                     </div>
                                 </div>
                                 <div v-if="importRecord.errors && importRecord.errors.length > 0" class="mt-4">
@@ -281,14 +281,14 @@ function goToLeads(): void {
                             <div class="mt-4 flex justify-end gap-3">
                                 <button
                                     type="button"
-                                    class="rounded-md border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                    class="rounded-md border border-gray-200 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                                     @click="reset"
                                 >
                                     Import Another
                                 </button>
                                 <button
                                     type="button"
-                                    class="rounded-md bg-gray-800 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-700"
+                                    class="rounded-md bg-gray-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-600"
                                     @click="goToLeads"
                                 >
                                     View Leads

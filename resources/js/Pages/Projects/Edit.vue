@@ -50,7 +50,7 @@ function submit(): void {
                                     <label class="block text-sm font-medium text-gray-700">Client</label>
                                     <select
                                         v-model="form.client_id"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                        class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                                     >
                                         <option value="">Select a client</option>
                                         <option v-for="c in clients" :key="c.id" :value="c.id">
@@ -64,7 +64,7 @@ function submit(): void {
                                     <input
                                         v-model="form.name"
                                         type="text"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                        class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                                     />
                                     <p v-if="form.errors.name" class="mt-1 text-sm text-red-600">{{ form.errors.name }}</p>
                                 </div>
@@ -72,7 +72,7 @@ function submit(): void {
                                     <label class="block text-sm font-medium text-gray-700">Status</label>
                                     <select
                                         v-model="form.status"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                        class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                                     >
                                         <option value="discovery">Discovery</option>
                                         <option value="design">Design</option>
@@ -89,7 +89,7 @@ function submit(): void {
                                         type="number"
                                         step="0.01"
                                         min="0"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                        class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                                     />
                                 </div>
                                 <div>
@@ -97,7 +97,7 @@ function submit(): void {
                                     <input
                                         v-model="form.start_date"
                                         type="date"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                        class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                                     />
                                 </div>
                                 <div>
@@ -105,7 +105,7 @@ function submit(): void {
                                     <input
                                         v-model="form.due_date"
                                         type="date"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                        class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                                     />
                                 </div>
                             </div>
@@ -114,20 +114,20 @@ function submit(): void {
                                 <textarea
                                     v-model="form.description"
                                     rows="3"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                                 />
                             </div>
                             <div class="flex justify-end gap-3">
                                 <Link
                                     :href="`/projects/${project.id}`"
-                                    class="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 shadow-sm hover:bg-gray-50"
+                                    class="inline-flex items-center rounded-md border border-gray-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 shadow-sm hover:bg-gray-50"
                                 >
                                     Cancel
                                 </Link>
                                 <button
                                     type="submit"
                                     :disabled="form.processing"
-                                    class="inline-flex items-center rounded-md border border-transparent bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-700 disabled:opacity-25"
+                                    class="inline-flex items-center rounded-md border border-transparent bg-gray-700 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-600 disabled:opacity-25"
                                 >
                                     Update
                                 </button>

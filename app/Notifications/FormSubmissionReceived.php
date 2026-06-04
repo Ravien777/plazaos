@@ -9,6 +9,7 @@ use App\Models\IntakeForm;
 use App\Models\IntakeFormSubmission;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
+use Illuminate\Notifications\Slack\SlackMessage;
 
 class FormSubmissionReceived extends Notification
 {
@@ -22,7 +23,30 @@ class FormSubmissionReceived extends Notification
 
     public function via(object $notifiable): array
     {
-        return ['database'];
+        $channels = ['database'];
+
+        if (config('services.slack.notifications.bot_user_oauth_token')) {
+            $channels[] = 'slack';
+        }
+
+        return $channels;
+    }
+
+    public function toSlack(object $notifiable): SlackMessage
+    {
+        $formTitle = $this->form->title;
+        $clientName = $this->client->company_name;
+
+        return (new SlackMessage)
+            ->text(":clipboard: *Form Submission Received*")
+            ->sectionBlock(function ($section) use ($formTitle, $clientName) {
+                $section->field("*Form*\n{$formTitle}");
+                $section->field("*Client*\n{$clientName}");
+            })
+            ->actionsBlock(fn ($actions) => $actions
+                ->button('View Submission')
+                ->url(url("/intake-forms/{$this->form->id}"))
+            );
     }
 
     public function toDatabase(object $notifiable): array

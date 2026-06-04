@@ -100,9 +100,9 @@ onMounted(fetchMeetings);
 <template>
     <div>
         <div class="mb-4 flex items-center justify-between">
-            <h3 class="text-lg font-medium text-gray-900">Meetings</h3>
+            <h3 class="text-lg font-medium text-gray-800">Meetings</h3>
             <button
-                class="rounded-md bg-gray-800 px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-700"
+                class="rounded-md bg-gray-700 px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-600"
                 @click="showForm = !showForm"
             >
                 {{ showForm ? 'Cancel' : 'Schedule' }}
@@ -116,7 +116,7 @@ onMounted(fetchMeetings);
                     <input
                         v-model="form.title"
                         type="text"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                     />
                     <p v-if="form.errors.title" class="mt-1 text-sm text-red-600">{{ form.errors.title }}</p>
                 </div>
@@ -126,7 +126,7 @@ onMounted(fetchMeetings);
                         <input
                             v-model="form.start_time"
                             type="datetime-local"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                            class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                         />
                         <p v-if="form.errors.start_time" class="mt-1 text-sm text-red-600">{{ form.errors.start_time }}</p>
                     </div>
@@ -135,7 +135,7 @@ onMounted(fetchMeetings);
                         <input
                             v-model="form.end_time"
                             type="datetime-local"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                            class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                         />
                     </div>
                 </div>
@@ -145,14 +145,14 @@ onMounted(fetchMeetings);
                         <input
                             v-model="form.location"
                             type="text"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                            class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                         />
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Provider</label>
                         <select
                             v-model="form.provider"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                            class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                         >
                             <option value="google_meet">Google Meet</option>
                             <option value="zoom">Zoom</option>
@@ -165,14 +165,14 @@ onMounted(fetchMeetings);
                     <textarea
                         v-model="form.description"
                         rows="2"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                     />
                 </div>
                 <div class="flex justify-end">
                     <button
                         type="submit"
                         :disabled="form.processing"
-                        class="rounded-md border border-transparent bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-700"
+                        class="rounded-md border border-transparent bg-gray-700 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-600"
                     >
                         {{ form.processing ? 'Saving...' : 'Schedule Meeting' }}
                     </button>
@@ -180,7 +180,7 @@ onMounted(fetchMeetings);
             </form>
         </div>
 
-        <div v-if="meetings.length === 0" class="text-sm text-gray-500">
+        <div v-if="meetings.length === 0" class="text-sm text-gray-600">
             No meetings scheduled.
         </div>
 
@@ -192,7 +192,7 @@ onMounted(fetchMeetings);
             >
                 <div class="flex-1">
                     <div class="flex items-center gap-2">
-                        <span class="text-sm font-medium text-gray-900">{{ meeting.title }}</span>
+                        <span class="text-sm font-medium text-gray-800">{{ meeting.title }}</span>
                         <span class="inline-flex rounded-full px-2 py-0.5 text-xs font-medium" :class="statusClass(meeting.status)">
                             {{ statusLabel(meeting.status) }}
                         </span>
@@ -200,17 +200,17 @@ onMounted(fetchMeetings);
                             {{ providerLabels[meeting.provider] ?? meeting.provider }}
                         </span>
                     </div>
-                    <p class="mt-0.5 text-xs text-gray-500">{{ formatDate(meeting.start_time) }}</p>
-                    <p v-if="meeting.location || meeting.meet_link" class="text-xs text-gray-500">
+                    <p class="mt-0.5 text-xs text-gray-600">{{ formatDate(meeting.start_time) }}</p>
+                    <p v-if="meeting.location || meeting.meet_link" class="text-xs text-gray-600">
                         {{ meeting.location ?? '' }}{{ meeting.location && meeting.meet_link ? ' · ' : '' }}
-                        <a v-if="meeting.meet_link" :href="meeting.meet_link" target="_blank" class="text-indigo-600 hover:text-indigo-900">Join</a>
+                        <a v-if="meeting.meet_link" :href="meeting.meet_link" target="_blank" class="text-indigo-500 hover:text-indigo-600">Join</a>
                     </p>
-                    <p v-if="meeting.description" class="mt-1 text-xs text-gray-500">{{ meeting.description }}</p>
+                    <p v-if="meeting.description" class="mt-1 text-xs text-gray-600">{{ meeting.description }}</p>
                 </div>
                 <div class="flex items-center gap-2">
                     <Link
                         :href="`/meetings/${meeting.id}/edit`"
-                        class="text-xs text-indigo-600 hover:text-indigo-900"
+                        class="text-xs text-indigo-500 hover:text-indigo-600"
                     >
                         Edit
                     </Link>

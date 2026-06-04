@@ -71,7 +71,7 @@ function submit(): void {
                                 id="body"
                                 v-model="form.body"
                                 rows="10"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                                 placeholder="Email body with {{variable}} placeholders"
                             ></textarea>
                             <InputError :message="form.errors.body" class="mt-2" />
@@ -83,17 +83,17 @@ function submit(): void {
                                 <span
                                     v-for="(v, i) in form.variables"
                                     :key="i"
-                                    class="inline-flex items-center rounded bg-indigo-100 px-2 py-0.5 text-xs font-medium text-indigo-700"
+                                    class="inline-flex items-center rounded bg-indigo-100 px-2 py-0.5 text-xs font-medium text-indigo-600"
                                 >
                                     {{ v }}
-                                    <button type="button" class="ml-1 text-indigo-500 hover:text-indigo-700" @click="removeVariable(i)">&times;</button>
+                                    <button type="button" class="ml-1 text-indigo-500 hover:text-indigo-600" @click="removeVariable(i)">&times;</button>
                                 </span>
                             </div>
                             <div class="mt-2 flex gap-2">
                                 <input
                                     v-model="newVariable"
                                     type="text"
-                                    class="block w-48 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    class="block w-48 rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                                     placeholder="variable_name"
                                     @keydown.enter.prevent="addVariable"
                                 />
@@ -109,7 +109,7 @@ function submit(): void {
                         </div>
 
                         <div class="flex items-center justify-end gap-4">
-                            <Link :href="route('templates.index')" class="text-sm text-gray-600 hover:text-gray-900">
+                            <Link :href="route('templates.index')" class="text-sm text-gray-600 hover:text-gray-800">
                                 Cancel
                             </Link>
                             <PrimaryButton :disabled="form.processing">

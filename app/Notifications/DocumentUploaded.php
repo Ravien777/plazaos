@@ -10,6 +10,7 @@ use App\Models\Project;
 use Illuminate\Bus\Queueable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notification;
+use Illuminate\Notifications\Slack\SlackMessage;
 
 class DocumentUploaded extends Notification
 {
@@ -22,7 +23,41 @@ class DocumentUploaded extends Notification
 
     public function via(object $notifiable): array
     {
-        return ['database'];
+        $channels = ['database'];
+
+        if (config('services.slack.notifications.bot_user_oauth_token')) {
+            $channels[] = 'slack';
+        }
+
+        return $channels;
+    }
+
+    public function toSlack(object $notifiable): SlackMessage
+    {
+        $parentName = '—';
+        $link = url('/');
+
+        if ($this->parent instanceof Lead) {
+            $parentName = $this->parent->company_name;
+            $link = url("/leads/{$this->parent->id}");
+        } elseif ($this->parent instanceof Client) {
+            $parentName = $this->parent->company_name;
+            $link = url("/clients/{$this->parent->id}");
+        } elseif ($this->parent instanceof Project) {
+            $parentName = $this->parent->name;
+            $link = url("/projects/{$this->parent->id}");
+        }
+
+        return (new SlackMessage)
+            ->text(":page_facing_up: *Document Uploaded*")
+            ->sectionBlock(function ($section) use ($parentName) {
+                $section->field("*Document*\n{$this->documentName}");
+                $section->field("*Uploaded To*\n{$parentName}");
+            })
+            ->actionsBlock(fn ($actions) => $actions
+                ->button('View')
+                ->url($link)
+            );
     }
 
     public function toDatabase(object $notifiable): array

@@ -63,7 +63,7 @@ function destroy(id: string): void {
                 <template #actions>
                     <Link
                         href="/projects/create"
-                        class="inline-flex items-center rounded-md bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-700"
+                        class="inline-flex items-center rounded-md bg-gray-700 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-600"
                     >
                         New Project
                     </Link>
@@ -78,7 +78,7 @@ function destroy(id: string): void {
                         <div class="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <select
                                 v-model="status"
-                                class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                class="rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                                 @change="applyFilters"
                             >
                                 <option value="">All Statuses</option>
@@ -92,31 +92,31 @@ function destroy(id: string): void {
                         </div>
 
                         <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
+                            <table class="min-w-full divide-y divide-gray-100">
                                 <thead class="bg-gray-50">
                                     <tr>
-                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Name</th>
-                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Client</th>
-                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Status</th>
-                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Budget</th>
-                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Start Date</th>
-                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Due Date</th>
-                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Actions</th>
+                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">Name</th>
+                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">Client</th>
+                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">Status</th>
+                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">Budget</th>
+                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">Start Date</th>
+                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">Due Date</th>
+                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-gray-200 bg-white">
+                                <tbody class="divide-y divide-gray-100 bg-white">
                                     <tr
                                         v-for="project in projects.data"
                                         :key="project.id"
                                         class="hover:bg-gray-50"
                                     >
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-900">
-                                            <Link :href="`/projects/${project.id}`" class="text-indigo-600 hover:text-indigo-900">
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800">
+                                            <Link :href="`/projects/${project.id}`" class="text-indigo-500 hover:text-indigo-600">
                                                 {{ project.name }}
                                             </Link>
                                         </td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                            <Link v-if="project.client" :href="`/clients/${project.client.id}`" class="text-indigo-600 hover:text-indigo-900">
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
+                                            <Link v-if="project.client" :href="`/clients/${project.client.id}`" class="text-indigo-500 hover:text-indigo-600">
                                                 {{ project.client.company_name }}
                                             </Link>
                                             <span v-else>-</span>
@@ -126,19 +126,19 @@ function destroy(id: string): void {
                                                 {{ statusLabel(project.status) }}
                                             </StatusBadge>
                                         </td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
                                             {{ project.budget ? `$${project.budget}` : '-' }}
                                         </td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
                                             {{ project.start_date ?? '-' }}
                                         </td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
                                             {{ project.due_date ?? '-' }}
                                         </td>
                                         <td class="whitespace-nowrap px-3 py-4 text-sm">
                                             <Link
                                                 :href="`/projects/${project.id}/edit`"
-                                                class="text-indigo-600 hover:text-indigo-900"
+                                                class="text-indigo-500 hover:text-indigo-600"
                                             >
                                                 Edit
                                             </Link>
@@ -151,7 +151,7 @@ function destroy(id: string): void {
                                         </td>
                                     </tr>
                                     <tr v-if="projects.data.length === 0">
-                                        <td colspan="7" class="px-3 py-8 text-center text-sm text-gray-500">
+                                        <td colspan="7" class="px-3 py-8 text-center text-sm text-gray-600">
                                             No projects found.
                                         </td>
                                     </tr>
@@ -160,7 +160,7 @@ function destroy(id: string): void {
                         </div>
 
                         <div v-if="projects.last_page > 1" class="mt-4 flex items-center justify-between">
-                            <div class="text-sm text-gray-500">
+                            <div class="text-sm text-gray-600">
                                 Showing {{ projects.from }} to {{ projects.to }} of {{ projects.total }} results
                             </div>
                             <div class="flex gap-2">

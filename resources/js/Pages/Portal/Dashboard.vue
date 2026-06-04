@@ -33,7 +33,7 @@ function statusLabel(s: string): string {
 
     <PortalLayout>
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">Dashboard</h2>
+            <h2 class="text-xl font-semibold leading-tight text-gray-700">Dashboard</h2>
         </template>
 
         <div class="py-12">
@@ -41,20 +41,20 @@ function statusLabel(s: string): string {
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
                     <div class="overflow-hidden rounded-lg bg-white shadow-sm">
                         <div class="p-6">
-                            <p class="text-sm font-medium text-gray-500">Projects</p>
-                            <p class="mt-2 text-3xl font-bold text-gray-900">{{ stats.projectsCount }}</p>
+                            <p class="text-sm font-medium text-gray-600">Projects</p>
+                            <p class="mt-2 text-3xl font-bold text-gray-800">{{ stats.projectsCount }}</p>
                         </div>
                     </div>
                     <div class="overflow-hidden rounded-lg bg-white shadow-sm">
                         <div class="p-6">
-                            <p class="text-sm font-medium text-gray-500">Open Tickets</p>
-                            <p class="mt-2 text-3xl font-bold text-gray-900">{{ stats.openTicketsCount }}</p>
+                            <p class="text-sm font-medium text-gray-600">Open Tickets</p>
+                            <p class="mt-2 text-3xl font-bold text-gray-800">{{ stats.openTicketsCount }}</p>
                         </div>
                     </div>
                     <div class="overflow-hidden rounded-lg bg-white shadow-sm">
                         <div class="p-6">
-                            <p class="text-sm font-medium text-gray-500">Upcoming Meetings</p>
-                            <p class="mt-2 text-3xl font-bold text-gray-900">{{ stats.upcomingMeetingsCount }}</p>
+                            <p class="text-sm font-medium text-gray-600">Upcoming Meetings</p>
+                            <p class="mt-2 text-3xl font-bold text-gray-800">{{ stats.upcomingMeetingsCount }}</p>
                         </div>
                     </div>
                 </div>
@@ -63,19 +63,19 @@ function statusLabel(s: string): string {
                     <div class="overflow-hidden rounded-lg bg-white shadow-sm">
                         <div class="p-6">
                             <div class="mb-4 flex items-center justify-between">
-                                <h3 class="text-lg font-medium text-gray-900">Recent Tickets</h3>
-                                <Link :href="route('portal.tickets.index')" class="text-sm text-indigo-600 hover:text-indigo-900">View all</Link>
+                                <h3 class="text-lg font-medium text-gray-800">Recent Tickets</h3>
+                                <Link :href="route('portal.tickets.index')" class="text-sm text-indigo-500 hover:text-indigo-600">View all</Link>
                             </div>
-                            <div v-if="recentTickets.length === 0" class="text-sm text-gray-500">No recent tickets.</div>
+                            <div v-if="recentTickets.length === 0" class="text-sm text-gray-600">No recent tickets.</div>
                             <div v-else class="space-y-3">
                                 <div v-for="ticket in recentTickets" :key="ticket.id" class="flex items-center justify-between rounded-md border border-gray-200 p-3">
                                     <div>
-                                        <Link :href="`/portal/tickets/${ticket.id}`" class="text-sm font-medium text-indigo-600 hover:text-indigo-900">{{ ticket.subject }}</Link>
+                                        <Link :href="`/portal/tickets/${ticket.id}`" class="text-sm font-medium text-indigo-500 hover:text-indigo-600">{{ ticket.subject }}</Link>
                                         <div class="mt-1">
                                             <StatusBadge :status="ticket.status">{{ statusLabel(ticket.status) }}</StatusBadge>
                                         </div>
                                     </div>
-                                    <span class="text-xs text-gray-400">{{ ticket.created_at }}</span>
+                                    <span class="text-xs text-gray-500">{{ ticket.created_at }}</span>
                                 </div>
                             </div>
                         </div>
@@ -84,14 +84,14 @@ function statusLabel(s: string): string {
                     <div class="overflow-hidden rounded-lg bg-white shadow-sm">
                         <div class="p-6">
                             <div class="mb-4 flex items-center justify-between">
-                                <h3 class="text-lg font-medium text-gray-900">Upcoming Meetings</h3>
-                                <Link :href="route('portal.meetings.index')" class="text-sm text-indigo-600 hover:text-indigo-900">View all</Link>
+                                <h3 class="text-lg font-medium text-gray-800">Upcoming Meetings</h3>
+                                <Link :href="route('portal.meetings.index')" class="text-sm text-indigo-500 hover:text-indigo-600">View all</Link>
                             </div>
-                            <div v-if="upcomingMeetings.length === 0" class="text-sm text-gray-500">No upcoming meetings.</div>
+                            <div v-if="upcomingMeetings.length === 0" class="text-sm text-gray-600">No upcoming meetings.</div>
                             <div v-else class="space-y-3">
                                 <div v-for="meeting in upcomingMeetings" :key="meeting.id" class="rounded-md border border-gray-200 p-3">
-                                    <p class="text-sm font-medium text-gray-900">{{ meeting.title }}</p>
-                                    <p class="mt-0.5 text-xs text-gray-500">{{ meeting.start_time }}</p>
+                                    <p class="text-sm font-medium text-gray-800">{{ meeting.title }}</p>
+                                    <p class="mt-0.5 text-xs text-gray-600">{{ meeting.start_time }}</p>
                                 </div>
                             </div>
                         </div>

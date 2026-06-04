@@ -107,8 +107,8 @@ async function send(): Promise<void> {
     <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
         <div class="mx-4 w-full max-w-2xl rounded-lg bg-white p-6 shadow-xl">
             <div class="mb-4 flex items-center justify-between">
-                <h3 class="text-lg font-medium text-gray-900">Send Email to {{ count }} Lead(s)</h3>
-                <button type="button" class="text-gray-400 hover:text-gray-600" @click="emit('close')">
+                <h3 class="text-lg font-medium text-gray-800">Send Email to {{ count }} Lead(s)</h3>
+                <button type="button" class="text-gray-500 hover:text-gray-600" @click="emit('close')">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -120,7 +120,7 @@ async function send(): Promise<void> {
                 <input
                     type="text"
                     :value="`${count} lead(s) selected`"
-                    class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 text-sm text-gray-500 shadow-sm"
+                    class="mt-1 block w-full rounded-md border-gray-200 bg-gray-50 text-sm text-gray-600 shadow-sm"
                     disabled
                 />
             </div>
@@ -131,7 +131,7 @@ async function send(): Promise<void> {
                     <button
                         type="button"
                         :disabled="generating"
-                        class="rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
+                        class="rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-indigo-400 disabled:cursor-not-allowed disabled:opacity-50"
                         @click="generateBulkTemplate"
                     >
                         {{ generating ? 'Generating...' : 'Generate AI Template' }}
@@ -143,7 +143,7 @@ async function send(): Promise<void> {
                 <label class="block text-sm font-medium text-gray-700">Template</label>
                 <select
                     v-model="selectedTemplate"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                     @change="selectTemplate(selectedTemplate)"
                 >
                     <option value="">— No template —</option>
@@ -170,7 +170,7 @@ async function send(): Promise<void> {
                 <input
                     v-model="subject"
                     type="text"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                 />
             </div>
 
@@ -180,7 +180,7 @@ async function send(): Promise<void> {
                     id="bulk-email-body"
                     v-model="body"
                     rows="10"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                 ></textarea>
             </div>
 
@@ -189,7 +189,7 @@ async function send(): Promise<void> {
             <div class="flex justify-end gap-3">
                 <button
                     type="button"
-                    class="rounded-md border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                    class="rounded-md border border-gray-200 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                     @click="emit('close')"
                 >
                     Cancel
@@ -197,7 +197,7 @@ async function send(): Promise<void> {
                 <button
                     type="button"
                     :disabled="sending || !subject.trim() || !body.trim()"
-                    class="rounded-md bg-gray-800 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
+                    class="rounded-md bg-gray-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
                     @click="send"
                 >
                     {{ sending ? 'Sending...' : 'Send to All' }}

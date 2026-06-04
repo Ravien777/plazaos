@@ -8,10 +8,10 @@ defineProps<{
 <template>
     <div class="flex items-center justify-between">
         <div>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">
+            <h2 class="text-xl font-semibold leading-tight text-gray-700">
                 {{ title }}
             </h2>
-            <p v-if="description" class="mt-1 text-sm text-gray-500">
+            <p v-if="description" class="mt-1 text-sm text-gray-600">
                 {{ description }}
             </p>
         </div>

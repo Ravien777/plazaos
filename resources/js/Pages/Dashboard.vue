@@ -53,7 +53,7 @@ function formatDate(dt: string): string {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">
+            <h2 class="text-xl font-semibold leading-tight text-gray-700">
                 Dashboard
             </h2>
         </template>
@@ -73,10 +73,10 @@ function formatDate(dt: string): string {
                     <div class="overflow-hidden rounded-lg bg-white shadow-sm">
                         <div class="p-6">
                             <div class="mb-4 flex items-center justify-between">
-                                <h3 class="text-lg font-medium text-gray-900">Upcoming Meetings</h3>
-                                <Link href="/meetings/upcoming" class="text-sm text-indigo-600 hover:text-indigo-900">View all</Link>
+                                <h3 class="text-lg font-medium text-gray-800">Upcoming Meetings</h3>
+                                <Link href="/meetings/upcoming" class="text-sm text-indigo-500 hover:text-indigo-600">View all</Link>
                             </div>
-                            <div v-if="upcomingMeetings.length === 0" class="text-sm text-gray-500">
+                            <div v-if="upcomingMeetings.length === 0" class="text-sm text-gray-600">
                                 No upcoming meetings.
                             </div>
                             <div v-else class="space-y-3">
@@ -87,16 +87,16 @@ function formatDate(dt: string): string {
                                 >
                                     <div>
                                         <div class="flex items-center gap-2">
-                                            <span class="text-sm font-medium text-gray-900">{{ meeting.title }}</span>
+                                            <span class="text-sm font-medium text-gray-800">{{ meeting.title }}</span>
                                             <span class="inline-flex rounded-full px-2 py-0.5 text-xs font-medium" :class="statusClass(meeting.status)">
                                                 {{ statusLabel(meeting.status) }}
                                             </span>
                                         </div>
-                                        <p class="mt-0.5 text-xs text-gray-500">{{ formatDate(meeting.start_time) }}</p>
+                                        <p class="mt-0.5 text-xs text-gray-600">{{ formatDate(meeting.start_time) }}</p>
                                     </div>
                                     <Link
                                         :href="`/meetings/${meeting.id}/edit`"
-                                        class="text-xs text-indigo-600 hover:text-indigo-900"
+                                        class="text-xs text-indigo-500 hover:text-indigo-600"
                                     >
                                         Edit
                                     </Link>
@@ -107,7 +107,7 @@ function formatDate(dt: string): string {
 
                     <div class="overflow-hidden rounded-lg bg-white shadow-sm">
                         <div class="p-6">
-                            <h3 class="text-lg font-medium text-gray-900">Recent Activity</h3>
+                            <h3 class="text-lg font-medium text-gray-800">Recent Activity</h3>
                             <div class="mt-4">
                                 <ActivityFeed :activities="recentActivities" />
                             </div>

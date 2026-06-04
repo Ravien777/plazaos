@@ -58,7 +58,7 @@ function fieldValue(submission: Submission, fieldId: string): string | null {
         <template #header>
             <PageHeader :title="form.title">
                 <template #actions>
-                    <Link :href="`/intake-forms/${form.id}/edit`" class="inline-flex items-center rounded-md bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-700">
+                    <Link :href="`/intake-forms/${form.id}/edit`" class="inline-flex items-center rounded-md bg-gray-700 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-600">
                         Edit Form
                     </Link>
                 </template>
@@ -70,7 +70,7 @@ function fieldValue(submission: Submission, fieldId: string): string | null {
                 <div class="mb-6 overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="mb-4">
-                            <span class="inline-flex rounded-full px-2 py-1 text-xs font-medium" :class="form.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'">
+                            <span class="inline-flex rounded-full px-2 py-1 text-xs font-medium" :class="form.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'">
                                 {{ form.is_active ? 'Active' : 'Inactive' }}
                             </span>
                         </div>
@@ -79,7 +79,7 @@ function fieldValue(submission: Submission, fieldId: string): string | null {
                         <h3 class="mb-3 mt-6 text-sm font-medium text-gray-700">Fields ({{ form.fields.length }})</h3>
                         <div class="space-y-2">
                             <div v-for="field in form.fields" :key="field.id" class="flex items-center gap-3 rounded-md bg-gray-50 px-3 py-2 text-sm">
-                                <span class="font-medium text-gray-900">{{ field.label }}</span>
+                                <span class="font-medium text-gray-800">{{ field.label }}</span>
                                 <span class="rounded bg-gray-200 px-1.5 py-0.5 text-xs text-gray-600">{{ field.field_type }}</span>
                                 <span v-if="field.required" class="text-xs text-red-500">Required</span>
                             </div>
@@ -91,29 +91,29 @@ function fieldValue(submission: Submission, fieldId: string): string | null {
                     <div class="p-6">
                         <h3 class="mb-4 text-sm font-medium text-gray-700">Submissions ({{ submissions.total }})</h3>
 
-                        <div v-if="submissions.data.length === 0" class="py-8 text-center text-sm text-gray-500">
+                        <div v-if="submissions.data.length === 0" class="py-8 text-center text-sm text-gray-600">
                             No submissions yet.
                         </div>
 
                         <div v-else class="space-y-4">
                             <div v-for="submission in submissions.data" :key="submission.id" class="rounded-lg border border-gray-200 p-4">
                                 <div class="mb-2 flex items-center justify-between">
-                                    <Link :href="`/clients/${submission.client_id}`" class="text-sm font-medium text-indigo-600 hover:text-indigo-900">
+                                    <Link :href="`/clients/${submission.client_id}`" class="text-sm font-medium text-indigo-500 hover:text-indigo-600">
                                         {{ submission.client.company_name }}
                                     </Link>
-                                    <span class="text-xs text-gray-500">{{ new Date(submission.submitted_at).toLocaleString() }}</span>
+                                    <span class="text-xs text-gray-600">{{ new Date(submission.submitted_at).toLocaleString() }}</span>
                                 </div>
                                 <div class="grid grid-cols-2 gap-2">
                                     <div v-for="field in form.fields" :key="field.id" class="text-sm">
-                                        <span class="text-xs text-gray-500">{{ field.label }}:</span>
-                                        <p class="text-gray-900">{{ fieldValue(submission, field.id) || '\u2014' }}</p>
+                                        <span class="text-xs text-gray-600">{{ field.label }}:</span>
+                                        <p class="text-gray-800">{{ fieldValue(submission, field.id) || '\u2014' }}</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <div v-if="submissions.last_page > 1" class="mt-4 flex items-center justify-between">
-                            <div class="text-sm text-gray-500">
+                            <div class="text-sm text-gray-600">
                                 Showing {{ submissions.from }} to {{ submissions.to }} of {{ submissions.total }} results
                             </div>
                             <div class="flex gap-2">

@@ -49,6 +49,11 @@ class User extends Authenticatable
         return $setting?->value ?? $default;
     }
 
+    public function routeNotificationForSlack(object $notification): string
+    {
+        return config('services.slack.notifications.channel', '#general');
+    }
+
     /**
      * Get the attributes that should be cast.
      *

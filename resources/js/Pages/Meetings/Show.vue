@@ -83,7 +83,7 @@ function formatDate(dt: string): string {
                     <div class="p-6">
                         <dl class="space-y-6">
                             <div>
-                                <dt class="text-sm font-medium text-gray-500">Status</dt>
+                                <dt class="text-sm font-medium text-gray-600">Status</dt>
                                 <dd class="mt-1">
                                     <span class="inline-flex rounded-full px-2 py-1 text-xs font-medium" :class="statusClass(meeting.status)">
                                         {{ statusLabel(meeting.status) }}
@@ -91,35 +91,35 @@ function formatDate(dt: string): string {
                                 </dd>
                             </div>
                             <div>
-                                <dt class="text-sm font-medium text-gray-500">Provider</dt>
+                                <dt class="text-sm font-medium text-gray-600">Provider</dt>
                                 <dd class="mt-1">
                                     <span v-if="meeting.provider" class="inline-flex rounded-full px-2 py-1 text-xs font-medium" :class="providerClass(meeting.provider)">
                                         {{ providerLabels[meeting.provider] ?? meeting.provider }}
                                     </span>
-                                    <span v-else class="text-sm text-gray-500">—</span>
+                                    <span v-else class="text-sm text-gray-600">—</span>
                                 </dd>
                             </div>
                             <div>
-                                <dt class="text-sm font-medium text-gray-500">Start Time</dt>
-                                <dd class="mt-1 text-sm text-gray-900">{{ formatDate(meeting.start_time) }}</dd>
+                                <dt class="text-sm font-medium text-gray-600">Start Time</dt>
+                                <dd class="mt-1 text-sm text-gray-800">{{ formatDate(meeting.start_time) }}</dd>
                             </div>
                             <div v-if="meeting.end_time">
-                                <dt class="text-sm font-medium text-gray-500">End Time</dt>
-                                <dd class="mt-1 text-sm text-gray-900">{{ formatDate(meeting.end_time) }}</dd>
+                                <dt class="text-sm font-medium text-gray-600">End Time</dt>
+                                <dd class="mt-1 text-sm text-gray-800">{{ formatDate(meeting.end_time) }}</dd>
                             </div>
                             <div v-if="meeting.location">
-                                <dt class="text-sm font-medium text-gray-500">Location</dt>
-                                <dd class="mt-1 text-sm text-gray-900">{{ meeting.location }}</dd>
+                                <dt class="text-sm font-medium text-gray-600">Location</dt>
+                                <dd class="mt-1 text-sm text-gray-800">{{ meeting.location }}</dd>
                             </div>
                             <div v-if="meeting.meet_link">
-                                <dt class="text-sm font-medium text-gray-500">Join Link</dt>
+                                <dt class="text-sm font-medium text-gray-600">Join Link</dt>
                                 <dd class="mt-1">
-                                    <a :href="meeting.meet_link" target="_blank" class="text-sm text-indigo-600 hover:text-indigo-900">{{ meeting.meet_link }}</a>
+                                    <a :href="meeting.meet_link" target="_blank" class="text-sm text-indigo-500 hover:text-indigo-600">{{ meeting.meet_link }}</a>
                                 </dd>
                             </div>
                             <div v-if="meeting.description">
-                                <dt class="text-sm font-medium text-gray-500">Description</dt>
-                                <dd class="mt-1 text-sm text-gray-900 whitespace-pre-wrap">{{ meeting.description }}</dd>
+                                <dt class="text-sm font-medium text-gray-600">Description</dt>
+                                <dd class="mt-1 text-sm text-gray-800 whitespace-pre-wrap">{{ meeting.description }}</dd>
                             </div>
                         </dl>
                     </div>

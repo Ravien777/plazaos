@@ -63,7 +63,7 @@ function submit(): void {
                                 <input
                                     v-model="form.subject"
                                     type="text"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                                     required
                                 />
                                 <p v-if="form.errors.subject" class="mt-1 text-sm text-red-600">{{ form.errors.subject }}</p>
@@ -74,7 +74,7 @@ function submit(): void {
                                 <textarea
                                     v-model="form.description"
                                     rows="4"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                                 ></textarea>
                                 <p v-if="form.errors.description" class="mt-1 text-sm text-red-600">{{ form.errors.description }}</p>
                             </div>
@@ -84,7 +84,7 @@ function submit(): void {
                                     <label class="block text-sm font-medium text-gray-700">Status</label>
                                     <select
                                         v-model="form.status"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                        class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                                     >
                                         <option value="open">Open</option>
                                         <option value="in_progress">In Progress</option>
@@ -97,7 +97,7 @@ function submit(): void {
                                     <label class="block text-sm font-medium text-gray-700">Priority</label>
                                     <select
                                         v-model="form.priority"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                        class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                                     >
                                         <option value="low">Low</option>
                                         <option value="medium">Medium</option>
@@ -109,7 +109,7 @@ function submit(): void {
                                     <label class="block text-sm font-medium text-gray-700">Category</label>
                                     <select
                                         v-model="form.category"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                        class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                                     >
                                         <option value="bug_report">Bug Report</option>
                                         <option value="feature_request">Feature Request</option>
@@ -123,7 +123,7 @@ function submit(): void {
                                 <label class="block text-sm font-medium text-gray-700">Related To (optional)</label>
                                 <select
                                     v-model="form.ticketable_type"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                                 >
                                     <option v-for="t in ticketableTypes" :key="t.value" :value="t.value">{{ t.label }}</option>
                                 </select>
@@ -142,7 +142,7 @@ function submit(): void {
                                 <button
                                     type="submit"
                                     :disabled="form.processing"
-                                    class="inline-flex items-center rounded-md bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-700 disabled:opacity-50"
+                                    class="inline-flex items-center rounded-md bg-gray-700 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-600 disabled:opacity-50"
                                 >
                                     Create Ticket
                                 </button>

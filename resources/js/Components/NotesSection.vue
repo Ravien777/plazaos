@@ -87,9 +87,9 @@ function deleteNote(note: Note): void {
 
 <template>
     <div>
-        <h3 class="text-lg font-medium text-gray-900">Notes</h3>
+        <h3 class="text-lg font-medium text-gray-800">Notes</h3>
 
-        <div v-if="loading" class="mt-4 text-sm text-gray-500">
+        <div v-if="loading" class="mt-4 text-sm text-gray-600">
             Loading notes...
         </div>
 
@@ -103,17 +103,17 @@ function deleteNote(note: Note): void {
                     <textarea
                         v-model="editContent"
                         rows="3"
-                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        class="block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                     />
                     <div class="mt-2 flex justify-end gap-2">
                         <button
-                            class="rounded-md border border-gray-300 bg-white px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50"
+                            class="rounded-md border border-gray-200 bg-white px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50"
                             @click="cancelEdit"
                         >
                             Cancel
                         </button>
                         <button
-                            class="rounded-md bg-gray-800 px-3 py-1 text-xs font-medium text-white hover:bg-gray-700"
+                            class="rounded-md bg-gray-700 px-3 py-1 text-xs font-medium text-white hover:bg-gray-600"
                             @click="updateNote(note)"
                         >
                             Save
@@ -123,10 +123,10 @@ function deleteNote(note: Note): void {
                 <div v-else>
                     <p class="text-sm text-gray-700 whitespace-pre-wrap">{{ note.content }}</p>
                     <div class="mt-2 flex items-center justify-between">
-                        <p class="text-xs text-gray-400">{{ note.created_at }}</p>
+                        <p class="text-xs text-gray-500">{{ note.created_at }}</p>
                         <div class="flex gap-2">
                             <button
-                                class="text-xs text-indigo-600 hover:text-indigo-900"
+                                class="text-xs text-indigo-500 hover:text-indigo-600"
                                 @click="startEdit(note)"
                             >
                                 Edit
@@ -147,11 +147,11 @@ function deleteNote(note: Note): void {
                     v-model="newNoteContent"
                     rows="2"
                     placeholder="Add a note..."
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    class="block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                 />
                 <div class="mt-2 flex justify-end">
                     <button
-                        class="rounded-md bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-700"
+                        class="rounded-md bg-gray-700 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-600"
                         @click="addNote"
                     >
                         Add Note

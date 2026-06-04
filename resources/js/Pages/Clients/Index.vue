@@ -139,7 +139,7 @@ function exportSelected(): void {
                 <template #actions>
                     <Link
                         href="/clients/create"
-                        class="inline-flex items-center rounded-md bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-700"
+                        class="inline-flex items-center rounded-md bg-gray-700 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-600"
                     >
                         New Client
                     </Link>
@@ -155,7 +155,7 @@ function exportSelected(): void {
                             <SearchInput v-model="search" />
                             <select
                                 v-model="status"
-                                class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                class="rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                                 @change="applyFilters"
                             >
                                 <option value="">All Statuses</option>
@@ -169,7 +169,7 @@ function exportSelected(): void {
                             v-if="selectedIds.length > 0"
                             class="mb-4 flex items-center gap-3 rounded-md bg-indigo-50 px-4 py-3"
                         >
-                            <span class="text-sm font-medium text-indigo-700">
+                            <span class="text-sm font-medium text-indigo-600">
                                 {{ selectedIds.length }} selected
                             </span>
                             <button
@@ -181,7 +181,7 @@ function exportSelected(): void {
                             </button>
                             <select
                                 v-model="bulkStatus"
-                                class="rounded-md border-gray-300 text-xs shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                class="rounded-md border-gray-200 text-xs shadow-sm focus:border-indigo-400 focus:ring-indigo-400"
                             >
                                 <option value="">Change Status…</option>
                                 <option value="active">Active</option>
@@ -191,14 +191,14 @@ function exportSelected(): void {
                             <button
                                 type="button"
                                 :disabled="!bulkStatus"
-                                class="rounded-md bg-indigo-600 px-3 py-1 text-xs font-semibold text-white hover:bg-indigo-500 disabled:opacity-50"
+                                class="rounded-md bg-indigo-500 px-3 py-1 text-xs font-semibold text-white hover:bg-indigo-400 disabled:opacity-50"
                                 @click="bulkUpdateStatus"
                             >
                                 Apply
                             </button>
                             <button
                                 type="button"
-                                class="rounded-md border border-gray-300 bg-white px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+                                class="rounded-md border border-gray-200 bg-white px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50"
                                 @click="exportSelected"
                             >
                                 Export Selected
@@ -206,7 +206,7 @@ function exportSelected(): void {
                         </div>
 
                         <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
+                            <table class="min-w-full divide-y divide-gray-100">
                                 <thead class="bg-gray-50">
                                     <tr>
                                         <th class="w-10 px-3 py-3">
@@ -214,29 +214,29 @@ function exportSelected(): void {
                                                 type="checkbox"
                                                 :checked="allSelected"
                                                 :indeterminate="someSelected"
-                                                class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
+                                                class="rounded border-gray-200 text-indigo-500 shadow-sm focus:ring-indigo-400"
                                                 @change="toggleSelectAll"
                                             />
                                         </th>
-                                        <th class="cursor-pointer px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 hover:text-gray-700" @click="toggleSort('company_name')">
+                                        <th class="cursor-pointer px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600 hover:text-gray-700" @click="toggleSort('company_name')">
                                             Company <span v-if="sortIndicator('company_name')" class="ml-1">{{ sortIndicator('company_name') }}</span>
                                         </th>
-                                        <th class="cursor-pointer px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 hover:text-gray-700" @click="toggleSort('contact_name')">
+                                        <th class="cursor-pointer px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600 hover:text-gray-700" @click="toggleSort('contact_name')">
                                             Contact <span v-if="sortIndicator('contact_name')" class="ml-1">{{ sortIndicator('contact_name') }}</span>
                                         </th>
-                                        <th class="cursor-pointer px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 hover:text-gray-700" @click="toggleSort('email')">
+                                        <th class="cursor-pointer px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600 hover:text-gray-700" @click="toggleSort('email')">
                                             Email <span v-if="sortIndicator('email')" class="ml-1">{{ sortIndicator('email') }}</span>
                                         </th>
-                                        <th class="cursor-pointer px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 hover:text-gray-700" @click="toggleSort('industry')">
+                                        <th class="cursor-pointer px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600 hover:text-gray-700" @click="toggleSort('industry')">
                                             Industry <span v-if="sortIndicator('industry')" class="ml-1">{{ sortIndicator('industry') }}</span>
                                         </th>
-                                        <th class="cursor-pointer px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 hover:text-gray-700" @click="toggleSort('status')">
+                                        <th class="cursor-pointer px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600 hover:text-gray-700" @click="toggleSort('status')">
                                             Status <span v-if="sortIndicator('status')" class="ml-1">{{ sortIndicator('status') }}</span>
                                         </th>
-                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Actions</th>
+                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-gray-200 bg-white">
+                                <tbody class="divide-y divide-gray-100 bg-white">
                                     <tr
                                         v-for="client in clients.data"
                                         :key="client.id"
@@ -247,18 +247,18 @@ function exportSelected(): void {
                                             <input
                                                 type="checkbox"
                                                 :checked="selectedIds.includes(client.id)"
-                                                class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
+                                                class="rounded border-gray-200 text-indigo-500 shadow-sm focus:ring-indigo-400"
                                                 @change="toggleSelect(client.id)"
                                             />
                                         </td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-900">
-                                            <Link :href="`/clients/${client.id}`" class="text-indigo-600 hover:text-indigo-900">
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800">
+                                            <Link :href="`/clients/${client.id}`" class="text-indigo-500 hover:text-indigo-600">
                                                 {{ client.company_name }}
                                             </Link>
                                         </td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ client.contact_name }}</td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ client.email }}</td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ client.industry }}</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-600">{{ client.contact_name }}</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-600">{{ client.email }}</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-600">{{ client.industry }}</td>
                                         <td class="whitespace-nowrap px-3 py-4">
                                             <StatusBadge :status="client.status">
                                                 {{ client.status }}
@@ -268,7 +268,7 @@ function exportSelected(): void {
                                             <div class="flex gap-2">
                                                 <Link
                                                     :href="`/clients/${client.id}/edit`"
-                                                    class="text-indigo-600 hover:text-indigo-900"
+                                                    class="text-indigo-500 hover:text-indigo-600"
                                                 >
                                                     Edit
                                                 </Link>
@@ -283,7 +283,7 @@ function exportSelected(): void {
                                         </td>
                                     </tr>
                                     <tr v-if="clients.data.length === 0">
-                                        <td colspan="7" class="px-3 py-8 text-center text-sm text-gray-500">
+                                        <td colspan="7" class="px-3 py-8 text-center text-sm text-gray-600">
                                             No clients found.
                                         </td>
                                     </tr>
@@ -292,7 +292,7 @@ function exportSelected(): void {
                         </div>
 
                         <div v-if="clients.last_page > 1" class="mt-4 flex items-center justify-between">
-                            <div class="text-sm text-gray-500">
+                            <div class="text-sm text-gray-600">
                                 Showing {{ clients.from }} to {{ clients.to }} of {{ clients.total }} results
                             </div>
                             <div class="flex gap-2">

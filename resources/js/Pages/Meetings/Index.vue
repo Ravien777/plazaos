@@ -65,7 +65,7 @@ function formatDate(dt: string): string {
             <div class="mx-auto max-w-4xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
-                        <div v-if="meetings.length === 0" class="text-sm text-gray-500">
+                        <div v-if="meetings.length === 0" class="text-sm text-gray-600">
                             No upcoming meetings.
                         </div>
 
@@ -77,7 +77,7 @@ function formatDate(dt: string): string {
                             >
                                 <div>
                                     <div class="flex items-center gap-2">
-                                        <span class="font-medium text-gray-900">{{ meeting.title }}</span>
+                                        <span class="font-medium text-gray-800">{{ meeting.title }}</span>
                                         <span class="inline-flex rounded-full px-2 py-0.5 text-xs font-medium" :class="statusClass(meeting.status)">
                                             {{ statusLabel(meeting.status) }}
                                         </span>
@@ -85,10 +85,10 @@ function formatDate(dt: string): string {
                                             {{ providerLabels[meeting.provider] ?? meeting.provider }}
                                         </span>
                                     </div>
-                                    <p class="mt-1 text-sm text-gray-500">{{ formatDate(meeting.start_time) }}</p>
-                                    <p v-if="meeting.location || meeting.meet_link" class="text-sm text-gray-500">
+                                    <p class="mt-1 text-sm text-gray-600">{{ formatDate(meeting.start_time) }}</p>
+                                    <p v-if="meeting.location || meeting.meet_link" class="text-sm text-gray-600">
                                         {{ meeting.location ?? '' }}{{ meeting.location && meeting.meet_link ? ' · ' : '' }}
-                                        <a v-if="meeting.meet_link" :href="meeting.meet_link" target="_blank" class="text-indigo-600 hover:text-indigo-900">Join</a>
+                                        <a v-if="meeting.meet_link" :href="meeting.meet_link" target="_blank" class="text-indigo-500 hover:text-indigo-600">Join</a>
                                     </p>
                                 </div>
                             </div>

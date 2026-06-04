@@ -91,7 +91,7 @@ onUnmounted(() => {
 <template>
     <div class="notification-bell relative">
         <button
-            class="relative rounded-md p-1 text-gray-500 hover:text-gray-700 focus:outline-none"
+            class="relative rounded-md p-1 text-gray-600 hover:text-gray-700 focus:outline-none"
             @click="toggleDropdown"
         >
             <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -111,10 +111,10 @@ onUnmounted(() => {
         >
             <div class="border-b border-gray-200 px-4 py-3">
                 <div class="flex items-center justify-between">
-                    <h3 class="text-sm font-medium text-gray-900">Notifications</h3>
+                    <h3 class="text-sm font-medium text-gray-800">Notifications</h3>
                     <button
                         v-if="unreadCount > 0"
-                        class="text-xs text-indigo-600 hover:text-indigo-900"
+                        class="text-xs text-indigo-500 hover:text-indigo-600"
                         @click="markAllAsRead"
                     >
                         Mark all read
@@ -123,7 +123,7 @@ onUnmounted(() => {
             </div>
 
             <div class="max-h-80 overflow-y-auto">
-                <div v-if="notifications.length === 0" class="px-4 py-6 text-center text-sm text-gray-500">
+                <div v-if="notifications.length === 0" class="px-4 py-6 text-center text-sm text-gray-600">
                     No new notifications.
                 </div>
 
@@ -138,12 +138,12 @@ onUnmounted(() => {
                             class="flex-1"
                             @click="showDropdown = false"
                         >
-                            <p class="text-sm font-medium text-gray-900">{{ n.data.title }}</p>
+                            <p class="text-sm font-medium text-gray-800">{{ n.data.title }}</p>
                             <p class="mt-0.5 text-xs text-gray-600">{{ n.data.message }}</p>
-                            <p class="mt-0.5 text-xs text-gray-400">{{ formatTime(n.created_at) }}</p>
+                            <p class="mt-0.5 text-xs text-gray-500">{{ formatTime(n.created_at) }}</p>
                         </Link>
                         <button
-                            class="ml-2 text-xs text-indigo-600 hover:text-indigo-900"
+                            class="ml-2 text-xs text-indigo-500 hover:text-indigo-600"
                             @click.stop="markAsRead(n.id)"
                         >
                             Read
@@ -155,7 +155,7 @@ onUnmounted(() => {
             <div class="border-t border-gray-200 px-4 py-2">
                 <Link
                     href="/notifications"
-                    class="block text-center text-xs text-indigo-600 hover:text-indigo-900"
+                    class="block text-center text-xs text-indigo-500 hover:text-indigo-600"
                     @click="showDropdown = false"
                 >
                     View all notifications

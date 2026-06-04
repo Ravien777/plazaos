@@ -37,10 +37,10 @@ function remove(userId: string): void {
 <template>
     <div>
         <div class="flex items-center justify-between">
-            <h3 class="text-lg font-medium text-gray-900">Portal Users</h3>
+            <h3 class="text-lg font-medium text-gray-800">Portal Users</h3>
             <button
                 @click="showForm = !showForm"
-                class="inline-flex items-center rounded-md bg-gray-800 px-3 py-1 text-xs font-semibold text-white hover:bg-gray-700"
+                class="inline-flex items-center rounded-md bg-gray-700 px-3 py-1 text-xs font-semibold text-white hover:bg-gray-600"
             >
                 {{ showForm ? 'Cancel' : 'Add User' }}
             </button>
@@ -49,32 +49,32 @@ function remove(userId: string): void {
         <form v-if="showForm" @submit.prevent="submit" class="mt-4 rounded-md border border-gray-200 p-4 space-y-3">
             <div>
                 <label class="block text-xs font-medium text-gray-700">Name</label>
-                <input v-model="form.name" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required />
+                <input v-model="form.name" type="text" class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm" required />
                 <p v-if="form.errors.name" class="mt-1 text-xs text-red-600">{{ form.errors.name }}</p>
             </div>
             <div>
                 <label class="block text-xs font-medium text-gray-700">Email</label>
-                <input v-model="form.email" type="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required />
+                <input v-model="form.email" type="email" class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm" required />
                 <p v-if="form.errors.email" class="mt-1 text-xs text-red-600">{{ form.errors.email }}</p>
             </div>
             <div>
                 <label class="block text-xs font-medium text-gray-700">Password</label>
-                <input v-model="form.password" type="password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required minlength="8" />
+                <input v-model="form.password" type="password" class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm" required minlength="8" />
                 <p v-if="form.errors.password" class="mt-1 text-xs text-red-600">{{ form.errors.password }}</p>
             </div>
             <div class="flex justify-end">
-                <button type="submit" :disabled="form.processing" class="inline-flex items-center rounded-md bg-gray-800 px-3 py-1 text-xs font-semibold text-white hover:bg-gray-700 disabled:opacity-50">
+                <button type="submit" :disabled="form.processing" class="inline-flex items-center rounded-md bg-gray-700 px-3 py-1 text-xs font-semibold text-white hover:bg-gray-600 disabled:opacity-50">
                     Create User
                 </button>
             </div>
         </form>
 
-        <div v-if="users.length === 0" class="mt-4 text-sm text-gray-500">No portal users yet.</div>
+        <div v-if="users.length === 0" class="mt-4 text-sm text-gray-600">No portal users yet.</div>
         <div v-else class="mt-4 space-y-2">
             <div v-for="user in users" :key="user.id" class="flex items-center justify-between rounded-md border border-gray-200 p-3">
                 <div>
-                    <p class="text-sm font-medium text-gray-900">{{ user.name }}</p>
-                    <p class="text-xs text-gray-500">{{ user.email }} &middot; created {{ user.created_at }}</p>
+                    <p class="text-sm font-medium text-gray-800">{{ user.name }}</p>
+                    <p class="text-xs text-gray-600">{{ user.email }} &middot; created {{ user.created_at }}</p>
                 </div>
                 <button @click="remove(user.id)" class="text-xs text-red-600 hover:text-red-900">Revoke</button>
             </div>

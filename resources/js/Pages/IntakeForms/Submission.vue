@@ -41,31 +41,31 @@ const props = defineProps<{
                     <div class="p-6">
                         <div class="mb-6 flex items-center justify-between text-sm">
                             <div>
-                                <span class="text-gray-500">Client:</span>
-                                <Link :href="`/clients/${submission.client_id}`" class="ml-1 text-indigo-600 hover:text-indigo-900">
+                                <span class="text-gray-600">Client:</span>
+                                <Link :href="`/clients/${submission.client_id}`" class="ml-1 text-indigo-500 hover:text-indigo-600">
                                     {{ submission.client.company_name }}
                                 </Link>
                             </div>
-                            <span class="text-gray-500">{{ new Date(submission.submitted_at).toLocaleString() }}</span>
+                            <span class="text-gray-600">{{ new Date(submission.submitted_at).toLocaleString() }}</span>
                         </div>
 
                         <div class="space-y-4">
                             <div v-for="item in submission.data" :key="item.id" class="rounded-md bg-gray-50 p-4">
-                                <label class="mb-1 block text-xs font-medium text-gray-500">{{ item.field.label }}</label>
+                                <label class="mb-1 block text-xs font-medium text-gray-600">{{ item.field.label }}</label>
                                 <p v-if="item.field.field_type === 'file' && item.file_path" class="text-sm">
-                                    <a :href="`/intake-forms/submissions/download?path=${encodeURIComponent(item.file_path)}`" class="text-indigo-600 hover:text-indigo-900 underline">
+                                    <a :href="`/intake-forms/submissions/download?path=${encodeURIComponent(item.file_path)}`" class="text-indigo-500 hover:text-indigo-600 underline">
                                         {{ item.value || 'Download file' }}
                                     </a>
                                 </p>
                                 <p v-else-if="item.field.field_type === 'checkbox'" class="text-sm">
                                     {{ item.value === '1' || item.value === 'true' ? 'Yes' : 'No' }}
                                 </p>
-                                <p v-else class="text-sm text-gray-900 whitespace-pre-wrap">{{ item.value || '\u2014' }}</p>
+                                <p v-else class="text-sm text-gray-800 whitespace-pre-wrap">{{ item.value || '\u2014' }}</p>
                             </div>
                         </div>
 
                         <div class="mt-6">
-                            <Link href="/intake-forms" class="text-sm text-indigo-600 hover:text-indigo-900">
+                            <Link href="/intake-forms" class="text-sm text-indigo-500 hover:text-indigo-600">
                                 &larr; Back to Forms
                             </Link>
                         </div>

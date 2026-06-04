@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+    --color-bg: theme('colors.gray.50');
+    --color-surface: theme('colors.white');
+    --color-primary: theme('colors.gray.700');
+    --color-primary-hover: theme('colors.gray.600');
+    --color-accent: theme('colors.indigo.500');
+    --color-accent-hover: theme('colors.indigo.400');
+    --color-text: theme('colors.gray.700');
+    --color-text-heading: theme('colors.gray.800');
+    --color-text-muted: theme('colors.gray.600');
+    --color-border: theme('colors.gray.200');
+    --color-border-input: theme('colors.gray.200');
+}

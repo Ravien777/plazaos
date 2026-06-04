@@ -7,6 +7,7 @@ namespace App\Notifications;
 use App\Models\Ticket;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
+use Illuminate\Notifications\Slack\SlackMessage;
 
 class TicketReplied extends Notification
 {
@@ -18,7 +19,29 @@ class TicketReplied extends Notification
 
     public function via(object $notifiable): array
     {
-        return ['database'];
+        $channels = ['database'];
+
+        if (config('services.slack.notifications.bot_user_oauth_token')) {
+            $channels[] = 'slack';
+        }
+
+        return $channels;
+    }
+
+    public function toSlack(object $notifiable): SlackMessage
+    {
+        $status = ucfirst($this->ticket->status->value ?? $this->ticket->status);
+
+        return (new SlackMessage)
+            ->text(":speech_balloon: *New Reply on Ticket*")
+            ->sectionBlock(function ($section) use ($status) {
+                $section->field("*Subject*\n{$this->ticket->subject}");
+                $section->field("*Status*\n{$status}");
+            })
+            ->actionsBlock(fn ($actions) => $actions
+                ->button('View Ticket')
+                ->url(url("/tickets/{$this->ticket->id}"))
+            );
     }
 
     public function toDatabase(object $notifiable): array
