@@ -93,7 +93,7 @@ class ClientServiceTest extends TestCase
 
         $this->clientService->delete($client);
 
-        $this->assertDatabaseMissing('clients', ['id' => $client->id]);
+        $this->assertSoftDeleted($client);
         $this->assertDatabaseHas('activities', [
             'subject_type' => Client::class,
             'subject_id' => $client->id,

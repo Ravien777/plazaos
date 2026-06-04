@@ -27,9 +27,9 @@ class ClientBulkControllerTest extends TestCase
         ]);
 
         $response->assertSessionHas('success');
-        $this->assertDatabaseMissing('clients', ['id' => $clients[0]->id]);
-        $this->assertDatabaseMissing('clients', ['id' => $clients[1]->id]);
-        $this->assertDatabaseMissing('clients', ['id' => $clients[2]->id]);
+        $this->assertSoftDeleted($clients[0]);
+        $this->assertSoftDeleted($clients[1]);
+        $this->assertSoftDeleted($clients[2]);
     }
 
     public function test_bulk_delete_validates_empty_ids(): void

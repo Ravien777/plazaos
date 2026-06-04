@@ -31,6 +31,6 @@ class DocumentPolicy
 
     public function delete(User $user, Document $document): bool
     {
-        return true;
+        return $user->canDelete();
     }
 }

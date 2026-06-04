@@ -31,6 +31,6 @@ class IntakeFormPolicy
 
     public function delete(User $user, IntakeForm $intakeForm): bool
     {
-        return true;
+        return $user->canDelete();
     }
 }

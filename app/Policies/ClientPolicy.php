@@ -31,6 +31,6 @@ class ClientPolicy
 
     public function delete(User $user, Client $client): bool
     {
-        return true;
+        return $user->canDelete();
     }
 }

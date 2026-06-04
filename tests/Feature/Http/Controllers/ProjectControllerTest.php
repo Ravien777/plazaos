@@ -94,7 +94,7 @@ class ProjectControllerTest extends TestCase
         $response = $this->delete(route('projects.destroy', $project));
 
         $response->assertRedirect(route('projects.index'));
-        $this->assertDatabaseMissing('projects', ['id' => $project->id]);
+        $this->assertSoftDeleted($project);
     }
 
     public function test_guest_redirects_to_login(): void

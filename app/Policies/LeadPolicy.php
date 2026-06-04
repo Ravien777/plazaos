@@ -31,6 +31,6 @@ class LeadPolicy
 
     public function delete(User $user, Lead $lead): bool
     {
-        return true;
+        return $user->canDelete();
     }
 }

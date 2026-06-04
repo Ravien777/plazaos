@@ -75,7 +75,7 @@ class NoteControllerTest extends TestCase
         $response = $this->delete(route('notes.destroy', $note));
 
         $response->assertRedirect();
-        $this->assertDatabaseMissing('notes', ['id' => $note->id]);
+        $this->assertSoftDeleted($note);
     }
 
     public function test_guest_redirects_to_login(): void

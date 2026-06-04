@@ -129,7 +129,7 @@ class MeetingServiceTest extends TestCase
 
         $this->meetingService->delete($meeting);
 
-        $this->assertDatabaseMissing('meetings', ['id' => $meeting->id]);
+        $this->assertSoftDeleted($meeting);
         $this->assertDatabaseHas('activities', [
             'subject_type' => Meeting::class,
             'subject_id' => $meeting->id,

@@ -6,6 +6,7 @@ import { Head, Link } from '@inertiajs/vue3';
 import type { Activity, Meeting } from '@/Types';
 
 defineProps<{
+    hasTeam: boolean;
     stats: {
         newLeads: number;
         activeLeads: number;
@@ -60,6 +61,26 @@ function formatDate(dt: string): string {
 
         <div class="py-12">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <div
+                    v-if="!hasTeam"
+                    class="mb-6 flex items-center justify-between rounded-lg border border-indigo-200 bg-indigo-50 p-4"
+                >
+                    <div>
+                        <p class="text-sm font-medium text-indigo-800">
+                            You're using PlazaOS solo.
+                        </p>
+                        <p class="text-xs text-indigo-600">
+                            Create a team to invite teammates and collaborate.
+                        </p>
+                    </div>
+                    <Link
+                        :href="route('team.create')"
+                        class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-500"
+                    >
+                        Create Team
+                    </Link>
+                </div>
+
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                     <StatCard label="New Leads" :value="stats.newLeads" icon="📥" />
                     <StatCard label="Active Leads" :value="stats.activeLeads" icon="📞" />

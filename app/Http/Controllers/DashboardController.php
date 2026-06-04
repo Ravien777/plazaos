@@ -32,6 +32,7 @@ class DashboardController extends Controller
         ])->count();
 
         return Inertia::render('Dashboard', [
+            'hasTeam' => auth()->user()->team_id !== null,
             'stats' => [
                 'newLeads' => $newLeads,
                 'activeLeads' => $activeLeads,

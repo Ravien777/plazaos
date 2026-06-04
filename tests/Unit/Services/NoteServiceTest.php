@@ -75,7 +75,7 @@ class NoteServiceTest extends TestCase
 
         $this->noteService->delete($note);
 
-        $this->assertDatabaseMissing('notes', ['id' => $note->id]);
+        $this->assertSoftDeleted($note);
         $this->assertDatabaseHas('activities', [
             'event' => 'note.deleted',
         ]);

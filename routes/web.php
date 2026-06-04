@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\EmailTemplateController;
+use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\LeadConversionController;
 use App\Http\Controllers\MeetingController;
@@ -15,12 +16,14 @@ use App\Http\Controllers\LeadSourceController;
 use App\Http\Controllers\LeadBulkController;
 use App\Http\Controllers\ClientBulkController;
 use App\Http\Controllers\ClientExportController;
+use App\Http\Controllers\MemberController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PortalUserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TicketReplyController;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +38,9 @@ Route::get('/', function () {
 
 Route::post('/webhooks/resend', [\App\Http\Controllers\ResendWebhookController::class, 'handle']);
 
+Route::get('/invite/{token}', [InvitationController::class, 'show'])->name('invitation.show');
+Route::post('/invite/{token}', [InvitationController::class, 'accept'])->name('invitation.accept');
+
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
@@ -43,6 +49,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/onboard/team', [TeamController::class, 'create'])->name('team.create');
+    Route::post('/onboard/team', [TeamController::class, 'store'])->name('team.store');
+    Route::get('/team/settings', [TeamController::class, 'edit'])->name('team.edit');
+    Route::put('/team/settings', [TeamController::class, 'update'])->name('team.update');
+    Route::get('/team/members', [MemberController::class, 'index'])->name('team.members');
+    Route::post('/team/members/invite', [InvitationController::class, 'store'])->name('team.members.invite');
+    Route::delete('/team/members/{user}', [MemberController::class, 'destroy'])->name('team.members.remove');
+    Route::delete('/team/invitations/{invitation}', [InvitationController::class, 'destroy'])->name('team.invitations.destroy');
 
     Route::get('/settings/integrations', [SettingsController::class, 'edit'])->name('settings.integrations');
     Route::post('/settings/integrations', [SettingsController::class, 'update']);

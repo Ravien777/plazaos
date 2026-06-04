@@ -89,7 +89,7 @@ class MeetingControllerTest extends TestCase
         $response = $this->delete(route('meetings.destroy', $meeting));
 
         $response->assertRedirect();
-        $this->assertDatabaseMissing('meetings', ['id' => $meeting->id]);
+        $this->assertSoftDeleted($meeting);
     }
 
     public function test_store_for_meetable_creates_and_redirects(): void

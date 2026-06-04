@@ -67,7 +67,7 @@ class TicketServiceTest extends TestCase
 
         $this->service->delete($ticket);
 
-        $this->assertDatabaseMissing('tickets', ['id' => $ticket->id]);
+        $this->assertSoftDeleted($ticket);
     }
 
     public function test_close_sets_status_and_sends_notification(): void

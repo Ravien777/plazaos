@@ -84,7 +84,7 @@ class ClientControllerTest extends TestCase
         $response = $this->delete(route('clients.destroy', $client));
 
         $response->assertRedirect(route('clients.index'));
-        $this->assertDatabaseMissing('clients', ['id' => $client->id]);
+        $this->assertSoftDeleted($client);
     }
 
     public function test_index_sorts_by_company_name_asc(): void

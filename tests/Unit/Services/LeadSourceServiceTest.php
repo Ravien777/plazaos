@@ -61,7 +61,7 @@ class LeadSourceServiceTest extends TestCase
 
         $this->service->delete($source);
 
-        $this->assertDatabaseMissing('lead_sources', ['id' => $source->id]);
+        $this->assertSoftDeleted($source);
     }
 
     public function test_run_dispatches_job(): void

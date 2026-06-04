@@ -31,6 +31,6 @@ class LeadImportPolicy
 
     public function delete(User $user, LeadImport $leadImport): bool
     {
-        return true;
+        return $user->canDelete();
     }
 }

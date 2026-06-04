@@ -88,6 +88,12 @@ const showingNavigationDropdown = ref(false);
                                 >
                                     Templates
                                 </NavLink>
+                                <NavLink
+                                    :href="$page.props.auth.user.team_id ? route('team.members') : route('team.create')"
+                                    :active="route().current('team*')"
+                                >
+                                    Team
+                                </NavLink>
                             </div>
                         </div>
 
@@ -130,6 +136,18 @@ const showingNavigationDropdown = ref(false);
                                             :href="route('settings.integrations')"
                                         >
                                             Integrations
+                                        </DropdownLink>
+                                        <DropdownLink
+                                            v-if="!$page.props.auth.user.team_id"
+                                            :href="route('team.create')"
+                                        >
+                                            Create Team
+                                        </DropdownLink>
+                                        <DropdownLink
+                                            v-if="$page.props.auth.user.team_id && $page.props.auth.user.role === 'owner'"
+                                            :href="route('team.edit')"
+                                        >
+                                            Team Settings
                                         </DropdownLink>
                                         <DropdownLink
                                             :href="route('logout')"
@@ -249,6 +267,12 @@ const showingNavigationDropdown = ref(false);
                         >
                             Templates
                         </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            :href="$page.props.auth.user.team_id ? route('team.members') : route('team.create')"
+                            :active="route().current('team*')"
+                        >
+                            Team
+                        </ResponsiveNavLink>
                     </div>
 
                     <!-- Responsive Settings Options -->
@@ -269,6 +293,12 @@ const showingNavigationDropdown = ref(false);
                         <div class="mt-3 space-y-1">
                             <ResponsiveNavLink :href="route('profile.edit')">
                                 Profile
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink
+                                v-if="!$page.props.auth.user.team_id"
+                                :href="route('team.create')"
+                            >
+                                Create Team
                             </ResponsiveNavLink>
                             <ResponsiveNavLink :href="route('settings.integrations')">
                                 Integrations

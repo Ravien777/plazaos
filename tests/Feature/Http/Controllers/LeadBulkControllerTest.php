@@ -27,9 +27,9 @@ class LeadBulkControllerTest extends TestCase
         ]);
 
         $response->assertSessionHas('success');
-        $this->assertDatabaseMissing('leads', ['id' => $leads[0]->id]);
-        $this->assertDatabaseMissing('leads', ['id' => $leads[1]->id]);
-        $this->assertDatabaseMissing('leads', ['id' => $leads[2]->id]);
+        $this->assertSoftDeleted($leads[0]);
+        $this->assertSoftDeleted($leads[1]);
+        $this->assertSoftDeleted($leads[2]);
     }
 
     public function test_bulk_delete_validates_empty_ids(): void

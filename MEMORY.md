@@ -186,3 +186,52 @@ Rejected alternatives:
 Follow-up work:
 - Configure GitHub secrets: DEPLOY_HOST, DEPLOY_USER, DEPLOY_KEY
 - Set up GitHub deploy key on the server for read-only repo access
+
+### Feature: Slack Notifications
+Date: 2026-06-04
+
+What was built:
+- Installed `laravel/slack-notification-channel` v3.8
+- `routeNotificationForSlack()` on User model (reads `services.slack.notifications.bot_user_oauth_token`)
+- Slack channel + Block Kit formatted `toSlack()` on 10 notification classes (LeadCreated, LeadImported, LeadInactiveReminder, ImportCompleted, MeetingScheduled, ProjectStatusChanged, DocumentUploaded, TicketCreated, TicketReplied, FormSubmissionReceived)
+- 13 tests in `tests/Unit/Notifications/SlackNotificationsTest.php`
+- Graceful skip when token is empty (no Slack configured)
+- Full suite: 329 tests (1028 assertions)
+
+Technical decisions:
+- Bot Token style (not Incoming Webhook) — single `SLACK_BOT_USER_OAUTH_TOKEN` env var
+- Block Kit API (sectionBlock, actionsBlock) for richer actionable messages
+- Variables extracted outside Heredoc to avoid PHP parser edge cases
+- Team-wide notifications routed through the single user's `routeNotificationForSlack()`
+
+Rejected alternatives:
+- Incoming Webhook per channel (Bot Token more flexible, one env var)
+- Plain text messages (Block Kit richer for actionable notifications)
+
+Follow-up work:
+- Set `SLACK_BOT_USER_OAUTH_TOKEN` in production .env for Slack integration
+
+### Feature: Warm/Stone Color Theme
+Date: 2026-06-04
+
+What was changed:
+- `tailwind.config.js` — remapped entire `gray` palette to Tailwind's `stone` (warm neutrals)
+- `resources/css/app.css` — added 10 CSS custom properties (`--color-bg`, `--color-primary`, etc.)
+- `resources/js/app.ts` — Inertia progress bar `#4B5563` → `#44403c`
+- 93 `.vue` files bulk-updated via 17 sed patterns (~1800 occurrences)
+
+Color shifts:
+- Page backgrounds: `gray-100` → `stone-100` (#f5f5f4), `gray-50` → `stone-50` (#fafaf9)
+- Primary buttons: `bg-gray-800` → `bg-gray-700` (#44403c), hover `700` → `600`
+- Links: `text-indigo-600` → `text-indigo-500` (#6366f1), hover `900` → `600`
+- Headings: `text-gray-900` → `text-gray-800` (#292524), subheadings `800` → `700`
+- Metadata: `text-gray-500` → `text-gray-600` (#57534e) — WCAG AA contrast fix
+- Decorative: `text-gray-400` → `text-gray-500` (#a8a29e)
+- Focus rings: `ring-indigo-500` → `ring-indigo-400` (#818cf8)
+- Borders: `border-gray-300` → `border-gray-200` (#e7e5e4)
+- Dividers: `divide-gray-200` → `divide-gray-100`
+
+Technical decisions:
+- Single config line (`gray: colors.stone`) warms all `gray-*` classes instantly
+- Contrast bumps applied via sed alongside palette remap (WCAG AA compliance)
+- No dark mode — none requested, stay focused on warm-light aesthetic

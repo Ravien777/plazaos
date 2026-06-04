@@ -31,6 +31,6 @@ class ProjectPolicy
 
     public function delete(User $user, Project $project): bool
     {
-        return true;
+        return $user->canDelete();
     }
 }

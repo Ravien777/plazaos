@@ -115,7 +115,7 @@ class IntakeFormControllerTest extends TestCase
         $response = $this->delete(route('intake-forms.destroy', $form));
 
         $response->assertRedirect(route('intake-forms.index'));
-        $this->assertDatabaseMissing('intake_forms', ['id' => $form->id]);
+        $this->assertSoftDeleted($form);
     }
 
     public function test_guest_redirects_to_login(): void

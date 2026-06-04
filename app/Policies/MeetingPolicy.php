@@ -31,6 +31,6 @@ class MeetingPolicy
 
     public function delete(User $user, Meeting $meeting): bool
     {
-        return true;
+        return $user->canDelete();
     }
 }

@@ -95,7 +95,7 @@ class ProjectServiceTest extends TestCase
 
         $this->projectService->delete($project);
 
-        $this->assertDatabaseMissing('projects', ['id' => $project->id]);
+        $this->assertSoftDeleted($project);
         $this->assertDatabaseHas('activities', [
             'subject_type' => Project::class,
             'subject_id' => $project->id,

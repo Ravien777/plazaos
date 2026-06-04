@@ -31,6 +31,6 @@ class EmailPolicy
 
     public function delete(User $user, Email $email): bool
     {
-        return true;
+        return $user->canDelete();
     }
 }

@@ -31,6 +31,6 @@ class LeadSourcePolicy
 
     public function delete(User $user, LeadSource $leadSource): bool
     {
-        return true;
+        return $user->canDelete();
     }
 }

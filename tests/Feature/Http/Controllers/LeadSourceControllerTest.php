@@ -89,7 +89,7 @@ class LeadSourceControllerTest extends TestCase
         $response = $this->delete(route('lead-sources.destroy', $source));
 
         $response->assertRedirect(route('lead-sources.index'));
-        $this->assertDatabaseMissing('lead_sources', ['id' => $source->id]);
+        $this->assertSoftDeleted($source);
     }
 
     public function test_guest_redirects_to_login(): void

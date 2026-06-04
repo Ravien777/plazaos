@@ -100,7 +100,7 @@ class LeadServiceTest extends TestCase
 
         $this->leadService->delete($lead);
 
-        $this->assertDatabaseMissing('leads', ['id' => $lead->id]);
+        $this->assertSoftDeleted($lead);
         $this->assertDatabaseHas('activities', [
             'subject_type' => Lead::class,
             'subject_id' => $lead->id,

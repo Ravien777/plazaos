@@ -8,22 +8,32 @@ use App\Models\Client;
 use App\Models\Document;
 use App\Models\Email;
 use App\Models\EmailTemplate;
+use App\Models\IntakeForm;
 use App\Models\Lead;
 use App\Models\LeadImport;
 use App\Models\LeadSource;
 use App\Models\Meeting;
 use App\Models\Note;
 use App\Models\Project;
+use App\Models\Team;
+use App\Models\Ticket;
+use App\Models\TicketReply;
+use App\Models\User;
 use App\Policies\ClientPolicy;
 use App\Policies\DocumentPolicy;
 use App\Policies\EmailPolicy;
 use App\Policies\EmailTemplatePolicy;
+use App\Policies\IntakeFormPolicy;
 use App\Policies\LeadImportPolicy;
 use App\Policies\LeadPolicy;
 use App\Policies\LeadSourcePolicy;
 use App\Policies\MeetingPolicy;
 use App\Policies\NotePolicy;
 use App\Policies\ProjectPolicy;
+use App\Policies\TeamPolicy;
+use App\Policies\TicketPolicy;
+use App\Policies\TicketReplyPolicy;
+use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -39,6 +49,11 @@ class AuthServiceProvider extends ServiceProvider
         Email::class => EmailPolicy::class,
         EmailTemplate::class => EmailTemplatePolicy::class,
         LeadImport::class => LeadImportPolicy::class,
+        IntakeForm::class => IntakeFormPolicy::class,
+        Ticket::class => TicketPolicy::class,
+        TicketReply::class => TicketReplyPolicy::class,
+        Team::class => TeamPolicy::class,
+        User::class => UserPolicy::class,
     ];
 
     public function boot(): void

@@ -95,7 +95,7 @@ class LeadControllerTest extends TestCase
         $response = $this->delete(route('leads.destroy', $lead));
 
         $response->assertRedirect(route('leads.index'));
-        $this->assertDatabaseMissing('leads', ['id' => $lead->id]);
+        $this->assertSoftDeleted($lead);
     }
 
     public function test_index_sorts_by_company_name_asc(): void

@@ -31,6 +31,6 @@ class TicketPolicy
 
     public function delete(User $user, Ticket $ticket): bool
     {
-        return true;
+        return $user->canDelete();
     }
 }

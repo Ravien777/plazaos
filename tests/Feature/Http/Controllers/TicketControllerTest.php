@@ -153,7 +153,7 @@ class TicketControllerTest extends TestCase
         $response = $this->delete(route('tickets.destroy', $ticket));
 
         $response->assertRedirect(route('tickets.index'));
-        $this->assertDatabaseMissing('tickets', ['id' => $ticket->id]);
+        $this->assertSoftDeleted($ticket);
     }
 
     public function test_close_sets_status_to_closed(): void

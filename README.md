@@ -239,7 +239,7 @@ npm run build
 
 ## Testing
 
-This project uses **PHPUnit 11** with 260 tests (914 assertions).
+This project uses **PHPUnit 11** with 329 tests (1028 assertions).
 
 ```bash
 # Run everything
