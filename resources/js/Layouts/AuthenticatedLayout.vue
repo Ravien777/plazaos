@@ -6,6 +6,7 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import NotificationBell from '@/Components/NotificationBell.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+import ToastProvider from '@/Components/ToastProvider.vue';
 import { Link } from '@inertiajs/vue3';
 
 const showingNavigationDropdown = ref(false);
@@ -14,6 +15,7 @@ const showingNavigationDropdown = ref(false);
 <template>
     <div>
         <div class="min-h-screen bg-gray-100">
+            <ToastProvider />
             <nav
                 class="border-b border-gray-100 bg-white"
             >
@@ -65,6 +67,18 @@ const showingNavigationDropdown = ref(false);
                                     Meetings
                                 </NavLink>
                                 <NavLink
+                                    :href="route('tasks.index')"
+                                    :active="route().current('tasks*')"
+                                >
+                                    Tasks
+                                </NavLink>
+                                <NavLink
+                                    :href="route('calendar.index')"
+                                    :active="route().current('calendar*')"
+                                >
+                                    Calendar
+                                </NavLink>
+                                <NavLink
                                     :href="route('tickets.index')"
                                     :active="route().current('tickets*')"
                                 >
@@ -87,6 +101,12 @@ const showingNavigationDropdown = ref(false);
                                     :active="route().current('templates*')"
                                 >
                                     Templates
+                                </NavLink>
+                                <NavLink
+                                    :href="route('testimonials.index')"
+                                    :active="route().current('testimonials*')"
+                                >
+                                    Testimonials
                                 </NavLink>
                                 <NavLink
                                     :href="$page.props.auth.user.team_id ? route('team.members') : route('team.create')"
@@ -136,6 +156,16 @@ const showingNavigationDropdown = ref(false);
                                             :href="route('settings.integrations')"
                                         >
                                             Integrations
+                                        </DropdownLink>
+                                        <DropdownLink
+                                            :href="route('settings.webhooks')"
+                                        >
+                                            Webhooks
+                                        </DropdownLink>
+                                        <DropdownLink
+                                            :href="route('settings.notifications')"
+                                        >
+                                            Notifications
                                         </DropdownLink>
                                         <DropdownLink
                                             v-if="!$page.props.auth.user.team_id"
@@ -244,6 +274,18 @@ const showingNavigationDropdown = ref(false);
                             Meetings
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
+                            :href="route('tasks.index')"
+                            :active="route().current('tasks*')"
+                        >
+                            Tasks
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            :href="route('calendar.index')"
+                            :active="route().current('calendar*')"
+                        >
+                            Calendar
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
                             :href="route('tickets.index')"
                             :active="route().current('tickets*')"
                         >
@@ -266,6 +308,12 @@ const showingNavigationDropdown = ref(false);
                             :active="route().current('templates*')"
                         >
                             Templates
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            :href="route('testimonials.index')"
+                            :active="route().current('testimonials*')"
+                        >
+                            Testimonials
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
                             :href="$page.props.auth.user.team_id ? route('team.members') : route('team.create')"
@@ -302,6 +350,12 @@ const showingNavigationDropdown = ref(false);
                             </ResponsiveNavLink>
                             <ResponsiveNavLink :href="route('settings.integrations')">
                                 Integrations
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink :href="route('settings.webhooks')">
+                                Webhooks
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink :href="route('settings.notifications')">
+                                Notifications
                             </ResponsiveNavLink>
                             <ResponsiveNavLink
                                 :href="route('logout')"

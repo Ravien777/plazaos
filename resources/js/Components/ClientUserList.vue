@@ -12,7 +12,6 @@ const showForm = ref(false);
 const form = useForm({
     name: '',
     email: '',
-    password: '',
 });
 
 function submit(): void {
@@ -56,11 +55,6 @@ function remove(userId: string): void {
                 <label class="block text-xs font-medium text-gray-700">Email</label>
                 <input v-model="form.email" type="email" class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm" required />
                 <p v-if="form.errors.email" class="mt-1 text-xs text-red-600">{{ form.errors.email }}</p>
-            </div>
-            <div>
-                <label class="block text-xs font-medium text-gray-700">Password</label>
-                <input v-model="form.password" type="password" class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm" required minlength="8" />
-                <p v-if="form.errors.password" class="mt-1 text-xs text-red-600">{{ form.errors.password }}</p>
             </div>
             <div class="flex justify-end">
                 <button type="submit" :disabled="form.processing" class="inline-flex items-center rounded-md bg-gray-700 px-3 py-1 text-xs font-semibold text-white hover:bg-gray-600 disabled:opacity-50">

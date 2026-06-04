@@ -4,7 +4,10 @@ import PageHeader from '@/Components/PageHeader.vue';
 import StatusBadge from '@/Components/StatusBadge.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { useToast } from '@/composables/useToast';
 import type { Ticket, PaginatedResponse } from '@/Types';
+
+const toast = useToast();
 
 const props = defineProps<{
     tickets: PaginatedResponse<Ticket>;
@@ -66,10 +69,16 @@ function pageUrl(url: string | null): string {
     return url ?? '#';
 }
 
-function destroy(id: string): void {
-    if (confirm('Are you sure you want to delete this ticket?')) {
-        router.delete(`/tickets/${id}`);
-    }
+function destroy(ticket: Ticket): void {
+    router.delete(`/tickets/${ticket.id}`, {
+        preserveScroll: true,
+        onSuccess: () => {
+            toast.success(`"${ticket.subject}" deleted.`, {
+                label: 'Undo',
+                handler: () => router.post(route('tickets.restore', ticket.id)),
+            });
+        },
+    });
 }
 </script>
 
@@ -151,7 +160,7 @@ function destroy(id: string): void {
                                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-600">{{ ticket.created_at }}</td>
                                         <td class="whitespace-nowrap px-3 py-4 text-sm">
                                             <Link :href="`/tickets/${ticket.id}/edit`" class="text-indigo-500 hover:text-indigo-600">Edit</Link>
-                                            <button class="ml-2 text-red-600 hover:text-red-900" @click="destroy(ticket.id)">Delete</button>
+                                            <button class="ml-2 text-red-600 hover:text-red-900" @click="destroy(ticket)">Delete</button>
                                         </td>
                                     </tr>
                                     <tr v-if="tickets.data.length === 0">

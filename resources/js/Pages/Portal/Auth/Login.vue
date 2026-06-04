@@ -1,81 +1,37 @@
 <script setup lang="ts">
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 
 defineProps<{
     status?: string;
+    error?: string;
 }>();
-
-const form = useForm({
-    email: '',
-    password: '',
-    remember: false,
-});
-
-function submit(): void {
-    form.post(route('portal.login'), {
-        onFinish: () => form.reset('password'),
-    });
-}
 </script>
 
 <template>
     <GuestLayout>
-        <Head title="Client Login" />
+        <Head title="Client Portal" />
 
         <div class="mb-6 text-center">
             <h2 class="text-xl font-semibold text-gray-800">Client Portal</h2>
-            <p class="mt-1 text-sm text-gray-600">Sign in to access your information</p>
+            <p class="mt-1 text-sm text-gray-600">Access your project information and documents</p>
+        </div>
+
+        <div v-if="error" class="mb-4 text-sm font-medium text-red-600">
+            {{ error }}
         </div>
 
         <div v-if="status" class="mb-4 text-sm font-medium text-green-600">
             {{ status }}
         </div>
 
-        <form @submit.prevent="submit">
-            <div>
-                <label class="block text-sm font-medium text-gray-700" for="email">Email</label>
-                <input
-                    id="email"
-                    v-model="form.email"
-                    type="email"
-                    class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
-                    required
-                    autofocus
-                    autocomplete="username"
-                />
-                <p v-if="form.errors.email" class="mt-1 text-sm text-red-600">{{ form.errors.email }}</p>
-            </div>
-
-            <div class="mt-4">
-                <label class="block text-sm font-medium text-gray-700" for="password">Password</label>
-                <input
-                    id="password"
-                    v-model="form.password"
-                    type="password"
-                    class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
-                    required
-                    autocomplete="current-password"
-                />
-                <p v-if="form.errors.password" class="mt-1 text-sm text-red-600">{{ form.errors.password }}</p>
-            </div>
-
-            <div class="mt-4 block">
-                <label class="flex items-center">
-                    <input type="checkbox" v-model="form.remember" class="rounded border-gray-200 text-indigo-500 shadow-sm focus:ring-indigo-400" />
-                    <span class="ms-2 text-sm text-gray-600">Remember me</span>
-                </label>
-            </div>
-
-            <div class="mt-6">
-                <button
-                    type="submit"
-                    :disabled="form.processing"
-                    class="w-full rounded-md bg-gray-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-600 disabled:opacity-50"
-                >
-                    Sign In
-                </button>
-            </div>
-        </form>
+        <div class="rounded-md border border-gray-200 bg-gray-50 p-6 text-center">
+            <p class="text-sm text-gray-700">
+                You've been sent a magic link to access your portal.
+            </p>
+            <p class="mt-2 text-sm text-gray-600">
+                Check your email or contact your project manager for a new link.
+            </p>
+        </div>
     </GuestLayout>
 </template>

@@ -8,7 +8,10 @@ import NotesSection from '@/Components/NotesSection.vue';
 import ActivityFeed from '@/Components/ActivityFeed.vue';
 import EmailHistory from '@/Components/EmailHistory.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
+import { useToast } from '@/composables/useToast';
 import type { Lead } from '@/Types';
+
+const toast = useToast();
 
 const props = defineProps<{
     lead: Lead;
@@ -32,15 +35,24 @@ function statusLabel(s: string): string {
 }
 
 function destroy(): void {
-    if (confirm('Are you sure you want to delete this lead?')) {
-        router.delete(`/leads/${props.lead.id}`);
-    }
+    router.delete(`/leads/${props.lead.id}`, {
+        preserveScroll: true,
+        onSuccess: () => {
+            toast.success(`"${props.lead.company_name}" deleted.`, {
+                label: 'Undo',
+                handler: () => router.post(route('leads.restore', props.lead.id)),
+            });
+        },
+    });
 }
 
 function convertToClient(): void {
-    if (confirm(`Convert "${props.lead.company_name}" to a client?`)) {
-        router.post(`/leads/${props.lead.id}/convert`);
-    }
+    router.post(`/leads/${props.lead.id}/convert`, {}, {
+        preserveScroll: true,
+        onSuccess: () => {
+            toast.success(`"${props.lead.company_name}" converted to client.`);
+        },
+    });
 }
 
 async function summarizeWebsite(): Promise<void> {

@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Project extends Model
@@ -72,5 +73,10 @@ class Project extends Model
     public function tickets(): MorphMany
     {
         return $this->morphMany(Ticket::class, 'ticketable');
+    }
+
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(Task::class)->orderBy('order');
     }
 }

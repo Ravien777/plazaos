@@ -1,0 +1,125 @@
+<script setup lang="ts">
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { Head, router } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import type { AllowedEvent, Webhook } from '@/Types';
+
+const props = defineProps<{
+    webhook: Webhook;
+    allowedEvents: AllowedEvent[];
+}>();
+
+const url = ref(props.webhook.url);
+const active = ref(props.webhook.active);
+const selectedEvents = ref<string[]>([...props.webhook.events]);
+const saving = ref(false);
+
+function toggleEvent(value: string): void {
+    const idx = selectedEvents.value.indexOf(value);
+    if (idx === -1) {
+        selectedEvents.value.push(value);
+    } else {
+        selectedEvents.value.splice(idx, 1);
+    }
+}
+
+function submit(): void {
+    saving.value = true;
+    router.put(route('settings.webhooks.update', props.webhook.id), {
+        url: url.value,
+        events: selectedEvents.value,
+        active: active.value,
+    }, {
+        preserveScroll: true,
+        onFinish: () => { saving.value = false; },
+    });
+}
+</script>
+
+<template>
+    <Head title="Edit Webhook" />
+
+    <AuthenticatedLayout>
+        <template #header>
+            <h2 class="text-xl font-semibold leading-tight text-gray-700">Edit Webhook</h2>
+        </template>
+
+        <div class="py-12">
+            <div class="mx-auto max-w-3xl sm:px-6 lg:px-8">
+                <div class="bg-white p-6 shadow sm:rounded-lg sm:p-8">
+                    <form @submit.prevent="submit" class="space-y-6">
+                        <div>
+                            <label for="url" class="block text-sm font-medium text-gray-700">Webhook URL</label>
+                            <input
+                                id="url"
+                                v-model="url"
+                                type="url"
+                                required
+                                class="mt-1 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
+                            />
+                        </div>
+
+                        <div>
+                            <label class="flex items-center gap-3">
+                                <input
+                                    v-model="active"
+                                    type="checkbox"
+                                    class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                />
+                                <span class="text-sm font-medium text-gray-700">Active</span>
+                            </label>
+                            <p class="mt-1 text-xs text-gray-500">When inactive, no events will be sent to this URL.</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Events</label>
+                            <div class="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                                <label
+                                    v-for="event in allowedEvents"
+                                    :key="event.value"
+                                    class="flex cursor-pointer items-center gap-3 rounded-md border border-stone-200 p-3 transition hover:bg-stone-50"
+                                    :class="selectedEvents.includes(event.value) ? 'border-indigo-300 bg-indigo-50' : ''"
+                                >
+                                    <input
+                                        type="checkbox"
+                                        :checked="selectedEvents.includes(event.value)"
+                                        class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                        @change="toggleEvent(event.value)"
+                                    />
+                                    <span class="text-sm text-gray-700">{{ event.label }}</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4">
+                            <button
+                                type="submit"
+                                :disabled="saving || !url || selectedEvents.length === 0"
+                                class="rounded-md bg-stone-700 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-stone-600 disabled:opacity-50"
+                            >
+                                {{ saving ? 'Saving...' : 'Update Webhook' }}
+                            </button>
+                            <a
+                                :href="route('settings.webhooks')"
+                                class="text-sm text-stone-500 hover:text-stone-700"
+                            >
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+
+                    <div class="mt-8 border-t border-stone-200 pt-6">
+                        <h3 class="text-sm font-medium text-stone-700">Signing Secret</h3>
+                        <p class="mt-1 text-xs text-stone-500">
+                            Use this secret to verify webhook payloads. The signature is sent in the
+                            <code class="rounded bg-stone-100 px-1">X-Webhook-Signature</code> header (HMAC-SHA256).
+                        </p>
+                        <div class="mt-2 flex items-center gap-2">
+                            <code class="block flex-1 truncate rounded bg-stone-100 px-3 py-2 text-xs font-mono text-stone-600">{{ webhook.secret }}</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </AuthenticatedLayout>
+</template>

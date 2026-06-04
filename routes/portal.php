@@ -3,9 +3,12 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Portal\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Portal\PortalTokenController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('web')->prefix('portal')->name('portal.')->group(function (): void {
+    Route::get('token/{token}', [PortalTokenController::class, 'login'])->name('token.login');
+
     Route::middleware('guest:client')->group(function (): void {
         Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
         Route::post('login', [AuthenticatedSessionController::class, 'store']);

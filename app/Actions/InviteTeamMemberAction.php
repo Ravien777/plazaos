@@ -6,7 +6,8 @@ namespace App\Actions;
 
 use App\Models\Team;
 use App\Models\TeamInvitation;
-use App\Notifications\TeamInvitation as TeamInvitationNotification;
+use App\Models\User;
+use App\Notifications\TeamInvitationNotification;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 
@@ -14,16 +15,24 @@ class InviteTeamMemberAction
 {
     public function execute(Team $team, string $email): TeamInvitation
     {
-        $existing = $team->members()->where('email', $email)->exists();
+        $currentCount = $team->members()->count() + $team->invitations()->whereNull('accepted_at')->count();
 
-        if ($existing) {
+        if ($currentCount >= 20) {
+            throw new \RuntimeException('Team is full (max 20 members).');
+        }
+
+        if ($team->members()->where('email', $email)->exists()) {
             throw new \RuntimeException('This user is already a team member.');
         }
 
-        $pending = $team->invitations()->where('email', $email)->whereNull('accepted_at')->exists();
-
-        if ($pending) {
+        if ($team->invitations()->where('email', $email)->whereNull('accepted_at')->exists()) {
             throw new \RuntimeException('An invitation has already been sent to this email.');
+        }
+
+        $existingUser = User::where('email', $email)->first();
+
+        if ($existingUser && $existingUser->team_id !== null) {
+            throw new \RuntimeException('This email already belongs to another team.');
         }
 
         $invitation = $team->invitations()->create([

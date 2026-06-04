@@ -31,12 +31,15 @@ class Client extends Model
         'lead_id',
         'status',
         'last_contacted_at',
+        'portal_token',
+        'portal_token_expires_at',
     ];
 
     protected function casts(): array
     {
         return [
             'last_contacted_at' => 'datetime',
+            'portal_token_expires_at' => 'datetime',
             'status' => 'string',
         ];
     }

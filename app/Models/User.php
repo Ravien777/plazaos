@@ -25,6 +25,7 @@ class User extends Authenticatable
         'team_id',
         'role',
         'avatar',
+        'notification_preferences',
     ];
 
     protected $hidden = [
@@ -42,6 +43,11 @@ class User extends Authenticatable
         return $this->hasMany(UserSetting::class);
     }
 
+    public function webhooks(): HasMany
+    {
+        return $this->hasMany(Webhook::class);
+    }
+
     public function getSetting(string $key, mixed $default = null): mixed
     {
         $setting = $this->settings->firstWhere('key', $key);
@@ -52,6 +58,21 @@ class User extends Authenticatable
     public function routeNotificationForSlack(object $notification): string
     {
         return config('services.slack.notifications.channel', '#general');
+    }
+
+    public function slackEnabled(): bool
+    {
+        return $this->notification_preferences['slack_enabled'] ?? false;
+    }
+
+    public function digestEnabled(): bool
+    {
+        return $this->notification_preferences['digest_enabled'] ?? false;
+    }
+
+    public function digestTime(): string
+    {
+        return $this->notification_preferences['digest_time'] ?? '08:00';
     }
 
     public function isOwner(): bool
@@ -74,6 +95,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'notification_preferences' => 'array',
         ];
     }
 }

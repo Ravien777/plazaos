@@ -8,6 +8,7 @@ use App\Enums\LeadStatus;
 use App\Models\Client;
 use App\Models\Lead;
 use App\Models\Project;
+use App\Models\Testimonial;
 use App\Models\Ticket;
 use App\Services\ActivityService;
 use App\Services\MeetingService;
@@ -43,6 +44,12 @@ class DashboardController extends Controller
             ],
             'recentActivities' => $this->activityService->recent(10),
             'upcomingMeetings' => $this->meetingService->upcoming(5),
+            'recentTestimonials' => Testimonial::approved()
+                ->where('rating', 5)
+                ->with('client:id,company_name')
+                ->latest()
+                ->take(5)
+                ->get(),
         ]);
     }
 }

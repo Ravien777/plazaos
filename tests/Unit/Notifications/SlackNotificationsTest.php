@@ -34,7 +34,9 @@ class SlackNotificationsTest extends TestCase
 
     private function notifiable(): object
     {
-        return new \stdClass;
+        return User::factory()->make([
+            'notification_preferences' => ['slack_enabled' => true],
+        ]);
     }
 
     public function test_via_includes_slack_when_configured(): void

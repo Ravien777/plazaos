@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Console\Commands\CheckInactiveLeads;
 use App\Console\Commands\ScrapeLeadSources;
+use App\Console\Commands\SendDigestEmails;
 use App\Console\Commands\SendMeetingReminders;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -16,3 +17,4 @@ Artisan::command('inspire', function () {
 Schedule::command(ScrapeLeadSources::class)->hourly();
 Schedule::command(SendMeetingReminders::class)->everyMinute();
 Schedule::command(CheckInactiveLeads::class)->daily();
+Schedule::command(SendDigestEmails::class)->dailyAt('08:00');

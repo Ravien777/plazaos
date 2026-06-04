@@ -45,7 +45,7 @@ class ProjectService
         activity()->log($project, 'project.updated', "Project {$project->name} was updated.");
 
         if (isset($data['status']) && $data['status'] !== $oldStatus->value) {
-            Notification::send(User::first(), new ProjectStatusChanged($project, $oldStatus->value, $data['status']));
+            Notification::send(User::all(), new ProjectStatusChanged($project, $oldStatus->value, $data['status']));
         }
 
         return $project;

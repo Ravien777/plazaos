@@ -42,7 +42,7 @@ class UploadDocumentAction
             'project' => Project::find($documentableId),
             default => null,
         };
-        Notification::send(User::first(), new DocumentUploaded($file->getClientOriginalName(), $parent));
+        Notification::send(User::all(), new DocumentUploaded($file->getClientOriginalName(), $parent));
 
         return $document;
     }

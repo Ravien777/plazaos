@@ -51,7 +51,7 @@ class LeadService
         $lead = Lead::create($data);
 
         activity()->log($lead, 'lead.created', "Lead {$lead->company_name} was created.");
-        Notification::send(User::first(), new LeadCreated($lead));
+        Notification::send(User::all(), new LeadCreated($lead));
 
         return $lead;
     }

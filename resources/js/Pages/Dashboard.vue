@@ -2,9 +2,18 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import StatCard from '@/Components/StatCard.vue';
 import ActivityFeed from '@/Components/ActivityFeed.vue';
-import { ref } from 'vue';
+import WallOfLove from '@/Components/WallOfLove.vue';
+import SkeletonLoader from '@/Components/SkeletonLoader.vue';
+import { nextTick, onMounted, ref } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
-import type { Activity, Meeting } from '@/Types';
+import type { Activity, Meeting, Testimonial } from '@/Types';
+
+const ready = ref(false);
+
+onMounted(async () => {
+    await nextTick();
+    ready.value = true;
+});
 
 const props = defineProps<{
     hasTeam: boolean;
@@ -18,6 +27,7 @@ const props = defineProps<{
     };
     recentActivities: Activity[];
     upcomingMeetings: Meeting[];
+    recentTestimonials: Testimonial[];
 }>();
 
 const showBanner = ref(localStorage.getItem('dismissed_team_banner') !== '1');
@@ -101,7 +111,13 @@ function formatDate(dt: string): string {
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                <div v-if="!ready" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                    <div v-for="i in 6" :key="i" class="rounded-lg border border-stone-200 bg-white p-6">
+                        <div class="mb-2"><SkeletonLoader height="0.75rem" width="5rem" /></div>
+                        <SkeletonLoader height="1.75rem" width="3rem" />
+                    </div>
+                </div>
+                <div v-else class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                     <StatCard label="New Leads" :value="stats.newLeads" icon="📥" />
                     <StatCard label="Active Leads" :value="stats.activeLeads" icon="📞" />
                     <StatCard label="Active Clients" :value="stats.activeClients" icon="👥" />
@@ -110,15 +126,15 @@ function formatDate(dt: string): string {
                     <StatCard label="Upcoming Meetings" :value="stats.upcomingMeetings" icon="📅" />
                 </div>
 
-                <div class="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <div class="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
                     <div class="overflow-hidden rounded-lg bg-white shadow-sm">
                         <div class="p-6">
                             <div class="mb-4 flex items-center justify-between">
-                                <h3 class="text-lg font-medium text-gray-800">Upcoming Meetings</h3>
-                                <Link href="/meetings/upcoming" class="text-sm text-indigo-500 hover:text-indigo-600">View all</Link>
+                                <h3 class="text-lg font-medium text-gray-800">Today's Meetings</h3>
+                                <Link :href="route('calendar.index')" class="text-sm text-indigo-500 hover:text-indigo-600">View Calendar</Link>
                             </div>
                             <div v-if="upcomingMeetings.length === 0" class="text-sm text-gray-600">
-                                No upcoming meetings.
+                                No meetings today.
                             </div>
                             <div v-else class="space-y-3">
                                 <div
@@ -129,17 +145,14 @@ function formatDate(dt: string): string {
                                     <div>
                                         <div class="flex items-center gap-2">
                                             <span class="text-sm font-medium text-gray-800">{{ meeting.title }}</span>
-                                            <span class="inline-flex rounded-full px-2 py-0.5 text-xs font-medium" :class="statusClass(meeting.status)">
-                                                {{ statusLabel(meeting.status) }}
-                                            </span>
                                         </div>
                                         <p class="mt-0.5 text-xs text-gray-600">{{ formatDate(meeting.start_time) }}</p>
                                     </div>
                                     <Link
-                                        :href="`/meetings/${meeting.id}/edit`"
+                                        :href="`/meetings/${meeting.id}`"
                                         class="text-xs text-indigo-500 hover:text-indigo-600"
                                     >
-                                        Edit
+                                        View
                                     </Link>
                                 </div>
                             </div>
@@ -154,6 +167,8 @@ function formatDate(dt: string): string {
                             </div>
                         </div>
                     </div>
+
+                    <WallOfLove :testimonials="recentTestimonials" />
                 </div>
             </div>
         </div>

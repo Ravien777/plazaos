@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Project\StoreProjectRequest;
 use App\Http\Requests\Project\UpdateProjectRequest;
 use App\Models\Project;
+use App\Models\User;
 use App\Services\ProjectService;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -54,10 +55,15 @@ class ProjectController extends Controller
     {
         $this->authorize('view', $project);
 
-        $project->load(['client', 'notes', 'activities', 'emails', 'documents', 'meetings', 'tickets']);
+        $project->load(['client', 'notes', 'activities', 'emails', 'documents', 'meetings', 'tickets', 'tasks.assignee']);
+
+        $assignees = User::where('team_id', auth()->user()->team_id)
+            ->select('id', 'name')
+            ->get();
 
         return Inertia::render('Projects/Show', [
             'project' => $project,
+            'assignees' => $assignees,
         ]);
     }
 
@@ -96,5 +102,14 @@ class ProjectController extends Controller
         }
 
         return redirect()->route('projects.index')->with('success', 'Project deleted successfully.');
+    }
+
+    public function restore(Project $project): RedirectResponse
+    {
+        $this->authorize('delete', $project);
+
+        $project->restore();
+
+        return redirect()->back()->with('success', 'Project restored successfully.');
     }
 }

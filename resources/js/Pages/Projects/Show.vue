@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import KanbanBoard from '@/Components/KanbanBoard.vue';
 import PageHeader from '@/Components/PageHeader.vue';
 import StatusBadge from '@/Components/StatusBadge.vue';
 import NotesSection from '@/Components/NotesSection.vue';
@@ -8,11 +9,25 @@ import DocumentList from '@/Components/DocumentList.vue';
 import EmailHistory from '@/Components/EmailHistory.vue';
 import TicketList from '@/Components/TicketList.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
-import type { Project } from '@/Types';
+import { useToast } from '@/composables/useToast';
+import type { Project, User } from '@/Types';
+import { ref } from 'vue';
+
+const toast = useToast();
 
 const props = defineProps<{
     project: Project;
+    assignees: User[];
 }>();
+
+const requestingReview = ref(false);
+const reviewSent = ref(false);
+
+const groupedTasks: Record<string, any[]> = {
+    todo: (props.project.tasks ?? []).filter((t: any) => t.status === 'todo'),
+    in_progress: (props.project.tasks ?? []).filter((t: any) => t.status === 'in_progress'),
+    done: (props.project.tasks ?? []).filter((t: any) => t.status === 'done'),
+};
 
 function statusLabel(s: string): string {
     const labels: Record<string, string> = {
@@ -27,8 +42,24 @@ function statusLabel(s: string): string {
 }
 
 function destroy(): void {
-    if (confirm('Are you sure you want to delete this project?')) {
-        router.delete(`/projects/${props.project.id}`);
+    router.delete(`/projects/${props.project.id}`, {
+        preserveScroll: true,
+        onSuccess: () => {
+            toast.success(`"${props.project.name}" deleted.`, {
+                label: 'Undo',
+                handler: () => router.post(route('projects.restore', props.project.id)),
+            });
+        },
+    });
+}
+
+async function requestReview(): Promise<void> {
+    requestingReview.value = true;
+    try {
+        await fetch(`/projects/${props.project.id}/request-review`, { method: 'POST' });
+        reviewSent.value = true;
+    } finally {
+        requestingReview.value = false;
     }
 }
 </script>
@@ -40,6 +71,15 @@ function destroy(): void {
         <template #header>
             <PageHeader :title="project.name">
                 <template #actions>
+                    <button
+                        v-if="!reviewSent"
+                        @click="requestReview"
+                        :disabled="requestingReview"
+                        class="inline-flex items-center rounded-md bg-gray-100 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 transition hover:bg-gray-200 disabled:opacity-50"
+                    >
+                        {{ requestingReview ? 'Sending...' : 'Request Review' }}
+                    </button>
+                    <span v-else class="text-xs font-medium text-green-600">Review requested ✓</span>
                     <Link
                         :href="`/projects/${project.id}/edit`"
                         class="inline-flex items-center rounded-md bg-gray-700 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-600"
@@ -131,6 +171,18 @@ function destroy(): void {
                 <div class="mt-6 overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <TicketList :tickets="(project.tickets ?? []) as any" />
+                    </div>
+                </div>
+
+                <div class="mt-6 overflow-hidden bg-white shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <h3 class="text-lg font-medium text-gray-800">Tasks</h3>
+                        <div class="mt-4">
+                            <KanbanBoard
+                                :tasks="groupedTasks"
+                                :project-filter="project.id"
+                            />
+                        </div>
                     </div>
                 </div>
 

@@ -8,6 +8,22 @@ export interface User {
     avatar: string | null;
 }
 
+export interface Task {
+    id: string;
+    project_id: string | null;
+    title: string;
+    description: string | null;
+    status: 'todo' | 'in_progress' | 'done';
+    priority: 'low' | 'medium' | 'high';
+    order: number;
+    assignee_id: number | null;
+    assignee: User | null;
+    created_by: number;
+    created_at: string;
+    updated_at: string;
+    deleted_at: string | null;
+}
+
 export type PageProps<
     T extends Record<string, unknown> = Record<string, unknown>,
 > = T & {

@@ -45,7 +45,7 @@ class TicketService
         $ticket = Ticket::create($data);
 
         activity()->log($ticket, 'ticket.created', "Ticket \"{$ticket->subject}\" was created.");
-        Notification::send(User::first(), new TicketCreated($ticket));
+        Notification::send(User::all(), new TicketCreated($ticket));
 
         return $ticket;
     }
@@ -71,7 +71,7 @@ class TicketService
         $ticket->update(['status' => TicketStatus::Closed]);
 
         activity()->log($ticket, 'ticket.closed', "Ticket \"{$ticket->subject}\" was closed.");
-        Notification::send(User::first(), new TicketClosed($ticket));
+        Notification::send(User::all(), new TicketClosed($ticket));
 
         return $ticket;
     }
@@ -95,7 +95,7 @@ class TicketService
         ]);
 
         activity()->log($ticket, 'ticket.replied', "New reply on \"{$ticket->subject}\" by {$user->name}.");
-        Notification::send(User::first(), new TicketReplied($ticket));
+        Notification::send(User::all(), new TicketReplied($ticket));
 
         return $reply;
     }

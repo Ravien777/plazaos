@@ -69,7 +69,7 @@ class ConvertLeadToClientAction
 
         activity()->log($lead, 'lead.converted', "Lead {$lead->company_name} was converted to client.");
         activity()->log($client, 'client.created_from_lead', "Client {$client->company_name} was created from lead.");
-        Notification::send(User::first(), new LeadConverted($lead, $client));
+        Notification::send(User::all(), new LeadConverted($lead, $client));
 
         app(AutomationService::class)->onLeadConverted($lead, $client);
 

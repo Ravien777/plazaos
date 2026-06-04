@@ -2,6 +2,7 @@
 import { router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import InitialsAvatar from '@/Components/InitialsAvatar.vue';
+import EmptyState from '@/Components/EmptyState.vue';
 
 const props = defineProps<{
     members: Array<{ id: number; name: string; email: string; role: string; created_at: string }>;
@@ -26,9 +27,14 @@ function removeMember(id: number, name: string): void {
         <div class="py-12">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="rounded-lg bg-white p-6 shadow">
-                    <div v-if="members.length === 0" class="py-8 text-center text-stone-500">
-                        No members yet.
-                    </div>
+                    <EmptyState
+                        v-if="members.length === 0"
+                        icon="👥"
+                        title="No members yet"
+                        message="Invite your teammates to collaborate on leads, projects, and more."
+                        action-label="Invite Members"
+                        action-href="/team/invite"
+                    />
 
                     <div v-else class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         <div
@@ -53,13 +59,27 @@ function removeMember(id: number, name: string): void {
                                     {{ member.role === 'owner' ? 'Owner' : 'Member' }}
                                 </span>
                             </div>
-                            <button
-                                v-if="isOwner && member.role !== 'owner'"
-                                class="shrink-0 text-sm text-red-500 hover:text-red-700"
-                                @click="removeMember(member.id, member.name)"
-                            >
-                                Remove
-                            </button>
+                            <div class="flex shrink-0 items-center gap-2">
+                                <a
+                                    :href="route('tasks.index', { assignee_id: member.id })"
+                                    class="text-sm text-blue-500 hover:text-blue-700"
+                                >
+                                    Assign
+                                </a>
+                                <a
+                                    :href="'mailto:' + member.email"
+                                    class="text-sm text-blue-500 hover:text-blue-700"
+                                >
+                                    Message
+                                </a>
+                                <button
+                                    v-if="isOwner && member.role !== 'owner'"
+                                    class="text-sm text-red-500 hover:text-red-700"
+                                    @click="removeMember(member.id, member.name)"
+                                >
+                                    Remove
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

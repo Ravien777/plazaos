@@ -5,7 +5,10 @@ import StatusBadge from '@/Components/StatusBadge.vue';
 import ActivityFeed from '@/Components/ActivityFeed.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { useForm } from '@inertiajs/vue3';
+import { useToast } from '@/composables/useToast';
 import type { Ticket } from '@/Types';
+
+const toast = useToast();
 
 const props = defineProps<{
     ticket: Ticket;
@@ -56,9 +59,15 @@ function reopenTicket(): void {
 }
 
 function destroy(): void {
-    if (confirm('Are you sure you want to delete this ticket?')) {
-        router.delete(`/tickets/${props.ticket.id}`);
-    }
+    router.delete(`/tickets/${props.ticket.id}`, {
+        preserveScroll: true,
+        onSuccess: () => {
+            toast.success(`"${props.ticket.subject}" deleted.`, {
+                label: 'Undo',
+                handler: () => router.post(route('tickets.restore', props.ticket.id)),
+            });
+        },
+    });
 }
 </script>
 

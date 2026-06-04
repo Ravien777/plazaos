@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Portal;
 
 use App\Http\Controllers\Controller;
+use App\Models\Document;
 use App\Models\Meeting;
 use App\Models\Ticket;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +18,7 @@ class DashboardController extends Controller
     {
         $client = Auth::guard('client')->user()->client;
 
-        $client->load(['projects', 'meetings']);
+        $client->load(['projects', 'meetings', 'activities']);
 
         $stats = [
             'projectsCount' => $client->projects->count(),
@@ -46,10 +47,25 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
+        $projects = $client->projects()->orderBy('created_at', 'desc')->get(['id', 'name', 'status', 'progress_percentage']);
+
+        $recentDocuments = Document::where('documentable_type', 'client')
+            ->where('documentable_id', $client->id)
+            ->latest()
+            ->take(5)
+            ->get();
+
+        $recentActivities = $client->activities()->latest()->take(10)->get();
+
         return Inertia::render('Portal/Dashboard', [
             'stats' => $stats,
             'recentTickets' => $recentTickets,
             'upcomingMeetings' => $upcomingMeetings,
+            'projects' => $projects,
+            'recentDocuments' => $recentDocuments,
+            'recentActivities' => $recentActivities,
+            'companyName' => $client->company_name,
+            'companyEmail' => $client->email,
         ]);
     }
 }

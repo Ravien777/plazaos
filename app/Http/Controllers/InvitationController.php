@@ -55,13 +55,22 @@ class InvitationController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-        $user = \App\Models\User::create([
-            'name' => $validated['name'],
-            'email' => $invitation->email,
-            'password' => bcrypt($validated['password']),
-            'team_id' => $invitation->team_id,
-            'role' => 'member',
-        ]);
+        $user = \App\Models\User::where('email', $invitation->email)->first();
+
+        if ($user) {
+            $user->update([
+                'team_id' => $invitation->team_id,
+                'role' => 'member',
+            ]);
+        } else {
+            $user = \App\Models\User::create([
+                'name' => $validated['name'],
+                'email' => $invitation->email,
+                'password' => bcrypt($validated['password']),
+                'team_id' => $invitation->team_id,
+                'role' => 'member',
+            ]);
+        }
 
         $invitation->update([
             'accepted_at' => now(),

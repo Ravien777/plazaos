@@ -21,7 +21,7 @@ class TicketCreated extends Notification
     {
         $channels = ['database'];
 
-        if (config('services.slack.notifications.bot_user_oauth_token')) {
+        if ($notifiable->slackEnabled() && config('services.slack.notifications.bot_user_oauth_token')) {
             $channels[] = 'slack';
         }
 

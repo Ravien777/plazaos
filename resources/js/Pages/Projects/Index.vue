@@ -4,7 +4,10 @@ import PageHeader from '@/Components/PageHeader.vue';
 import StatusBadge from '@/Components/StatusBadge.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { useToast } from '@/composables/useToast';
 import type { Project, PaginatedResponse } from '@/Types';
+
+const toast = useToast();
 
 const props = defineProps<{
     projects: PaginatedResponse<Project>;
@@ -47,10 +50,16 @@ function pageUrl(url: string | null): string {
     return url ?? '#';
 }
 
-function destroy(id: string): void {
-    if (confirm('Are you sure you want to delete this project?')) {
-        router.delete(`/projects/${id}`);
-    }
+function destroy(project: Project): void {
+    router.delete(`/projects/${project.id}`, {
+        preserveScroll: true,
+        onSuccess: () => {
+            toast.success(`"${project.name}" deleted.`, {
+                label: 'Undo',
+                handler: () => router.post(route('projects.restore', project.id)),
+            });
+        },
+    });
 }
 </script>
 
@@ -144,7 +153,7 @@ function destroy(id: string): void {
                                             </Link>
                                             <button
                                                 class="ml-2 text-red-600 hover:text-red-900"
-                                                @click="destroy(project.id)"
+                                                @click="destroy(project)"
                                             >
                                                 Delete
                                             </button>
@@ -153,6 +162,7 @@ function destroy(id: string): void {
                                     <tr v-if="projects.data.length === 0">
                                         <td colspan="7" class="px-3 py-8 text-center text-sm text-gray-600">
                                             No projects found.
+                                            <Link :href="route('projects.create')" class="ml-2 text-blue-500 hover:text-blue-700">Create one</Link>.
                                         </td>
                                     </tr>
                                 </tbody>

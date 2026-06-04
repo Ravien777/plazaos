@@ -31,6 +31,13 @@ return [
         'body' => "Hi {{contact_name}},\n\nThank you for your time and the insightful conversation about {{company_name}}. I look forward to exploring how we can work together.\n\nBest regards,\n{{sender_name}}",
         'variables' => ['company_name', 'contact_name', 'industry', 'city', 'website', 'sender_name'],
     ],
+    'testimonial_request' => [
+        'name' => 'Testimonial Request',
+        'subject' => 'How was your experience working with {{sender_company}}?',
+        'body' => "Hi {{contact_name}},\n\nWe'd love to hear about your experience working with {{sender_company}}! Your feedback helps us improve and helps others know what to expect.\n\nPlease take a moment to leave a review:\n{{review_url}}\n\nThank you for your time!\n\nBest regards,\n{{sender_name}}",
+        'variables' => ['contact_name', 'company_name', 'sender_name', 'sender_company', 'review_url'],
+    ],
+
     'custom' => [
         'name' => 'Custom',
         'subject' => '',

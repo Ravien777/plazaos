@@ -11,15 +11,62 @@ import EmailHistory from '@/Components/EmailHistory.vue';
 import TicketList from '@/Components/TicketList.vue';
 import IntakeFormSubmissionList from '@/Components/IntakeFormSubmissionList.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
+import { useToast } from '@/composables/useToast';
 import type { Client } from '@/Types';
+import { ref } from 'vue';
+
+const toast = useToast();
 
 const props = defineProps<{
     client: Client;
 }>();
 
+const portalUrl = ref<string | null>(null);
+const portalExpires = ref<string | null>(null);
+const generating = ref(false);
+const copied = ref(false);
+const requestingReview = ref(false);
+const reviewSent = ref(false);
+
 function destroy(): void {
-    if (confirm('Are you sure you want to delete this client?')) {
-        router.delete(`/clients/${props.client.id}`);
+    router.delete(`/clients/${props.client.id}`, {
+        preserveScroll: true,
+        onSuccess: () => {
+            toast.success(`"${props.client.company_name}" deleted.`, {
+                label: 'Undo',
+                handler: () => router.post(route('clients.restore', props.client.id)),
+            });
+        },
+    });
+}
+
+async function requestReview(): Promise<void> {
+    requestingReview.value = true;
+    try {
+        await fetch(`/clients/${props.client.id}/request-review`, { method: 'POST' });
+        reviewSent.value = true;
+    } finally {
+        requestingReview.value = false;
+    }
+}
+
+async function generatePortalLink(): Promise<void> {
+    generating.value = true;
+    try {
+        const res = await fetch(`/clients/${props.client.id}/portal-link`, { method: 'POST' });
+        const data = await res.json();
+        portalUrl.value = data.url;
+        portalExpires.value = data.portal_token_expires_at;
+    } finally {
+        generating.value = false;
+    }
+}
+
+function copyLink(): void {
+    if (portalUrl.value) {
+        navigator.clipboard.writeText(portalUrl.value);
+        copied.value = true;
+        setTimeout(() => { copied.value = false; }, 2000);
     }
 }
 
@@ -59,6 +106,42 @@ const statusClass = (s: string): string => {
         <div class="py-12">
             <div class="mx-auto max-w-4xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-medium text-gray-800">Portal Access</h3>
+                            <button
+                                @click="generatePortalLink"
+                                :disabled="generating"
+                                class="inline-flex items-center rounded-md bg-gray-700 px-3 py-1 text-xs font-semibold text-white hover:bg-gray-600 disabled:opacity-50"
+                            >
+                                {{ portalUrl ? 'Regenerate Link' : 'Generate Link' }}
+                            </button>
+                        </div>
+                        <p v-if="!portalUrl && !generating" class="mt-2 text-sm text-gray-600">
+                            Generate a magic link to give this client access to their portal.
+                        </p>
+                        <p v-if="generating" class="mt-2 text-sm text-gray-600">Generating...</p>
+                        <div v-if="portalUrl" class="mt-3 flex items-center gap-2">
+                            <input
+                                :value="portalUrl"
+                                readonly
+                                class="block w-full rounded-md border-gray-200 bg-gray-50 text-sm shadow-sm"
+                                @click="copyLink"
+                            />
+                            <button
+                                @click="copyLink"
+                                class="shrink-0 rounded-md bg-gray-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-gray-600"
+                            >
+                                {{ copied ? 'Copied!' : 'Copy' }}
+                            </button>
+                        </div>
+                        <p v-if="portalExpires" class="mt-1 text-xs text-gray-500">
+                            Expires {{ new Date(portalExpires).toLocaleDateString() }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mt-6 overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                             <div>
@@ -118,6 +201,26 @@ const statusClass = (s: string): string => {
                         <div v-if="client.notes" class="mt-6">
                             <dt class="text-sm font-medium text-gray-600">Notes</dt>
                             <dd class="mt-1 whitespace-pre-wrap text-sm text-gray-800">{{ client.notes }}</dd>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 overflow-hidden bg-white shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-lg font-medium text-gray-800">Request a Review</h3>
+                                <p class="mt-1 text-sm text-gray-600">Send a friendly email asking for feedback.</p>
+                            </div>
+                            <button
+                                v-if="!reviewSent"
+                                @click="requestReview"
+                                :disabled="requestingReview"
+                                class="inline-flex items-center rounded-md bg-gray-700 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-600 disabled:opacity-50"
+                            >
+                                {{ requestingReview ? 'Sending...' : 'Request a Review' }}
+                            </button>
+                            <p v-else class="text-sm font-medium text-green-600">Review requested! ✓</p>
                         </div>
                     </div>
                 </div>

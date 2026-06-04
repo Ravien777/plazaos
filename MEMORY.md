@@ -196,7 +196,7 @@ What was built:
 - Slack channel + Block Kit formatted `toSlack()` on 10 notification classes (LeadCreated, LeadImported, LeadInactiveReminder, ImportCompleted, MeetingScheduled, ProjectStatusChanged, DocumentUploaded, TicketCreated, TicketReplied, FormSubmissionReceived)
 - 13 tests in `tests/Unit/Notifications/SlackNotificationsTest.php`
 - Graceful skip when token is empty (no Slack configured)
-- Full suite: 329 tests (1028 assertions)
+- Full suite: 329 tests (1028 assertions; later 420 tests / 1387 assertions)
 
 Technical decisions:
 - Bot Token style (not Incoming Webhook) — single `SLACK_BOT_USER_OAUTH_TOKEN` env var
@@ -235,3 +235,34 @@ Technical decisions:
 - Single config line (`gray: colors.stone`) warms all `gray-*` classes instantly
 - Contrast bumps applied via sed alongside palette remap (WCAG AA compliance)
 - No dark mode — none requested, stay focused on warm-light aesthetic
+
+### Feature: Webhook Integration
+Date: 2026-06-04
+
+What was built:
+- Webhook subscription system — users create webhooks with URL + event subscriptions
+- Migration + Webhook model (uuid PK, user FK, url, events jsonb, secret, active, error tracking, soft deletes)
+- WebhookPolicy — scoped to owner (view/update own, delete only if owner canDelete)
+- WebhookService — CRUD + dispatch() that finds active webhooks subscribed to an event
+- DispatchWebhookJob — queued POST with HMAC-SHA256 signature in X-Webhook-Signature header
+- WebhookController — CRUD + test action
+- 10 exposed events: lead.created, lead.converted, client.created, project.created, project.completed, meeting.scheduled, ticket.created, ticket.closed, document.uploaded, email.opened
+- ActivityService::log() automatically dispatches webhooks after creating activity
+- Frontend: Settings/Webhooks/Index.vue, Create.vue, Edit.vue
+- Nav link in AuthenticatedLayout (settings dropdown, desktop + mobile)
+- 13 new files (migration, model, policy, 2 form requests, service, job, controller, factory, 3 Vue pages, 3 test files)
+- 18 new tests (78 assertions)
+
+Technical decisions:
+- Payload includes event, data (id, type, attributes), and ISO8601 timestamp
+- Signature = HMAC-SHA256 of raw JSON body using webhook's secret
+- Webhook errors tracked per-webhook (last_error_at, last_error_message)
+- Events dispatched via queue (ShouldQueue) — webhook calls don't block HTTP responses
+- WebhookService injected into ActivityService singleton for auto-dispatch on any logged activity
+
+Rejected alternatives:
+- Standalone webhook observer (ActivityService injection is simpler, one dispatch point)
+- Event sourcing pattern (unnecessary complexity for outgoing webhooks only)
+
+Follow-up work:
+- Configure webhooks in production for Zapier/Make/n8n integration

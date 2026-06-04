@@ -10,15 +10,23 @@ use Illuminate\Support\Collection;
 
 class ActivityService
 {
+    public function __construct(
+        private readonly WebhookService $webhookService
+    ) {}
+
     public function log(Model $subject, string $event, string $description, array $metadata = []): Activity
     {
-        return Activity::create([
+        $activity = Activity::create([
             'subject_type' => $subject->getMorphClass(),
             'subject_id' => $subject->getKey(),
             'event' => $event,
             'description' => $description,
             'metadata' => $metadata,
         ]);
+
+        $this->webhookService->dispatch($event, $subject);
+
+        return $activity;
     }
 
     public function getFor(Model $subject): Collection

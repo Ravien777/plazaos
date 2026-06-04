@@ -26,10 +26,14 @@ use App\Models\LeadSource;
 use App\Models\Meeting;
 use App\Models\Note;
 use App\Models\Project;
+use App\Models\Task;
+use App\Models\Team;
+use App\Models\Testimonial;
 use App\Models\Ticket;
 use App\Models\TicketReply;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class DemoSeeder extends Seeder
 {
@@ -40,11 +44,22 @@ class DemoSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
+        $team = Team::create([
+            'name' => 'Demo Team',
+            'owner_id' => $admin->id,
+        ]);
+
+        $admin->update([
+            'team_id' => $team->id,
+            'role' => 'owner',
+        ]);
+
         $this->createLeadSources();
         $leads = $this->createLeads();
         $clients = $this->createClients($leads);
         $portalUsers = $this->createPortalUsers($clients);
         $projects = $this->createProjects($clients);
+        $this->createTasks($projects, $admin);
         $formFieldMap = $this->createIntakeForms();
         $this->createIntakeSubmissions($clients, $portalUsers, $formFieldMap);
         $this->createMeetings($clients, $leads, $projects, $admin);
@@ -55,6 +70,7 @@ class DemoSeeder extends Seeder
         $this->createEmails($leads, $clients, $projects);
         $this->createDocuments($leads, $clients, $projects, $tickets, $admin);
         $this->createActivities($leads, $clients, $projects, $tickets);
+        $this->createTestimonials($clients, $projects);
     }
 
     private function createLeadSources(): void
@@ -219,6 +235,39 @@ class DemoSeeder extends Seeder
         }
 
         return $projects;
+    }
+
+    /**
+     * @param Project[] $projects
+     */
+    private function createTasks(array $projects, User $admin): void
+    {
+        $taskData = [
+            ['Homepage redesign', $projects[0], 'todo', 'high', 0],
+            ['Create wireframes', $projects[0], 'in_progress', 'medium', 0],
+            ['Design system setup', $projects[0], 'done', 'low', 0],
+            ['User authentication', $projects[1], 'todo', 'high', 0],
+            ['Push notifications', $projects[1], 'in_progress', 'medium', 0],
+            ['API endpoint docs', $projects[2], 'todo', 'low', 0],
+            ['Payment gateway', $projects[3], 'todo', 'high', 0],
+            ['Shopping cart UI', $projects[3], 'in_progress', 'medium', 0],
+            ['Order management', $projects[3], 'done', 'medium', 0],
+            ['Contact import', $projects[4], 'todo', 'medium', 0],
+            ['Email templates', $projects[4], 'in_progress', 'low', 0],
+            ['Data mapping', $projects[5], 'todo', 'high', 0],
+        ];
+
+        foreach ($taskData as [$title, $project, $status, $priority, $order]) {
+            Task::create([
+                'project_id' => $project->id,
+                'title' => $title,
+                'status' => $status,
+                'priority' => $priority,
+                'order' => $order,
+                'created_by' => $admin->id,
+                'assignee_id' => $admin->id,
+            ]);
+        }
     }
 
     /**
@@ -591,6 +640,28 @@ class DemoSeeder extends Seeder
      * @param Project[] $projects
      * @param Ticket[] $tickets
      */
+    private function createTestimonials(array $clients, array $projects): void
+    {
+        $data = [
+            [$clients[0], $projects[0], 5, 'Exceptional service! They went above and beyond our expectations. Highly recommend.'],
+            [$clients[2], $projects[2], 5, 'Professional team that delivered exactly what we needed. Great communication throughout.'],
+            [$clients[4], null, 5, 'Transformed our online presence. Our sales have increased 40% since launch.'],
+            [$clients[6], null, 4, 'Very happy with the results. The team was responsive and addressed all our concerns.'],
+        ];
+
+        foreach ($data as [$client, $project, $rating, $content]) {
+            Testimonial::create([
+                'client_id' => $client->id,
+                'project_id' => $project?->id,
+                'rating' => $rating,
+                'content' => $content,
+                'review_token' => (string) Str::uuid(),
+                'is_approved' => true,
+                'submitted_at' => now()->subDays(fake()->numberBetween(1, 60)),
+            ]);
+        }
+    }
+
     private function createActivities(array $leads, array $clients, array $projects, array $tickets): void
     {
         $activityData = [

@@ -28,8 +28,10 @@ class PortalUserController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', Rule::unique('client_users', 'email')],
-            'password' => ['required', 'string', 'min:8'],
+            'password' => ['nullable', 'string', 'min:8'],
         ]);
+
+        $data['password'] ??= \Illuminate\Support\Str::random(60);
 
         $client->portalUsers()->create($data);
 

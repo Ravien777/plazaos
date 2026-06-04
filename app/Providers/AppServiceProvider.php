@@ -13,6 +13,7 @@ use App\Observers\LeadObserver;
 use App\Observers\MeetingObserver;
 use App\Observers\ProjectObserver;
 use App\Services\ActivityService;
+use App\Services\WebhookService;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 
@@ -21,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(ActivityService::class, function () {
-            return new ActivityService;
+            return new ActivityService($this->app->make(WebhookService::class));
         });
     }
 

@@ -5,7 +5,10 @@ import SearchInput from '@/Components/SearchInput.vue';
 import StatusBadge from '@/Components/StatusBadge.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { ref, computed, watch } from 'vue';
+import { useToast } from '@/composables/useToast';
 import type { Client, PaginatedResponse } from '@/Types';
+
+const toast = useToast();
 
 const props = defineProps<{
     clients: PaginatedResponse<Client>;
@@ -100,17 +103,26 @@ function toggleSelect(id: string): void {
 }
 
 function destroyClient(client: Client): void {
-    if (confirm(`Delete "${client.company_name}"? This cannot be undone.`)) {
-        router.delete(`/clients/${client.id}`);
-    }
+    router.delete(`/clients/${client.id}`, {
+        preserveScroll: true,
+        onSuccess: () => {
+            toast.success(`"${client.company_name}" deleted.`, {
+                label: 'Undo',
+                handler: () => router.post(route('clients.restore', client.id)),
+            });
+        },
+    });
 }
 
 function bulkDelete(): void {
-    if (!confirm(`Delete ${selectedIds.value.length} client(s)? This cannot be undone.`)) return;
+    const count = selectedIds.value.length;
     router.post(route('clients.bulk.delete'), { ids: selectedIds.value }, {
         preserveState: true,
         preserveScroll: true,
-        onSuccess: () => { selectedIds.value = []; },
+        onSuccess: () => {
+            selectedIds.value = [];
+            toast.success(`${count} client(s) deleted.`);
+        },
     });
 }
 
@@ -285,6 +297,7 @@ function exportSelected(): void {
                                     <tr v-if="clients.data.length === 0">
                                         <td colspan="7" class="px-3 py-8 text-center text-sm text-gray-600">
                                             No clients found.
+                                            <Link :href="route('clients.create')" class="ml-2 text-blue-500 hover:text-blue-700">Create one</Link>.
                                         </td>
                                     </tr>
                                 </tbody>

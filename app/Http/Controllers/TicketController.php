@@ -147,6 +147,15 @@ class TicketController extends Controller
         return redirect()->route('tickets.index')->with('success', 'Ticket deleted successfully.');
     }
 
+    public function restore(Ticket $ticket): RedirectResponse
+    {
+        $this->authorize('delete', $ticket);
+
+        $ticket->restore();
+
+        return redirect()->back()->with('success', 'Ticket restored successfully.');
+    }
+
     public function close(Ticket $ticket): RedirectResponse
     {
         $this->authorize('update', $ticket);

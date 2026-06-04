@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { router } from '@inertiajs/vue3';
+import SkeletonLoader from '@/Components/SkeletonLoader.vue';
 import type { Note } from '@/Types';
 
 const props = defineProps<{
@@ -89,8 +90,11 @@ function deleteNote(note: Note): void {
     <div>
         <h3 class="text-lg font-medium text-gray-800">Notes</h3>
 
-        <div v-if="loading" class="mt-4 text-sm text-gray-600">
-            Loading notes...
+        <div v-if="loading" class="mt-4 space-y-3">
+            <div v-for="i in 3" :key="i" class="rounded-lg border border-stone-200 bg-white p-4">
+                <SkeletonLoader class="mb-2" height="0.75rem" width="40%" />
+                <SkeletonLoader height="0.75rem" width="70%" />
+            </div>
         </div>
 
         <div v-else class="mt-4 space-y-4">

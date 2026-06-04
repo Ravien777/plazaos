@@ -1,3 +1,29 @@
+export interface User {
+    id: number;
+    name: string;
+    email: string;
+    email_verified_at?: string;
+    team_id: string | null;
+    role: 'owner' | 'member' | null;
+    avatar: string | null;
+}
+
+export interface Task {
+    id: string;
+    project_id: string | null;
+    title: string;
+    description: string | null;
+    status: 'todo' | 'in_progress' | 'done';
+    priority: 'low' | 'medium' | 'high';
+    order: number;
+    assignee_id: number | null;
+    assignee: User | null;
+    created_by: number;
+    created_at: string;
+    updated_at: string;
+    deleted_at: string | null;
+}
+
 export interface Lead {
     id: string;
     company_name: string;
@@ -82,6 +108,8 @@ export interface Client {
     notes: string | null;
     lead_id: string | null;
     last_contacted_at: string | null;
+    portal_token: string | null;
+    portal_token_expires_at: string | null;
     created_at: string;
     updated_at: string;
     activities?: Activity[];
@@ -129,12 +157,14 @@ export interface Project {
     budget: string | null;
     start_date: string | null;
     due_date: string | null;
+    progress_percentage: number | null;
     created_at: string;
     updated_at: string;
     client?: Client;
     activities?: Activity[];
     documents?: DocumentRecord[];
     tickets?: Ticket[];
+    tasks?: Task[];
 }
 
 export interface DocumentRecord {
@@ -160,9 +190,21 @@ export interface Meeting {
     join_url: string | null;
     provider: string;
     status: string;
+    user_id: number | null;
     created_at: string;
     updated_at: string;
     meetable?: Record<string, unknown>;
+    user?: { id: number; name: string };
+}
+
+export interface CalendarEvent {
+    id: string;
+    title: string;
+    start_time: string;
+    end_time: string | null;
+    status: string;
+    user_id: number | null;
+    user: { id: number; name: string } | null;
 }
 
 export interface NotificationData {
@@ -244,6 +286,21 @@ export interface IntakeFormSubmissionData {
     field: { id: string; label: string; field_type: string };
 }
 
+export interface Testimonial {
+    id: string;
+    client_id: string;
+    project_id: string | null;
+    rating: number;
+    content: string | null;
+    review_token: string;
+    is_approved: boolean;
+    submitted_at: string | null;
+    created_at: string;
+    updated_at: string;
+    client?: { id: string; company_name: string };
+    project?: { id: string; name: string };
+}
+
 export interface IntakeFormSubmission {
     id: string;
     intake_form_id: string;
@@ -253,4 +310,23 @@ export interface IntakeFormSubmission {
     form?: { id: string; title: string };
     client?: { id: string; company_name: string };
     data?: IntakeFormSubmissionData[];
+}
+
+export interface Webhook {
+    id: string;
+    user_id: number;
+    url: string;
+    events: string[];
+    secret: string;
+    active: boolean;
+    last_sent_at: string | null;
+    last_error_at: string | null;
+    last_error_message: string | null;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface AllowedEvent {
+    value: string;
+    label: string;
 }

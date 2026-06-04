@@ -14,17 +14,23 @@ use App\Http\Controllers\LeadExportController;
 use App\Http\Controllers\LeadImportController;
 use App\Http\Controllers\LeadSourceController;
 use App\Http\Controllers\LeadBulkController;
+use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ClientBulkController;
 use App\Http\Controllers\ClientExportController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\NotificationPreferenceController;
+use App\Http\Controllers\Portal\PortalLinkController;
 use App\Http\Controllers\PortalUserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\TestimonialController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\TicketReplyController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -62,6 +68,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/settings/integrations', [SettingsController::class, 'edit'])->name('settings.integrations');
     Route::post('/settings/integrations', [SettingsController::class, 'update']);
 
+    Route::get('/settings/notifications', [NotificationPreferenceController::class, 'index'])->name('settings.notifications');
+    Route::put('/settings/notifications', [NotificationPreferenceController::class, 'update']);
+
+    Route::get('/settings/webhooks', [WebhookController::class, 'index'])->name('settings.webhooks');
+    Route::get('/settings/webhooks/create', [WebhookController::class, 'create'])->name('settings.webhooks.create');
+    Route::post('/settings/webhooks', [WebhookController::class, 'store'])->name('settings.webhooks.store');
+    Route::get('/settings/webhooks/{webhook}/edit', [WebhookController::class, 'edit'])->name('settings.webhooks.edit');
+    Route::put('/settings/webhooks/{webhook}', [WebhookController::class, 'update'])->name('settings.webhooks.update');
+    Route::post('/settings/webhooks/{webhook}/test', [WebhookController::class, 'test'])->name('settings.webhooks.test');
+    Route::delete('/settings/webhooks/{webhook}', [WebhookController::class, 'destroy'])->name('settings.webhooks.destroy');
+
     Route::get('/leads/export', [LeadExportController::class, 'export'])->name('leads.export');
     Route::post('/leads/bulk/delete', [LeadBulkController::class, 'destroy'])->middleware('throttle:5,1')->name('leads.bulk.delete');
     Route::post('/leads/bulk/delete-by-filters', [LeadBulkController::class, 'destroyByFilters'])->middleware('throttle:3,1')->name('leads.bulk.delete-by-filters');
@@ -82,6 +99,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/leads/import/{import}', [LeadImportController::class, 'show'])->name('leads.import.show');
 
     Route::resource('leads', LeadController::class);
+    Route::post('/leads/{lead}/restore', [LeadController::class, 'restore'])->name('leads.restore')->withTrashed();
 
     Route::resource('lead-sources', LeadSourceController::class);
     Route::post('/lead-sources/{leadSource}/run', [LeadSourceController::class, 'run'])->middleware('throttle:3,1')->name('lead-sources.run');
@@ -91,12 +109,25 @@ Route::middleware('auth')->group(function () {
     Route::post('/clients/bulk/status', [ClientBulkController::class, 'updateStatus'])->middleware('throttle:5,1')->name('clients.bulk.status');
 
     Route::resource('clients', ClientController::class);
+    Route::post('/clients/{client}/restore', [ClientController::class, 'restore'])->name('clients.restore')->withTrashed();
+    Route::post('/clients/{client}/portal-link', [ClientController::class, 'generatePortalLink'])->name('clients.portal-link.generate');
     Route::get('/clients/{client}/portal-users', [PortalUserController::class, 'index'])->name('clients.portal-users.index');
     Route::post('/clients/{client}/portal-users', [PortalUserController::class, 'store'])->name('clients.portal-users.store');
     Route::delete('/clients/{client}/portal-users/{portalUser}', [PortalUserController::class, 'destroy'])->name('clients.portal-users.destroy');
     Route::post('/leads/{lead}/convert', [LeadConversionController::class, 'convert'])->name('leads.convert');
 
     Route::resource('projects', ProjectController::class);
+    Route::post('/projects/{project}/restore', [ProjectController::class, 'restore'])->name('projects.restore')->withTrashed();
+
+    Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
+    Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
+    Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
+    Route::put('/tasks/{task}/move', [TaskController::class, 'move'])->name('tasks.move');
+    Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
+
+    Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
+    Route::get('/api/calendar/events', [CalendarController::class, 'events'])->name('calendar.events');
+    Route::get('/meetings/{meeting}/ics', [CalendarController::class, 'exportIcs'])->name('meetings.ics');
 
     Route::get('/meetings/upcoming', [MeetingController::class, 'upcoming'])->name('meetings.upcoming');
     Route::get('/{meetableType}/{meetable}/meetings', [MeetingController::class, 'index'])->name('meetings.index');
@@ -126,6 +157,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/notes/{note}', [NoteController::class, 'destroy'])->name('notes.destroy');
 
     Route::resource('tickets', TicketController::class);
+    Route::post('/tickets/{ticket}/restore', [TicketController::class, 'restore'])->name('tickets.restore')->withTrashed();
     Route::post('/tickets/{ticket}/close', [TicketController::class, 'close'])->name('tickets.close');
     Route::post('/tickets/{ticket}/reopen', [TicketController::class, 'reopen'])->name('tickets.reopen');
     Route::post('/tickets/{ticket}/replies', [TicketReplyController::class, 'store'])->name('tickets.replies.store');
@@ -136,6 +168,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/intake-forms/{intakeForm}/submissions/{submission}', [\App\Http\Controllers\IntakeFormSubmissionController::class, 'show'])->name('intake-forms.submissions.show');
     Route::get('/intake-forms/submissions/download', [\App\Http\Controllers\IntakeFormSubmissionController::class, 'download'])->name('intake-forms.submissions.download');
 
+});
+
+Route::get('/review/{token}', [TestimonialController::class, 'show'])->name('review.show');
+Route::post('/review/{token}', [TestimonialController::class, 'submit'])->name('review.submit');
+Route::get('/review/{token}/thanks', [TestimonialController::class, 'thanks'])->name('review.thanks');
+
+Route::middleware('auth')->group(function (): void {
+    Route::get('/testimonials', [TestimonialController::class, 'index'])->name('testimonials.index');
+    Route::delete('/testimonials/{testimonial}', [TestimonialController::class, 'destroy'])->name('testimonials.destroy');
+    Route::post('/clients/{client}/request-review', [TestimonialController::class, 'requestFromClient'])->name('clients.request-review');
+    Route::post('/projects/{project}/request-review', [TestimonialController::class, 'requestFromProject'])->name('projects.request-review');
 });
 
 require __DIR__.'/auth.php';

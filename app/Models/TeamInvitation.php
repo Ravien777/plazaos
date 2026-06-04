@@ -8,11 +8,12 @@ use Database\Factories\TeamInvitationFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class TeamInvitation extends Model
 {
     /** @use HasFactory<TeamInvitationFactory> */
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'team_id',

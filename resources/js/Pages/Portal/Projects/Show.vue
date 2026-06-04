@@ -4,14 +4,25 @@ import StatusBadge from '@/Components/StatusBadge.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import type { Project } from '@/Types';
 
-defineProps<{
+const props = defineProps<{
     project: Project;
 }>();
+
+const progressValue = props.project.progress_percentage ?? 0;
 
 function statusLabel(s: string): string {
     const labels: Record<string, string> = { discovery: 'Discovery', design: 'Design', development: 'Development', testing: 'Testing', launch: 'Launch', completed: 'Completed' };
     return labels[s] ?? s;
 }
+
+const statusBarColors: Record<string, string> = {
+    discovery: 'bg-blue-500',
+    design: 'bg-purple-500',
+    development: 'bg-indigo-500',
+    testing: 'bg-yellow-500',
+    launch: 'bg-green-500',
+    completed: 'bg-emerald-600',
+};
 </script>
 
 <template>
@@ -26,6 +37,19 @@ function statusLabel(s: string): string {
             <div class="mx-auto max-w-4xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
+                        <div class="mb-6">
+                            <div class="flex items-center justify-between">
+                                <dt class="text-sm font-medium text-gray-600">Progress</dt>
+                                <span class="text-sm font-medium text-gray-800">{{ progressValue }}%</span>
+                            </div>
+                            <div class="mt-2 h-3 overflow-hidden rounded-full bg-gray-200">
+                                <div
+                                    class="h-full rounded-full transition-all"
+                                    :class="statusBarColors[project.status] ?? 'bg-gray-500'"
+                                    :style="{ width: progressValue + '%' }"
+                                />
+                            </div>
+                        </div>
                         <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                             <div>
                                 <dt class="text-sm font-medium text-gray-600">Status</dt>

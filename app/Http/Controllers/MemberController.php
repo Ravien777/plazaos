@@ -36,10 +36,10 @@ class MemberController extends Controller
         ]);
     }
 
-    public function destroy(User $member): RedirectResponse
+    public function destroy(User $user): RedirectResponse
     {
-        $user = auth()->user();
-        $team = $user->team;
+        $authUser = auth()->user();
+        $team = $authUser->team;
 
         if ($team === null) {
             return redirect()->route('team.create');
@@ -47,16 +47,16 @@ class MemberController extends Controller
 
         Gate::authorize('removeMember', $team);
 
-        if ($member->id === $user->id) {
+        if ($user->id === $authUser->id) {
             return redirect()->route('team.members')
                 ->with('error', 'You cannot remove yourself.');
         }
 
-        if ($member->team_id !== $team->id) {
+        if ($user->team_id !== $team->id) {
             abort(403);
         }
 
-        $member->update([
+        $user->update([
             'team_id' => null,
             'role' => 'member',
         ]);

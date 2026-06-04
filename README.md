@@ -1,6 +1,6 @@
 # PlazaOS
 
-Single-user CRM & lead generation tool for solo entrepreneurs. Track leads, clients, projects, meetings, documents, and emails — all in one place.
+Team CRM & lead generation tool for small teams (1–20 members). Track leads, clients, projects, meetings, documents, emails, and more — all in one place.
 
 Built with Laravel 12, Vue 3, Inertia.js, TypeScript, Tailwind CSS, and PostgreSQL.
 
@@ -120,7 +120,7 @@ npm run build
 | `app/Actions` | Single-purpose operations (ConvertLeadToClient, UploadDocument, SendEmail) |
 | `app/Policies` | Authorization rules (who can view/create/update/delete each resource) |
 | `app/Enums` | PHP enums (LeadStatus, ProjectStatus, MeetingStatus, SourceType) |
-| `app/Jobs` | Background queue jobs (ImportLeadsJob, ScrapeLeadSourceJob) |
+| `app/Jobs` | Background queue jobs (ImportLeadsJob, ScrapeLeadSourceJob, DispatchWebhookJob) |
 | `app/Http/Middleware` | HTTP middleware (HandleInertiaRequests, SecurityHeaders) |
 | `resources/js` | Vue 3 + TypeScript frontend |
 | `resources/js/Pages` | Inertia.js page components (one per route) |
@@ -235,11 +235,21 @@ npm run build
 4. Click **Send**
 5. The email is sent via Resend and saved to history
 
+### Creating a Webhook (Zapier / n8n / Make)
+
+1. Go to **Settings → Webhooks**
+2. Click **Add Webhook**
+3. Enter the destination URL (e.g. your Zapier webhook endpoint)
+4. Select which events should trigger the webhook (Lead Created, Client Created, Ticket Closed, etc.)
+5. Click **Create Webhook** — a signing secret is generated automatically
+6. Use the secret to verify payloads via the `X-Webhook-Signature` header (HMAC-SHA256)
+7. To test connectivity, click **Test** on the webhook list — a test event is dispatched immediately
+
 ---
 
 ## Testing
 
-This project uses **PHPUnit 11** with 329 tests (1028 assertions).
+This project uses **PHPUnit 11** with 420 tests (1387 assertions).
 
 ```bash
 # Run everything
@@ -552,6 +562,7 @@ The deploy script handles the rest:
 | Hosting | Hetzner VPS |
 | Testing | PHPUnit 11 |
 | CI/CD | GitHub Actions |
+| Outbound Webhooks | Custom (HMAC-SHA256 signed) |
 
 ---
 
@@ -653,3 +664,4 @@ This is a CSRF token mismatch. Make sure you:
 - **Policies** — Authorization is centralized in policy classes. All controllers call `$this->authorize()`.
 - **Strict types** — All PHP files use `declare(strict_types=1)`.
 - **Polymorphic relationships** — Notes, Documents, Meetings, and Activities can attach to multiple model types (Lead, Client, Project).
+- **Outbound webhooks** — Any logged Activity automatically dispatches to subscribed webhooks via queue job, signed with HMAC-SHA256.

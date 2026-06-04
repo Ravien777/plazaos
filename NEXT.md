@@ -114,6 +114,10 @@ To ensure the app remains simple enough for a 15-year-old and fits the SME const
 
 ---
 
+> **⏱️ Known Gaps (Phase 1):**
+> - Member limit (max 20) not yet enforced in `InviteTeamMemberAction`
+> - Member grid quick actions ("Message", "Assign") not yet implemented
+
 ## 🏗️ Architectural Notes for the AI
 *   **Polymorphism:** Continue using the existing polymorphic relationships for `Notes`, `Documents`, and `Activities`. When adding `Tasks` and `Calendar Events`, ensure they can also be polymorphically linked to `Clients` or `Projects`.
 *   **Soft Deletes:** Use Laravel's `SoftDeletes` on all major models (Clients, Projects, Tasks). Since the UI is simple, users will accidentally delete things. A simple "Trash" view (accessible only to Owners) is required to restore them.

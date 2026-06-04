@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\GeneratePortalTokenAction;
 use App\Http\Requests\Client\StoreClientRequest;
 use App\Http\Requests\Client\UpdateClientRequest;
 use App\Models\Client;
 use App\Services\ClientService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -17,6 +19,19 @@ class ClientController extends Controller
     public function __construct(
         private readonly ClientService $clientService
     ) {}
+
+    public function generatePortalLink(Client $client, GeneratePortalTokenAction $action): JsonResponse
+    {
+        $this->authorize('update', $client);
+
+        $client = $action->execute($client);
+
+        return response()->json([
+            'portal_token' => $client->portal_token,
+            'portal_token_expires_at' => $client->portal_token_expires_at->toISOString(),
+            'url' => url('/portal/token/' . $client->portal_token),
+        ]);
+    }
 
     public function index(): Response
     {
@@ -94,5 +109,14 @@ class ClientController extends Controller
         }
 
         return redirect()->route('clients.index')->with('success', 'Client deleted successfully.');
+    }
+
+    public function restore(Client $client): RedirectResponse
+    {
+        $this->authorize('delete', $client);
+
+        $client->restore();
+
+        return redirect()->back()->with('success', 'Client restored successfully.');
     }
 }

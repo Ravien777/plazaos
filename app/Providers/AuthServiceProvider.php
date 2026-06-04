@@ -15,10 +15,13 @@ use App\Models\LeadSource;
 use App\Models\Meeting;
 use App\Models\Note;
 use App\Models\Project;
+use App\Models\Task;
 use App\Models\Team;
+use App\Models\Testimonial;
 use App\Models\Ticket;
 use App\Models\TicketReply;
 use App\Models\User;
+use App\Models\Webhook;
 use App\Policies\ClientPolicy;
 use App\Policies\DocumentPolicy;
 use App\Policies\EmailPolicy;
@@ -31,9 +34,12 @@ use App\Policies\MeetingPolicy;
 use App\Policies\NotePolicy;
 use App\Policies\ProjectPolicy;
 use App\Policies\TeamPolicy;
+use App\Policies\TaskPolicy;
+use App\Policies\TestimonialPolicy;
 use App\Policies\TicketPolicy;
 use App\Policies\TicketReplyPolicy;
 use App\Policies\UserPolicy;
+use App\Policies\WebhookPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -50,10 +56,13 @@ class AuthServiceProvider extends ServiceProvider
         EmailTemplate::class => EmailTemplatePolicy::class,
         LeadImport::class => LeadImportPolicy::class,
         IntakeForm::class => IntakeFormPolicy::class,
+        Task::class => TaskPolicy::class,
+        Testimonial::class => TestimonialPolicy::class,
         Ticket::class => TicketPolicy::class,
         TicketReply::class => TicketReplyPolicy::class,
         Team::class => TeamPolicy::class,
         User::class => UserPolicy::class,
+        Webhook::class => WebhookPolicy::class,
     ];
 
     public function boot(): void

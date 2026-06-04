@@ -62,7 +62,7 @@ class MeetingService
         $meeting = Meeting::create($data);
 
         activity()->log($meeting, 'meeting.created', "Meeting {$meeting->title} was scheduled.");
-        Notification::send(User::first(), new MeetingScheduled($meeting));
+        Notification::send(User::all(), new MeetingScheduled($meeting));
 
         $provider = $this->providerFactory->make($data['provider'] ?? 'google_meet');
         $provider->createEvent($meeting);

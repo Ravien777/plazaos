@@ -7,7 +7,10 @@ import BulkComposeEmailModal from '@/Components/BulkComposeEmailModal.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { ref, computed, watch } from 'vue';
 import axios from 'axios';
+import { useToast } from '@/composables/useToast';
 import type { Lead, PaginatedResponse } from '@/Types';
+
+const toast = useToast();
 
 const props = defineProps<{
     leads: PaginatedResponse<Lead>;
@@ -139,17 +142,26 @@ function pageUrl(url: string | null): string {
 }
 
 function destroyLead(lead: Lead): void {
-    if (confirm(`Delete "${lead.company_name}"? This cannot be undone.`)) {
-        router.delete(`/leads/${lead.id}`);
-    }
+    router.delete(route('leads.destroy', lead.id), {
+        preserveScroll: true,
+        onSuccess: () => {
+            toast.success(`"${lead.company_name}" deleted.`, {
+                label: 'Undo',
+                handler: () => router.post(route('leads.restore', lead.id)),
+            });
+        },
+    });
 }
 
 function bulkDelete(): void {
-    if (!confirm(`Delete ${selectedIds.value.length} lead(s)? This cannot be undone.`)) return;
+    const count = selectedIds.value.length;
     router.post(route('leads.bulk.delete'), { ids: selectedIds.value }, {
         preserveState: true,
         preserveScroll: true,
-        onSuccess: () => { selectedIds.value = []; },
+        onSuccess: () => {
+            selectedIds.value = [];
+            toast.success(`${count} lead(s) deleted.`);
+        },
     });
 }
 
@@ -440,6 +452,7 @@ function exportLeads(): void {
                                     <tr v-if="leads.data.length === 0">
                                         <td colspan="11" class="px-3 py-8 text-center text-sm text-gray-600">
                                             No leads found.
+                                            <Link :href="route('leads.create')" class="ml-2 text-blue-500 hover:text-blue-700">Create one</Link>.
                                         </td>
                                     </tr>
                                 </tbody>

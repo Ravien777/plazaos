@@ -95,4 +95,13 @@ class LeadController extends Controller
 
         return redirect()->route('leads.index')->with('success', 'Lead deleted successfully.');
     }
+
+    public function restore(Lead $lead): RedirectResponse
+    {
+        $this->authorize('delete', $lead);
+
+        $lead->restore();
+
+        return redirect()->back()->with('success', 'Lead restored successfully.');
+    }
 }

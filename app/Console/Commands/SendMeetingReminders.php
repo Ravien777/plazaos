@@ -32,7 +32,7 @@ class SendMeetingReminders extends Command
         foreach ($meetings as $meeting) {
             $meeting->loadMissing('meetable');
 
-            Notification::send(User::first(), new MeetingReminder($meeting));
+            Notification::send(User::all(), new MeetingReminder($meeting));
 
             $meeting->update(['reminder_sent' => true]);
 

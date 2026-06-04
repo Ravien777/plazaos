@@ -10,11 +10,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Team extends Model
 {
     /** @use HasFactory<TeamFactory> */
-    use HasFactory, HasUuids;
+    use HasFactory, HasUuids, SoftDeletes;
 
     protected $fillable = [
         'name',

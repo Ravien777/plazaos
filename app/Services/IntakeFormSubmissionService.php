@@ -9,6 +9,7 @@ use App\Models\IntakeForm;
 use App\Models\IntakeFormSubmission;
 use App\Notifications\FormSubmissionReceived;
 use App\Models\User;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 
 class IntakeFormSubmissionService
@@ -49,7 +50,7 @@ class IntakeFormSubmissionService
 
         activity()->log($submission, 'intake_form.submitted', "Client {$client->company_name} submitted intake form \"{$form->title}\".");
 
-        User::first()->notify(new FormSubmissionReceived($form, $client, $submission));
+        Notification::send(User::all(), new FormSubmissionReceived($form, $client, $submission));
 
         return $submission;
     }

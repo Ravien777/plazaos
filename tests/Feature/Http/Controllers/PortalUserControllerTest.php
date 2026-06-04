@@ -81,6 +81,6 @@ class PortalUserControllerTest extends TestCase
         $response = $this->delete(route('clients.portal-users.destroy', [$client, $portalUser]));
 
         $response->assertRedirect();
-        $this->assertDatabaseMissing('client_users', ['id' => $portalUser->id]);
+        $this->assertSoftDeleted($portalUser);
     }
 }

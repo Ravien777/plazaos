@@ -18,6 +18,7 @@ class AuthenticatedSessionController extends Controller
     {
         return Inertia::render('Portal/Auth/Login', [
             'status' => session('status'),
+            'error' => session('error'),
         ]);
     }
 

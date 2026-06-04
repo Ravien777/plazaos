@@ -81,7 +81,7 @@ class ImportLeadsJob implements ShouldQueue
             'status' => $failed > 0 && $processed === 0 ? 'failed' : 'completed',
         ]);
 
-        Notification::send(User::first(), new ImportCompleted($this->import));
+        Notification::send(User::all(), new ImportCompleted($this->import));
     }
 
     private function mapRow(array $row, array $mapping): array
