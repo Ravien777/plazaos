@@ -77,7 +77,7 @@ class TaskControllerTest extends TestCase
 
     public function test_store_auto_orders_last(): void
     {
-        Task::factory()->create(['status' => TaskStatus::Todo, 'order' => 5, 'created_by' => $this->user->id]);
+        Task::factory()->create(['status' => TaskStatus::Todo, 'order' => 5, 'created_by' => $this->user->id, 'team_id' => $this->user->team_id]);
 
         $this->actingAs($this->user)
             ->post(route('tasks.store'), [
@@ -95,6 +95,7 @@ class TaskControllerTest extends TestCase
             'title' => 'Old title',
             'priority' => 'low',
             'created_by' => $this->user->id,
+            'team_id' => $this->user->team_id,
         ]);
 
         $this->actingAs($this->user)
@@ -116,6 +117,7 @@ class TaskControllerTest extends TestCase
             'status' => TaskStatus::Todo,
             'order' => 0,
             'created_by' => $this->user->id,
+            'team_id' => $this->user->team_id,
         ]);
 
         $this->actingAs($this->user)
@@ -131,7 +133,7 @@ class TaskControllerTest extends TestCase
 
     public function test_move_validates_status(): void
     {
-        $task = Task::factory()->create(['created_by' => $this->user->id]);
+        $task = Task::factory()->create(['created_by' => $this->user->id, 'team_id' => $this->user->team_id]);
 
         $this->actingAs($this->user)
             ->put(route('tasks.move', $task), [
@@ -143,7 +145,7 @@ class TaskControllerTest extends TestCase
 
     public function test_destroy_soft_deletes(): void
     {
-        $task = Task::factory()->create(['created_by' => $this->user->id]);
+        $task = Task::factory()->create(['created_by' => $this->user->id, 'team_id' => $this->user->team_id]);
 
         $this->actingAs($this->user)
             ->delete(route('tasks.destroy', $task));
@@ -153,7 +155,7 @@ class TaskControllerTest extends TestCase
 
     public function test_destroy_forbidden_for_member(): void
     {
-        $task = Task::factory()->create(['created_by' => $this->user->id]);
+        $task = Task::factory()->create(['created_by' => $this->user->id, 'team_id' => $this->user->team_id]);
 
         $this->actingAs($this->member)
             ->delete(route('tasks.destroy', $task))

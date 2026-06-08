@@ -21,6 +21,14 @@ class TicketService
     {
         $query = Ticket::with('ticketable');
 
+        if (!empty($filters['search'])) {
+            $search = $filters['search'];
+            $query->where(function ($q) use ($search) {
+                $q->where('subject', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
         if (!empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }
@@ -35,6 +43,17 @@ class TicketService
 
         if (!empty($filters['ticketable_type'])) {
             $query->where('ticketable_type', $filters['ticketable_type']);
+        }
+
+        return $query->orderBy('created_at', 'desc')->paginate(25);
+    }
+
+    public function listTrashed(array $filters = []): LengthAwarePaginator
+    {
+        $query = Ticket::onlyTrashed()->with('ticketable');
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
         }
 
         return $query->orderBy('created_at', 'desc')->paginate(25);
@@ -64,6 +83,39 @@ class TicketService
         activity()->log($ticket, 'ticket.deleted', "Ticket \"{$ticket->subject}\" was deleted.");
 
         $ticket->delete();
+    }
+
+    public function bulkArchive(array $ids): void
+    {
+        $tickets = Ticket::whereIn('id', $ids)->get();
+
+        foreach ($tickets as $ticket) {
+            activity()->log($ticket, 'ticket.deleted', "Ticket \"{$ticket->subject}\" was archived (bulk).");
+        }
+
+        Ticket::whereIn('id', $ids)->delete();
+    }
+
+    public function bulkForceDelete(array $ids): void
+    {
+        $tickets = Ticket::whereIn('id', $ids)->get();
+
+        foreach ($tickets as $ticket) {
+            activity()->log($ticket, 'ticket.deleted', "Ticket \"{$ticket->subject}\" was permanently deleted (bulk).");
+        }
+
+        Ticket::whereIn('id', $ids)->forceDelete();
+    }
+
+    public function bulkUpdateStatus(array $ids, string $status): void
+    {
+        $tickets = Ticket::whereIn('id', $ids)->get();
+
+        Ticket::whereIn('id', $ids)->update(['status' => $status]);
+
+        foreach ($tickets as $ticket) {
+            activity()->log($ticket, 'ticket.updated', "Ticket {$ticket->subject} status changed to {$status} (bulk).");
+        }
     }
 
     public function close(Ticket $ticket): Ticket

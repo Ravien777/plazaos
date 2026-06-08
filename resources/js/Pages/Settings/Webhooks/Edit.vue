@@ -44,9 +44,9 @@ function submit(): void {
             <h2 class="text-xl font-semibold leading-tight text-gray-700">Edit Webhook</h2>
         </template>
 
-        <div class="py-12">
-            <div class="mx-auto max-w-3xl sm:px-6 lg:px-8">
-                <div class="bg-white p-6 shadow sm:rounded-lg sm:p-8">
+        <div class="py-6">
+            <div class="mx-auto max-w-3xl">
+                <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg p-6">
                     <form @submit.prevent="submit" class="space-y-6">
                         <div>
                             <label for="url" class="block text-sm font-medium text-gray-700">Webhook URL</label>
@@ -77,7 +77,7 @@ function submit(): void {
                                 <label
                                     v-for="event in allowedEvents"
                                     :key="event.value"
-                                    class="flex cursor-pointer items-center gap-3 rounded-md border border-stone-200 p-3 transition hover:bg-stone-50"
+                                    class="flex cursor-pointer items-center gap-3 rounded-md border border-gray-200 p-3 transition hover:bg-gray-50"
                                     :class="selectedEvents.includes(event.value) ? 'border-indigo-300 bg-indigo-50' : ''"
                                 >
                                     <input
@@ -95,27 +95,27 @@ function submit(): void {
                             <button
                                 type="submit"
                                 :disabled="saving || !url || selectedEvents.length === 0"
-                                class="rounded-md bg-stone-700 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-stone-600 disabled:opacity-50"
+                                class="rounded-md bg-gray-700 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-600 disabled:opacity-50"
                             >
                                 {{ saving ? 'Saving...' : 'Update Webhook' }}
                             </button>
                             <a
                                 :href="route('settings.webhooks')"
-                                class="text-sm text-stone-500 hover:text-stone-700"
+                                class="text-sm text-gray-500 hover:text-gray-700"
                             >
                                 Cancel
                             </a>
                         </div>
                     </form>
 
-                    <div class="mt-8 border-t border-stone-200 pt-6">
-                        <h3 class="text-sm font-medium text-stone-700">Signing Secret</h3>
-                        <p class="mt-1 text-xs text-stone-500">
+                    <div class="mt-8 border-t border-gray-200 pt-6">
+                        <h3 class="text-sm font-medium text-gray-700">Signing Secret</h3>
+                        <p class="mt-1 text-xs text-gray-500">
                             Use this secret to verify webhook payloads. The signature is sent in the
-                            <code class="rounded bg-stone-100 px-1">X-Webhook-Signature</code> header (HMAC-SHA256).
+                            <code class="rounded bg-gray-100 px-1">X-Webhook-Signature</code> header (HMAC-SHA256).
                         </p>
                         <div class="mt-2 flex items-center gap-2">
-                            <code class="block flex-1 truncate rounded bg-stone-100 px-3 py-2 text-xs font-mono text-stone-600">{{ webhook.secret }}</code>
+                            <code class="block flex-1 truncate rounded bg-gray-100 px-3 py-2 text-xs font-mono text-gray-600">{{ webhook.secret }}</code>
                         </div>
                     </div>
                 </div>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PageHeader from '@/Components/PageHeader.vue';
+import EmptyState from '@/Components/EmptyState.vue';
 import { Head } from '@inertiajs/vue3';
 import type { Meeting } from '@/Types';
 
@@ -61,13 +62,16 @@ function formatDate(dt: string): string {
             <PageHeader title="Upcoming Meetings" />
         </template>
 
-        <div class="py-12">
-            <div class="mx-auto max-w-4xl sm:px-6 lg:px-8">
+        <div class="py-6">
+            <div class="mx-auto max-w-4xl">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
-                        <div v-if="meetings.length === 0" class="text-sm text-gray-600">
-                            No upcoming meetings.
-                        </div>
+                        <EmptyState
+                            v-if="meetings.length === 0"
+                            icon="📅"
+                            title="No upcoming meetings"
+                            message="Schedule a meeting to get started."
+                        />
 
                         <div v-else class="space-y-3">
                             <div

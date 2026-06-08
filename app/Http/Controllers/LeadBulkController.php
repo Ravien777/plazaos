@@ -56,6 +56,24 @@ class LeadBulkController extends Controller
         return response()->json(['deleted' => $count]);
     }
 
+    public function forceDestroy(Request $request): RedirectResponse
+    {
+        $this->authorize('delete', new Lead);
+
+        $data = $request->validate([
+            'ids' => ['required', 'array', 'min:1'],
+            'ids.*' => ['required', 'string', 'exists:leads,id'],
+        ]);
+
+        try {
+            $this->leadService->bulkForceDelete($data['ids']);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to permanently delete leads. Please try again.');
+        }
+
+        return redirect()->back()->with('success', count($data['ids']) . ' lead(s) permanently deleted.');
+    }
+
     public function updateStatus(Request $request): RedirectResponse
     {
         $this->authorize('update', new Lead);

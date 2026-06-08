@@ -40,9 +40,9 @@ function submit(): void {
             <h2 class="text-xl font-semibold leading-tight text-gray-700">Create Webhook</h2>
         </template>
 
-        <div class="py-12">
-            <div class="mx-auto max-w-3xl sm:px-6 lg:px-8">
-                <div class="bg-white p-6 shadow sm:rounded-lg sm:p-8">
+        <div class="py-6">
+            <div class="mx-auto max-w-3xl">
+                <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg p-6">
                     <form @submit.prevent="submit" class="space-y-6">
                         <div>
                             <label for="url" class="block text-sm font-medium text-gray-700">Webhook URL</label>
@@ -64,7 +64,7 @@ function submit(): void {
                                 <label
                                     v-for="event in allowedEvents"
                                     :key="event.value"
-                                    class="flex cursor-pointer items-center gap-3 rounded-md border border-stone-200 p-3 transition hover:bg-stone-50"
+                                    class="flex cursor-pointer items-center gap-3 rounded-md border border-gray-200 p-3 transition hover:bg-gray-50"
                                     :class="selectedEvents.includes(event.value) ? 'border-indigo-300 bg-indigo-50' : ''"
                                 >
                                     <input
@@ -82,13 +82,13 @@ function submit(): void {
                             <button
                                 type="submit"
                                 :disabled="saving || !url || selectedEvents.length === 0"
-                                class="rounded-md bg-stone-700 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-stone-600 disabled:opacity-50"
+                                class="rounded-md bg-gray-700 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-600 disabled:opacity-50"
                             >
                                 {{ saving ? 'Saving...' : 'Create Webhook' }}
                             </button>
                             <a
                                 :href="route('settings.webhooks')"
-                                class="text-sm text-stone-500 hover:text-stone-700"
+                                class="text-sm text-gray-500 hover:text-gray-700"
                             >
                                 Cancel
                             </a>

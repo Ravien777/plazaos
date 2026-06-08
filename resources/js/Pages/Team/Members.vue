@@ -3,30 +3,32 @@ import { router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import InitialsAvatar from '@/Components/InitialsAvatar.vue';
 import EmptyState from '@/Components/EmptyState.vue';
+import { useConfirm } from '@/composables/useConfirm';
+
+const { confirm } = useConfirm();
 
 const props = defineProps<{
     members: Array<{ id: number; name: string; email: string; role: string; created_at: string }>;
     isOwner: boolean;
 }>();
 
-function removeMember(id: number, name: string): void {
-    if (confirm(`Remove ${name} from the team?`)) {
-        router.delete(route('team.members.remove', id));
-    }
+async function removeMember(id: number, name: string): Promise<void> {
+    if (!await confirm({ title: 'Remove member?', message: `Remove ${name} from the team?`, confirmLabel: 'Remove' })) return;
+    router.delete(route('team.members.remove', id));
 }
 </script>
 
 <template>
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-stone-800">
+            <h2 class="text-xl font-semibold leading-tight text-gray-800">
                 Team Members
             </h2>
         </template>
 
-        <div class="py-12">
-            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div class="rounded-lg bg-white p-6 shadow">
+        <div class="py-6">
+            <div class="mx-auto max-w-7xl">
+                <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg p-6">
                     <EmptyState
                         v-if="members.length === 0"
                         icon="👥"
@@ -40,21 +42,21 @@ function removeMember(id: number, name: string): void {
                         <div
                             v-for="member in members"
                             :key="member.id"
-                            class="flex items-center gap-4 rounded-lg border border-stone-200 p-4"
+                            class="flex items-center gap-4 rounded-lg border border-gray-200 p-4"
                         >
                             <InitialsAvatar :name="member.name" class="h-10 w-10 shrink-0" />
                             <div class="min-w-0 flex-1">
-                                <p class="truncate text-sm font-medium text-stone-800">
+                                <p class="truncate text-sm font-medium text-gray-800">
                                     {{ member.name }}
                                 </p>
-                                <p class="truncate text-xs text-stone-500">
+                                <p class="truncate text-xs text-gray-500">
                                     {{ member.email }}
                                 </p>
                                 <span
                                     class="mt-1 inline-block rounded-full px-2 py-0.5 text-xs font-medium"
                                     :class="member.role === 'owner'
                                         ? 'bg-yellow-100 text-yellow-700'
-                                        : 'bg-stone-100 text-stone-600'"
+                                        : 'bg-gray-100 text-gray-600'"
                                 >
                                     {{ member.role === 'owner' ? 'Owner' : 'Member' }}
                                 </span>

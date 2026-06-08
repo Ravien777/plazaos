@@ -19,7 +19,7 @@ class SendMeetingRemindersCommandTest extends TestCase
     {
         parent::setUp();
 
-        User::factory()->create(['id' => 1]);
+        $this->user = User::factory()->create();
     }
 
     public function test_sends_reminder_for_upcoming_meetings(): void
@@ -34,7 +34,7 @@ class SendMeetingRemindersCommandTest extends TestCase
         $this->artisan('meetings:send-reminders')
             ->assertSuccessful();
 
-        Notification::assertSentTo(User::find(1), MeetingReminder::class);
+        Notification::assertSentTo($this->user, MeetingReminder::class);
     }
 
     public function test_skips_meetings_outside_window(): void

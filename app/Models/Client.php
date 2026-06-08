@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Traits\BelongsToTeam;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
@@ -14,10 +15,11 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Client extends Model
 {
-    use HasFactory, HasUuids;
+    use BelongsToTeam, HasFactory, HasUuids;
     use SoftDeletes;
 
     protected $fillable = [
+        'team_id',
         'company_name',
         'contact_name',
         'email',
@@ -33,6 +35,9 @@ class Client extends Model
         'last_contacted_at',
         'portal_token',
         'portal_token_expires_at',
+        'maroni_client_id',
+        'maroni_sync_status',
+        'last_maroni_synced_at',
     ];
 
     protected function casts(): array
@@ -40,6 +45,7 @@ class Client extends Model
         return [
             'last_contacted_at' => 'datetime',
             'portal_token_expires_at' => 'datetime',
+            'last_maroni_synced_at' => 'datetime',
             'status' => 'string',
         ];
     }
@@ -92,5 +98,10 @@ class Client extends Model
     public function intakeFormSubmissions(): HasMany
     {
         return $this->hasMany(IntakeFormSubmission::class);
+    }
+
+    public function comments(): MorphMany
+    {
+        return $this->morphMany(Comment::class, 'commentable');
     }
 }

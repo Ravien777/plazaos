@@ -34,15 +34,15 @@ function cancelInvitation(id: number): void {
 <template>
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-stone-800">
+            <h2 class="text-xl font-semibold leading-tight text-gray-800">
                 Team Settings
             </h2>
         </template>
 
-        <div class="py-12">
-            <div class="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8">
-                <div class="rounded-lg bg-white p-6 shadow">
-                    <h3 class="text-lg font-medium text-stone-800">
+        <div class="py-6">
+            <div class="mx-auto max-w-7xl space-y-6">
+                <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg p-6">
+                    <h3 class="text-lg font-medium text-gray-800">
                         Team Name
                     </h3>
 
@@ -50,7 +50,7 @@ function cancelInvitation(id: number): void {
                         <input
                             v-model="form.name"
                             type="text"
-                            class="block w-full rounded-md border-stone-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
+                            class="block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                         />
                         <p v-if="form.errors.name" class="mt-1 text-sm text-red-600">{{ form.errors.name }}</p>
 
@@ -58,7 +58,7 @@ function cancelInvitation(id: number): void {
                             <button
                                 type="submit"
                                 :disabled="form.processing"
-                                class="rounded-md bg-stone-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-stone-600 disabled:opacity-50"
+                                class="rounded-md bg-gray-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-600 disabled:opacity-50"
                             >
                                 {{ form.processing ? 'Saving...' : 'Save' }}
                             </button>
@@ -66,11 +66,11 @@ function cancelInvitation(id: number): void {
                     </form>
                 </div>
 
-                <div class="rounded-lg bg-white p-6 shadow">
-                    <h3 class="text-lg font-medium text-stone-800">
+                <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg p-6">
+                    <h3 class="text-lg font-medium text-gray-800">
                         Invite Team Members
                     </h3>
-                    <p class="mt-1 text-sm text-stone-600">
+                    <p class="mt-1 text-sm text-gray-600">
                         Send an email invitation to join your team.
                     </p>
 
@@ -79,12 +79,12 @@ function cancelInvitation(id: number): void {
                             v-model="inviteForm.email"
                             type="email"
                             placeholder="colleague@company.com"
-                            class="block flex-1 rounded-md border-stone-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
+                            class="block flex-1 rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
                         />
                         <button
                             type="submit"
                             :disabled="inviteForm.processing"
-                            class="rounded-md bg-stone-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-stone-600 disabled:opacity-50"
+                            class="rounded-md bg-gray-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-600 disabled:opacity-50"
                         >
                             {{ inviteForm.processing ? 'Sending...' : 'Invite' }}
                         </button>
@@ -92,16 +92,16 @@ function cancelInvitation(id: number): void {
                     <p v-if="inviteForm.errors.email" class="mt-1 text-sm text-red-600">{{ inviteForm.errors.email }}</p>
 
                     <div v-if="invitations.length > 0" class="mt-6">
-                        <h4 class="text-sm font-medium text-stone-700">Pending Invitations</h4>
-                        <ul class="mt-2 divide-y divide-stone-100">
+                        <h4 class="text-sm font-medium text-gray-700">Pending Invitations</h4>
+                        <ul class="mt-2 divide-y divide-gray-100">
                             <li v-for="inv in invitations" :key="inv.id" class="flex items-center justify-between py-2">
                                 <div>
-                                    <span class="text-sm text-stone-700">{{ inv.email }}</span>
+                                    <span class="text-sm text-gray-700">{{ inv.email }}</span>
                                     <span
                                         v-if="inv.expired"
                                         class="ml-2 text-xs text-red-500"
                                     >Expired</span>
-                                    <span v-else class="ml-2 text-xs text-stone-400">Expires {{ inv.expires_at }}</span>
+                                    <span v-else class="ml-2 text-xs text-gray-400">Expires {{ inv.expires_at }}</span>
                                 </div>
                                 <button
                                     class="text-sm text-red-500 hover:text-red-700"

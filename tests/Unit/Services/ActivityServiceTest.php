@@ -19,7 +19,7 @@ class ActivityServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        User::factory()->create(['id' => 1]);
+        User::factory()->create();
         $this->activityService = app(ActivityService::class);
     }
 

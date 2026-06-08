@@ -21,7 +21,7 @@ class NoteServiceTest extends TestCase
     {
         parent::setUp();
         $this->noteService = app(NoteService::class);
-        User::factory()->create(['id' => 1]);
+        User::factory()->create();
     }
 
     public function test_add_creates_note_and_logs_activity(): void

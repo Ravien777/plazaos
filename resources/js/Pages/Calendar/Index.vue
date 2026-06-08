@@ -20,8 +20,8 @@ defineProps<{
             <PageHeader title="Calendar" />
         </template>
 
-        <div class="py-12">
-            <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div class="py-6">
+            <div class="mx-auto max-w-7xl">
                 <div class="grid grid-cols-1 gap-6 lg:grid-cols-4">
                     <div class="lg:col-span-3">
                         <CalendarGrid :team-members="teamMembers" />

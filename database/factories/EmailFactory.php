@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Email;
+use App\Models\Lead;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class EmailFactory extends Factory
@@ -17,6 +18,8 @@ class EmailFactory extends Factory
             'subject' => fake()->sentence(),
             'body' => fake()->paragraph(),
             'status' => 'sent',
+            'emailable_type' => Lead::class,
+            'emailable_id' => Lead::factory(),
         ];
     }
 }

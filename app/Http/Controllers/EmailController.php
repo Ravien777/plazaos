@@ -42,11 +42,11 @@ class EmailController extends Controller
         return response()->json(['data' => $configTemplates->concat($dbTemplates)]);
     }
 
-    public function index(string $emailableType, string $id): JsonResponse
+    public function index(string $emailableType, string $emailable): JsonResponse
     {
         $this->authorize('viewAny', Email::class);
 
-        $model = $this->resolveEmailable($emailableType, $id);
+        $model = $this->resolveEmailable($emailableType, $emailable);
 
         if (!$model) {
             abort(404);
@@ -57,7 +57,7 @@ class EmailController extends Controller
         ]);
     }
 
-    public function store(Request $request, string $emailableType, string $id): RedirectResponse
+    public function store(Request $request, string $emailableType, string $emailable): RedirectResponse
     {
         $this->authorize('create', Email::class);
 
@@ -67,7 +67,7 @@ class EmailController extends Controller
             'template' => ['nullable', 'string'],
         ]);
 
-        $model = $this->resolveEmailable($emailableType, $id);
+        $model = $this->resolveEmailable($emailableType, $emailable);
 
         if (!$model) {
             abort(404);

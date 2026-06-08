@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Models\Client;
 use App\Models\Lead;
+use App\Models\User;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -13,9 +14,14 @@ class AiService
 {
     private const OPENAI_URL = 'https://api.openai.com/v1/chat/completions';
 
+    public function configured(): bool
+    {
+        return !empty($this->setting('api_key'));
+    }
+
     public function generateOutreachEmail(Lead $lead): ?array
     {
-        if (!config('services.openai.api_key')) {
+        if (!$this->configured()) {
             return null;
         }
 
@@ -34,7 +40,7 @@ class AiService
 
     public function generateFollowUp(Lead $lead): ?array
     {
-        if (!config('services.openai.api_key')) {
+        if (!$this->configured()) {
             return null;
         }
 
@@ -53,7 +59,7 @@ class AiService
 
     public function generateBulkTemplate(): ?array
     {
-        if (!config('services.openai.api_key')) {
+        if (!$this->configured()) {
             return null;
         }
 
@@ -76,7 +82,7 @@ class AiService
 
     public function generateClientOutreachEmail(Client $client): ?array
     {
-        if (!config('services.openai.api_key')) {
+        if (!$this->configured()) {
             return null;
         }
 
@@ -95,7 +101,7 @@ class AiService
 
     public function generateClientFollowUp(Client $client): ?array
     {
-        if (!config('services.openai.api_key')) {
+        if (!$this->configured()) {
             return null;
         }
 
@@ -114,7 +120,7 @@ class AiService
 
     public function summarizeWebsite(string $url): ?string
     {
-        if (!config('services.openai.api_key')) {
+        if (!$this->configured()) {
             return null;
         }
 
@@ -184,10 +190,18 @@ class AiService
             . "The email should be polite, persistent but not pushy. Reference a previous outreach.";
     }
 
+    private function setting(string $key): mixed
+    {
+        $user = User::first();
+        $dbValue = $user?->getSetting("openai_{$key}");
+
+        return $dbValue ?? config("services.openai.{$key}");
+    }
+
     private function callOpenAI(string $prompt): ?array
     {
-        $apiKey = config('services.openai.api_key');
-        $model = config('services.openai.model', 'gpt-4o');
+        $apiKey = $this->setting('api_key');
+        $model = $this->setting('model');
 
         try {
             $response = Http::withToken($apiKey)

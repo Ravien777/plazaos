@@ -19,7 +19,7 @@ class CreateMeetingActionTest extends TestCase
     {
         parent::setUp();
         $this->action = app(CreateMeetingAction::class);
-        User::factory()->create(['id' => 1]);
+        User::factory()->create();
         $this->actingAs(User::find(1));
     }
 

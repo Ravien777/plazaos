@@ -7,6 +7,7 @@ namespace Tests\Unit\Jobs;
 use App\Enums\LeadStatus;
 use App\Enums\SourceType;
 use App\Jobs\ScrapeLeadSourceJob;
+use App\LeadSources\ScraperFactory;
 use App\Models\Lead;
 use App\Models\LeadSource;
 use App\Models\User;
@@ -19,10 +20,13 @@ class ScrapeLeadSourceJobTest extends TestCase
 {
     use RefreshDatabase;
 
+    private ScraperFactory $factory;
+
     protected function setUp(): void
     {
         parent::setUp();
-        User::factory()->create(['id' => 1]);
+        User::factory()->create();
+        $this->factory = $this->app->make(ScraperFactory::class);
     }
 
     public function test_job_is_dispatched_with_source(): void
@@ -47,18 +51,18 @@ class ScrapeLeadSourceJobTest extends TestCase
             'last_run_at' => null,
         ]);
 
-        (new ScrapeLeadSourceJob($source))->handle();
+        (new ScrapeLeadSourceJob($source))->handle($this->factory);
 
         $this->assertNotNull($source->fresh()->last_run_at);
     }
 
-    public function test_job_skips_unimplemented_type(): void
+    public function test_job_skips_non_scrapeable_type(): void
     {
         $source = LeadSource::factory()->create([
-            'type' => SourceType::LinkedIn,
+            'type' => SourceType::ColdEmail,
         ]);
 
-        (new ScrapeLeadSourceJob($source))->handle();
+        (new ScrapeLeadSourceJob($source))->handle($this->factory);
 
         $this->assertDatabaseCount('leads', 0);
     }
@@ -85,7 +89,7 @@ class ScrapeLeadSourceJobTest extends TestCase
             'config' => ['url' => 'https://example.com/leads.json'],
         ]);
 
-        (new ScrapeLeadSourceJob($source))->handle();
+        (new ScrapeLeadSourceJob($source))->handle($this->factory);
 
         $this->assertDatabaseCount('leads', 2);
         $this->assertDatabaseHas('leads', [
@@ -115,7 +119,7 @@ class ScrapeLeadSourceJobTest extends TestCase
             'config' => ['url' => 'https://example.com/leads.json'],
         ]);
 
-        (new ScrapeLeadSourceJob($source))->handle();
+        (new ScrapeLeadSourceJob($source))->handle($this->factory);
 
         $this->assertDatabaseCount('leads', 2);
     }
@@ -137,7 +141,7 @@ class ScrapeLeadSourceJobTest extends TestCase
             'config' => ['url' => 'https://example.com/leads.json'],
         ]);
 
-        (new ScrapeLeadSourceJob($source))->handle();
+        (new ScrapeLeadSourceJob($source))->handle($this->factory);
 
         $this->assertDatabaseCount('leads', 1);
     }
@@ -161,7 +165,7 @@ class ScrapeLeadSourceJobTest extends TestCase
             'config' => ['url' => 'https://example.com/leads.json'],
         ]);
 
-        (new ScrapeLeadSourceJob($source))->handle();
+        (new ScrapeLeadSourceJob($source))->handle($this->factory);
 
         $this->assertDatabaseCount('leads', 1);
     }
@@ -177,7 +181,7 @@ class ScrapeLeadSourceJobTest extends TestCase
             'config' => ['url' => 'https://example.com/leads.json'],
         ]);
 
-        (new ScrapeLeadSourceJob($source))->handle();
+        (new ScrapeLeadSourceJob($source))->handle($this->factory);
 
         $this->assertDatabaseCount('leads', 0);
     }
@@ -189,7 +193,7 @@ class ScrapeLeadSourceJobTest extends TestCase
             'config' => [],
         ]);
 
-        (new ScrapeLeadSourceJob($source))->handle();
+        (new ScrapeLeadSourceJob($source))->handle($this->factory);
 
         $this->assertDatabaseCount('leads', 0);
     }

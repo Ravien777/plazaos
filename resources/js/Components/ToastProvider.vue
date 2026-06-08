@@ -7,7 +7,7 @@ const typeStyles: Record<string, string> = {
     success: 'bg-green-600 text-white',
     error: 'bg-red-600 text-white',
     warning: 'bg-yellow-500 text-white',
-    info: 'bg-stone-700 text-white',
+    info: 'bg-gray-700 text-white',
 };
 
 function handleUndo(undo: { handler: () => void }, id: number): void {

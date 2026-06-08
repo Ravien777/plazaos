@@ -2,7 +2,10 @@
 import { ref, onMounted } from 'vue';
 import { Link, router, useForm } from '@inertiajs/vue3';
 import axios from 'axios';
+import { useConfirm } from '@/composables/useConfirm';
 import type { Meeting } from '@/Types';
+
+const { confirm } = useConfirm();
 
 const props = defineProps<{
     meetableType: string;
@@ -47,13 +50,13 @@ function scheduleMeeting(): void {
     });
 }
 
-function deleteMeeting(meeting: Meeting): void {
-    if (confirm(`Cancel "${meeting.title}"?`)) {
-        router.delete(`/meetings/${meeting.id}`, {
-            preserveScroll: true,
-            onSuccess: () => fetchMeetings(),
-        });
-    }
+async function deleteMeeting(meeting: Meeting): Promise<void> {
+    if (!await confirm({ title: 'Cancel meeting?', message: `Cancel "${meeting.title}"?`, confirmLabel: 'Cancel Meeting' })) return;
+
+    router.delete(`/meetings/${meeting.id}`, {
+        preserveScroll: true,
+        onSuccess: () => fetchMeetings(),
+    });
 }
 
 function statusLabel(s: string): string {

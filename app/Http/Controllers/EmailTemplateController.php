@@ -48,21 +48,21 @@ class EmailTemplateController extends Controller
         return redirect()->route('templates.index')->with('success', 'Email template created.');
     }
 
-    public function edit(EmailTemplate $emailTemplate): Response
+    public function edit(EmailTemplate $template): Response
     {
-        $this->authorize('update', $emailTemplate);
+        $this->authorize('update', $template);
 
         return Inertia::render('Templates/Edit', [
-            'template' => $emailTemplate,
+            'template' => $template,
         ]);
     }
 
-    public function update(Request $request, EmailTemplate $emailTemplate): RedirectResponse
+    public function update(Request $request, EmailTemplate $template): RedirectResponse
     {
-        $this->authorize('update', $emailTemplate);
+        $this->authorize('update', $template);
 
         $validated = $request->validate([
-            'key' => ['required', 'string', 'max:100', 'unique:email_templates,key,' . $emailTemplate->id],
+            'key' => ['required', 'string', 'max:100', 'unique:email_templates,key,' . $template->id],
             'name' => ['required', 'string', 'max:255'],
             'subject' => ['required', 'string', 'max:998'],
             'body' => ['required', 'string'],
@@ -70,16 +70,16 @@ class EmailTemplateController extends Controller
             'variables.*' => ['string', 'max:100'],
         ]);
 
-        $emailTemplate->update($validated);
+        $template->update($validated);
 
         return redirect()->route('templates.index')->with('success', 'Email template updated.');
     }
 
-    public function destroy(EmailTemplate $emailTemplate): RedirectResponse
+    public function destroy(EmailTemplate $template): RedirectResponse
     {
-        $this->authorize('delete', $emailTemplate);
+        $this->authorize('delete', $template);
 
-        $emailTemplate->delete();
+        $template->delete();
 
         return redirect()->route('templates.index')->with('success', 'Email template deleted.');
     }

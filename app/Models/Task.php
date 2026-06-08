@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Enums\TaskPriority;
 use App\Enums\TaskStatus;
+use App\Models\Traits\BelongsToTeam;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,9 +15,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Task extends Model
 {
-    use HasFactory, HasUuids, SoftDeletes;
+    use BelongsToTeam, HasFactory, HasUuids, SoftDeletes;
 
     protected $fillable = [
+        'team_id',
         'project_id',
         'title',
         'description',
@@ -25,6 +27,9 @@ class Task extends Model
         'order',
         'assignee_id',
         'created_by',
+        'trello_card_id',
+        'trello_url',
+        'due_date',
     ];
 
     protected function casts(): array
@@ -33,6 +38,7 @@ class Task extends Model
             'status' => TaskStatus::class,
             'priority' => TaskPriority::class,
             'order' => 'integer',
+            'due_date' => 'datetime',
         ];
     }
 

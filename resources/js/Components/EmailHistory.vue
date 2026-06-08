@@ -18,7 +18,7 @@ const expandedId = ref<string | null>(null);
 
 async function fetchEmails(): Promise<void> {
     try {
-        const res = await axios.get(`/${props.emailableType}/${props.emailableId}/emails`);
+        const res = await axios.get(route('emails.index', { emailableType: props.emailableType, emailable: props.emailableId }));
         emails.value = res.data.data;
     } catch {
         // silently fail

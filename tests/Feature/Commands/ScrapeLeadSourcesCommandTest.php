@@ -20,7 +20,7 @@ class ScrapeLeadSourcesCommandTest extends TestCase
     {
         parent::setUp();
 
-        User::factory()->create(['id' => 1]);
+        User::factory()->create();
     }
 
     public function test_dispatches_jobs_for_due_sources(): void

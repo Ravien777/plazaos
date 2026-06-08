@@ -6,7 +6,10 @@ import EmptyState from '@/Components/EmptyState.vue';
 import SkeletonLoader from '@/Components/SkeletonLoader.vue';
 import { Head, router } from '@inertiajs/vue3';
 import { computed, nextTick, onMounted, ref } from 'vue';
+import { useToast } from '@/composables/useToast';
 import type { Task, User } from '@/Types';
+
+const toast = useToast();
 
 const ready = ref(false);
 
@@ -20,10 +23,12 @@ const props = defineProps<{
     projects: { id: string; name: string }[];
     assignees: User[];
     filters: { project_id?: string; assignee_id?: string };
+    trelloConfigured: boolean;
 }>();
 
 const selectedProject = ref(props.filters.project_id || '');
 const selectedAssignee = ref(props.filters.assignee_id || '');
+const syncingTrello = ref(false);
 
 const totalTasks = computed(() => Object.values(props.tasks).reduce((sum, arr) => sum + arr.length, 0));
 
@@ -32,6 +37,26 @@ function applyFilters(): void {
         project_id: selectedProject.value || undefined,
         assignee_id: selectedAssignee.value || undefined,
     }, { preserveState: true, replace: true });
+}
+
+async function syncTrello(): Promise<void> {
+    syncingTrello.value = true;
+    try {
+        await router.post(route('trello.sync'), {}, {
+            preserveScroll: true,
+            preserveState: true,
+            onSuccess: () => {
+                toast.success('Trello synced!');
+                router.get(route('tasks.index'), {}, { preserveScroll: true });
+            },
+            onError: () => {
+                toast.error('Trello sync failed.');
+                syncingTrello.value = false;
+            },
+        });
+    } catch {
+        syncingTrello.value = false;
+    }
 }
 </script>
 
@@ -43,8 +68,8 @@ function applyFilters(): void {
             <PageHeader title="Tasks" />
         </template>
 
-        <div class="py-12">
-            <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div class="py-6">
+            <div class="mx-auto max-w-7xl">
                 <div class="mb-4 flex items-center gap-4">
                     <select
                         v-model="selectedProject"
@@ -62,12 +87,21 @@ function applyFilters(): void {
                         <option value="">All Assignees</option>
                         <option v-for="a in assignees" :key="a.id" :value="a.id">{{ a.name }}</option>
                     </select>
+                    <button
+                        v-if="trelloConfigured"
+                        type="button"
+                        :disabled="syncingTrello"
+                        class="ml-auto inline-flex items-center rounded-md bg-green-700 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-green-600 disabled:opacity-50"
+                        @click="syncTrello"
+                    >
+                        {{ syncingTrello ? 'Syncing...' : 'Sync Trello' }}
+                    </button>
                 </div>
 
                 <div v-if="!ready" class="flex gap-4 overflow-x-auto pb-4">
-                    <div v-for="col in ['To Do', 'In Progress', 'Done']" :key="col" class="flex min-w-64 flex-1 flex-col rounded-lg border border-stone-200 border-t-4 bg-stone-50 p-3">
+                    <div v-for="col in ['To Do', 'In Progress', 'Done']" :key="col" class="flex min-w-64 flex-1 flex-col rounded-lg border border-gray-200 border-t-4 bg-gray-50 p-3">
                         <SkeletonLoader class="mb-3" height="1rem" width="6rem" />
-                        <div v-for="j in 3" :key="j" class="mb-2 rounded border border-stone-200 bg-white p-3">
+                        <div v-for="j in 3" :key="j" class="mb-2 rounded border border-gray-200 bg-white p-3">
                             <SkeletonLoader class="mb-2" height="0.875rem" width="80%" />
                             <SkeletonLoader height="0.75rem" width="40%" />
                         </div>

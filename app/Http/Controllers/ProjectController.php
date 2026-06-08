@@ -23,11 +23,11 @@ class ProjectController extends Controller
     {
         $this->authorize('viewAny', Project::class);
 
-        $projects = $this->projectService->list(request()->only(['status', 'client_id']));
+        $projects = $this->projectService->list(request()->only(['search', 'status', 'client_id']));
 
         return Inertia::render('Projects/Index', [
             'projects' => $projects,
-            'filters' => request()->only(['status', 'client_id']),
+            'filters' => request()->only(['search', 'status', 'client_id']),
         ]);
     }
 
@@ -102,6 +102,27 @@ class ProjectController extends Controller
         }
 
         return redirect()->route('projects.index')->with('success', 'Project deleted successfully.');
+    }
+
+    public function trash(): Response
+    {
+        $this->authorize('viewTrash', Project::class);
+
+        $projects = $this->projectService->listTrashed(request()->only(['status']));
+
+        return Inertia::render('Projects/Trash', [
+            'projects' => $projects,
+            'filters' => request()->only(['status']),
+        ]);
+    }
+
+    public function forceDestroy(Project $project): RedirectResponse
+    {
+        $this->authorize('delete', $project);
+
+        $project->forceDelete();
+
+        return redirect()->route('projects.trash')->with('success', 'Project permanently deleted.');
     }
 
     public function restore(Project $project): RedirectResponse

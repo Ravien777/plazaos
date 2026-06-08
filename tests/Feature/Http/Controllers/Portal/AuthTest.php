@@ -20,7 +20,7 @@ class AuthTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        User::factory()->create(['id' => 1]);
+        User::factory()->create();
 
         $this->client = Client::factory()->create();
         $this->clientUser = ClientUser::factory()->create([
@@ -78,7 +78,7 @@ class AuthTest extends TestCase
 
     public function test_admin_login_does_not_affect_portal(): void
     {
-        $admin = User::factory()->create(['id' => 999]);
+        $admin = User::factory()->create();
         $this->actingAs($admin);
 
         $response = $this->get(route('portal.dashboard'));

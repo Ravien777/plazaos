@@ -55,4 +55,8 @@ return [
         'model' => env('OPENAI_MODEL', 'gpt-4o'),
     ],
 
+    'trello' => [
+        'enabled' => env('TRELLO_ENABLED', false),
+    ],
+
 ];

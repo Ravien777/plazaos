@@ -26,7 +26,7 @@ class ConvertLeadToClientActionTest extends TestCase
     {
         parent::setUp();
         $this->action = app(ConvertLeadToClientAction::class);
-        User::factory()->create(['id' => 1]);
+        User::factory()->create();
     }
 
     public function test_converts_lead_to_client(): void

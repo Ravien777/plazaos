@@ -2,7 +2,10 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import EmptyState from '@/Components/EmptyState.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
+import { useConfirm } from '@/composables/useConfirm';
 import type { AllowedEvent, Webhook } from '@/Types';
+
+const { confirm } = useConfirm();
 
 const props = defineProps<{
     webhooks: Webhook[];
@@ -16,12 +19,11 @@ function eventLabels(events: string[]): string {
     return labels.slice(0, 3).join(', ') + ` +${labels.length - 3} more`;
 }
 
-function destroy(webhook: Webhook): void {
-    if (confirm(`Delete this webhook? "${webhook.url}"`)) {
-        router.delete(route('settings.webhooks.destroy', webhook.id), {
-            preserveScroll: true,
-        });
-    }
+async function destroy(webhook: Webhook): Promise<void> {
+    if (!await confirm({ title: 'Delete webhook?', message: `Delete this webhook? "${webhook.url}"` })) return;
+    router.delete(route('settings.webhooks.destroy', webhook.id), {
+        preserveScroll: true,
+    });
 }
 
 function testWebhook(webhook: Webhook): void {
@@ -40,15 +42,15 @@ function testWebhook(webhook: Webhook): void {
                 <h2 class="text-xl font-semibold leading-tight text-gray-700">Webhooks</h2>
                 <Link
                     :href="route('settings.webhooks.create')"
-                    class="rounded-md bg-stone-700 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-stone-600"
+                    class="rounded-md bg-gray-700 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-600"
                 >
                     Add Webhook
                 </Link>
             </div>
         </template>
 
-        <div class="py-12">
-            <div class="mx-auto max-w-3xl sm:px-6 lg:px-8">
+        <div class="py-6">
+            <div class="mx-auto max-w-3xl">
                 <EmptyState
                     v-if="webhooks.length === 0"
                     icon="🔗"
@@ -62,24 +64,24 @@ function testWebhook(webhook: Webhook): void {
                     <div
                         v-for="webhook in webhooks"
                         :key="webhook.id"
-                        class="rounded-lg border border-stone-200 bg-white p-4 shadow-sm"
+                        class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm"
                     >
                         <div class="flex items-start justify-between">
                             <div class="min-w-0 flex-1">
-                                <p class="truncate text-sm font-medium text-stone-800">{{ webhook.url }}</p>
-                                <p class="mt-0.5 text-xs text-stone-500">{{ eventLabels(webhook.events) }}</p>
+                                <p class="truncate text-sm font-medium text-gray-800">{{ webhook.url }}</p>
+                                <p class="mt-0.5 text-xs text-gray-500">{{ eventLabels(webhook.events) }}</p>
                             </div>
                             <div class="ml-4 flex items-center gap-2 shrink-0">
                                 <span
                                     class="inline-flex rounded-full px-2 py-0.5 text-xs font-medium"
-                                    :class="webhook.active ? 'bg-green-100 text-green-700' : 'bg-stone-100 text-stone-500'"
+                                    :class="webhook.active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'"
                                 >
                                     {{ webhook.active ? 'Active' : 'Inactive' }}
                                 </span>
                             </div>
                         </div>
 
-                        <div class="mt-2 flex items-center gap-3 text-xs text-stone-400">
+                        <div class="mt-2 flex items-center gap-3 text-xs text-gray-400">
                             <span v-if="webhook.last_sent_at">Last sent: {{ webhook.last_sent_at }}</span>
                             <span v-else>Not yet sent</span>
                             <span v-if="webhook.last_error_message" class="text-red-500" :title="webhook.last_error_message">
@@ -87,17 +89,17 @@ function testWebhook(webhook: Webhook): void {
                             </span>
                         </div>
 
-                        <div class="mt-3 flex items-center gap-2 border-t border-stone-100 pt-3">
+                        <div class="mt-3 flex items-center gap-2 border-t border-gray-100 pt-3">
                             <button
                                 type="button"
-                                class="text-xs text-stone-500 hover:text-stone-700"
+                                class="text-xs text-gray-500 hover:text-gray-700"
                                 @click="testWebhook(webhook)"
                             >
                                 Test
                             </button>
                             <Link
                                 :href="route('settings.webhooks.edit', webhook.id)"
-                                class="text-xs text-stone-500 hover:text-stone-700"
+                                class="text-xs text-gray-500 hover:text-gray-700"
                             >
                                 Edit
                             </Link>

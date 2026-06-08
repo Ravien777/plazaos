@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
+use App\Services\TrelloService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -14,7 +15,7 @@ use Inertia\Response;
 
 class TaskController extends Controller
 {
-    public function index(): Response
+    public function index(TrelloService $trello): Response
     {
         $this->authorize('viewAny', Task::class);
 
@@ -34,6 +35,7 @@ class TaskController extends Controller
             'projects' => $projects,
             'assignees' => $assignees,
             'filters' => request()->only(['project_id', 'assignee_id']),
+            'trelloConfigured' => $trello->configured(),
         ]);
     }
 

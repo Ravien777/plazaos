@@ -33,4 +33,9 @@ class LeadPolicy
     {
         return $user->canDelete();
     }
+
+    public function viewTrash(User $user): bool
+    {
+        return $user->canDelete();
+    }
 }

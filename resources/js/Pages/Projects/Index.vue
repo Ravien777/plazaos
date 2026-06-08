@@ -2,8 +2,11 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PageHeader from '@/Components/PageHeader.vue';
 import StatusBadge from '@/Components/StatusBadge.vue';
+import SearchInput from '@/Components/SearchInput.vue';
+import BulkActionBar from '@/Components/BulkActionBar.vue';
+import EmptyState from '@/Components/EmptyState.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useToast } from '@/composables/useToast';
 import type { Project, PaginatedResponse } from '@/Types';
 
@@ -11,37 +14,76 @@ const toast = useToast();
 
 const props = defineProps<{
     projects: PaginatedResponse<Project>;
-    filters: {
-        status?: string;
-        client_id?: string;
-    };
+    filters: { search?: string; status?: string; client_id?: string; };
 }>();
 
+const search = ref(props.filters.search ?? '');
 const status = ref(props.filters.status ?? '');
+const selectedIds = ref<string[]>([]);
+
+const projectStatusOptions = [
+    { value: 'discovery', label: 'Discovery' },
+    { value: 'design', label: 'Design' },
+    { value: 'development', label: 'Development' },
+    { value: 'testing', label: 'Testing' },
+    { value: 'launch', label: 'Launch' },
+    { value: 'completed', label: 'Completed' },
+];
+
+const allSelected = computed(() => {
+    if (props.projects.data.length === 0) return false;
+    return props.projects.data.every(p => selectedIds.value.includes(p.id));
+});
+
+const someSelected = computed(() => {
+    return props.projects.data.some(p => selectedIds.value.includes(p.id)) && !allSelected.value;
+});
+
+watch(search, () => applyFilters());
 
 function applyFilters(): void {
-    router.get('/projects', { status: status.value }, {
+    selectedIds.value = [];
+    router.get('/projects', {
+        search: search.value,
+        status: status.value,
+    }, {
         preserveState: true,
         preserveScroll: true,
     });
 }
 
 function clearFilters(): void {
+    search.value = '';
     status.value = '';
+    selectedIds.value = [];
     router.get('/projects', {}, {
         preserveState: true,
         preserveScroll: true,
     });
 }
 
+function toggleSelectAll(): void {
+    if (allSelected.value) {
+        selectedIds.value = selectedIds.value.filter(id => !props.projects.data.some(p => p.id === id));
+    } else {
+        const pageIds = props.projects.data.map(p => p.id);
+        selectedIds.value = [...new Set([...selectedIds.value, ...pageIds])];
+    }
+}
+
+function toggleSelect(id: string): void {
+    const idx = selectedIds.value.indexOf(id);
+    if (idx === -1) {
+        selectedIds.value.push(id);
+    } else {
+        selectedIds.value.splice(idx, 1);
+    }
+}
+
 function statusLabel(s: string): string {
     const labels: Record<string, string> = {
-        discovery: 'Discovery',
-        design: 'Design',
-        development: 'Development',
-        testing: 'Testing',
-        launch: 'Launch',
-        completed: 'Completed',
+        discovery: 'Discovery', design: 'Design', development: 'Development',
+        testing: 'Testing', launch: 'Launch', completed: 'Completed',
     };
     return labels[s] ?? s;
 }
@@ -53,12 +95,39 @@ function pageUrl(url: string | null): string {
 function destroy(project: Project): void {
     router.delete(`/projects/${project.id}`, {
         preserveScroll: true,
+        onSuccess: () => toast.success(`"${project.name}" deleted.`),
+    });
+}
+
+function bulkArchive(): void {
+    const count = selectedIds.value.length;
+    router.post(route('projects.bulk.delete'), { ids: selectedIds.value }, {
+        preserveState: true,
+        preserveScroll: true,
         onSuccess: () => {
-            toast.success(`"${project.name}" deleted.`, {
-                label: 'Undo',
-                handler: () => router.post(route('projects.restore', project.id)),
-            });
+            selectedIds.value = [];
+            toast.success(`${count} project(s) archived.`);
         },
+    });
+}
+
+function bulkForceDelete(): void {
+    const count = selectedIds.value.length;
+    router.post(route('projects.bulk.force-delete'), { ids: selectedIds.value }, {
+        preserveState: true,
+        preserveScroll: true,
+        onSuccess: () => {
+            selectedIds.value = [];
+            toast.success(`${count} project(s) permanently deleted.`);
+        },
+    });
+}
+
+function bulkUpdateStatus(status: string): void {
+    router.post(route('projects.bulk.status'), { ids: selectedIds.value, status }, {
+        preserveState: true,
+        preserveScroll: true,
+        onSuccess: () => { selectedIds.value = []; },
     });
 }
 </script>
@@ -71,6 +140,13 @@ function destroy(project: Project): void {
             <PageHeader title="Projects">
                 <template #actions>
                     <Link
+                        v-if="$page.props.auth.user.role === 'owner' || !$page.props.auth.user.team_id"
+                        href="/projects/trash"
+                        class="mr-2 inline-flex items-center rounded-md border border-gray-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 transition hover:bg-gray-50"
+                    >
+                        Trash
+                    </Link>
+                    <Link
                         href="/projects/create"
                         class="inline-flex items-center rounded-md bg-gray-700 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-600"
                     >
@@ -80,11 +156,12 @@ function destroy(project: Project): void {
             </PageHeader>
         </template>
 
-        <div class="py-12">
-            <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div class="py-6">
+            <div class="mx-auto max-w-7xl">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <SearchInput v-model="search" />
                             <select
                                 v-model="status"
                                 class="rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
@@ -104,6 +181,15 @@ function destroy(project: Project): void {
                             <table class="min-w-full divide-y divide-gray-100">
                                 <thead class="bg-gray-50">
                                     <tr>
+                                        <th class="w-10 px-3 py-3">
+                                            <input
+                                                type="checkbox"
+                                                :checked="allSelected"
+                                                :indeterminate="someSelected"
+                                                class="rounded border-gray-200 text-indigo-500 shadow-sm focus:ring-indigo-400"
+                                                @change="toggleSelectAll"
+                                            />
+                                        </th>
                                         <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">Name</th>
                                         <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">Client</th>
                                         <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">Status</th>
@@ -118,7 +204,16 @@ function destroy(project: Project): void {
                                         v-for="project in projects.data"
                                         :key="project.id"
                                         class="hover:bg-gray-50"
+                                        :class="{ 'bg-indigo-50': selectedIds.includes(project.id) }"
                                     >
+                                        <td class="px-3 py-4" @click.stop>
+                                            <input
+                                                type="checkbox"
+                                                :checked="selectedIds.includes(project.id)"
+                                                class="rounded border-gray-200 text-indigo-500 shadow-sm focus:ring-indigo-400"
+                                                @change="toggleSelect(project.id)"
+                                            />
+                                        </td>
                                         <td class="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800">
                                             <Link :href="`/projects/${project.id}`" class="text-indigo-500 hover:text-indigo-600">
                                                 {{ project.name }}
@@ -160,14 +255,28 @@ function destroy(project: Project): void {
                                         </td>
                                     </tr>
                                     <tr v-if="projects.data.length === 0">
-                                        <td colspan="7" class="px-3 py-8 text-center text-sm text-gray-600">
-                                            No projects found.
-                                            <Link :href="route('projects.create')" class="ml-2 text-blue-500 hover:text-blue-700">Create one</Link>.
+                                        <td colspan="8" class="px-3 py-4">
+                                            <EmptyState
+                                                icon="📁"
+                                                title="No projects yet"
+                                                message="Start a new project to organize your work."
+                                                action-label="New Project"
+                                                action-href="/projects/create"
+                                            />
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
+
+                        <BulkActionBar
+                            :selected-count="selectedIds.length"
+                            :show="selectedIds.length > 0"
+                            :status-options="projectStatusOptions"
+                            @archive="bulkArchive"
+                            @force-delete="bulkForceDelete"
+                            @update-status="bulkUpdateStatus"
+                        />
 
                         <div v-if="projects.last_page > 1" class="mt-4 flex items-center justify-between">
                             <div class="text-sm text-gray-600">

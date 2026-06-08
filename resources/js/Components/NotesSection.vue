@@ -2,7 +2,10 @@
 import { ref, onMounted } from 'vue';
 import { router } from '@inertiajs/vue3';
 import SkeletonLoader from '@/Components/SkeletonLoader.vue';
+import { useConfirm } from '@/composables/useConfirm';
 import type { Note } from '@/Types';
+
+const { confirm } = useConfirm();
 
 const props = defineProps<{
     noteableType: string;
@@ -21,7 +24,7 @@ onMounted(() => {
 
 function fetchNotes(): void {
     loading.value = true;
-    fetch(`/${props.noteableType}/${props.noteableId}/notes`)
+    fetch(route('notes.index', { noteableType: props.noteableType, noteable: props.noteableId }))
         .then((res) => res.json())
         .then((data) => {
             notes.value = data.data ?? [];
@@ -74,8 +77,8 @@ function updateNote(note: Note): void {
     );
 }
 
-function deleteNote(note: Note): void {
-    if (!confirm('Delete this note?')) return;
+async function deleteNote(note: Note): Promise<void> {
+    if (!await confirm({ title: 'Delete note?', message: 'Delete this note?' })) return;
 
     router.delete(`/notes/${note.id}`, {
         preserveScroll: true,
@@ -91,7 +94,7 @@ function deleteNote(note: Note): void {
         <h3 class="text-lg font-medium text-gray-800">Notes</h3>
 
         <div v-if="loading" class="mt-4 space-y-3">
-            <div v-for="i in 3" :key="i" class="rounded-lg border border-stone-200 bg-white p-4">
+            <div v-for="i in 3" :key="i" class="rounded-lg border border-gray-200 bg-white p-4">
                 <SkeletonLoader class="mb-2" height="0.75rem" width="40%" />
                 <SkeletonLoader height="0.75rem" width="70%" />
             </div>

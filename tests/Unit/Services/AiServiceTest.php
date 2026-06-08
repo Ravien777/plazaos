@@ -24,6 +24,13 @@ class AiServiceTest extends TestCase
         config(['services.openai.model' => 'gpt-4o']);
     }
 
+    protected function tearDown(): void
+    {
+        config(['services.openai.api_key' => null]);
+        config(['services.openai.model' => null]);
+        parent::tearDown();
+    }
+
     public function test_generate_outreach_returns_subject_and_body(): void
     {
         Http::fake([

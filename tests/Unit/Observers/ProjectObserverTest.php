@@ -17,7 +17,7 @@ class ProjectObserverTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        User::factory()->create(['id' => 1]);
+        User::factory()->create();
     }
 
     public function test_updated_to_completed_triggers_automation_activity(): void

@@ -86,7 +86,7 @@ class PortalTokenControllerTest extends TestCase
 
     public function test_generate_portal_link_creates_token(): void
     {
-        $user = User::factory()->create(['id' => 1]);
+        $user = User::factory()->create();
         $this->actingAs($user);
 
         $client = Client::factory()->create();
@@ -100,7 +100,7 @@ class PortalTokenControllerTest extends TestCase
 
     public function test_generate_portal_link_refreshes_expired_token(): void
     {
-        $user = User::factory()->create(['id' => 1]);
+        $user = User::factory()->create();
         $this->actingAs($user);
 
         $client = Client::factory()->create([

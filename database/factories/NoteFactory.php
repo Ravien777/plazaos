@@ -6,6 +6,7 @@ namespace Database\Factories;
 
 use App\Models\Lead;
 use App\Models\Note;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class NoteFactory extends Factory
@@ -20,7 +21,7 @@ class NoteFactory extends Factory
             'noteable_type' => $noteable->getMorphClass(),
             'noteable_id' => $noteable->id,
             'content' => fake()->paragraph(),
-            'created_by' => 1,
+            'created_by' => User::factory(),
         ];
     }
 }

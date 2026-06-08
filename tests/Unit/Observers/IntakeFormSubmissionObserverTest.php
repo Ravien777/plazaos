@@ -16,7 +16,7 @@ class IntakeFormSubmissionObserverTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        User::factory()->create(['id' => 1]);
+        User::factory()->create();
     }
 
     public function test_created_triggers_automation_activity(): void

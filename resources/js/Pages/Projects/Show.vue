@@ -4,6 +4,7 @@ import KanbanBoard from '@/Components/KanbanBoard.vue';
 import PageHeader from '@/Components/PageHeader.vue';
 import StatusBadge from '@/Components/StatusBadge.vue';
 import NotesSection from '@/Components/NotesSection.vue';
+import CommentSection from '@/Components/CommentSection.vue';
 import ActivityFeed from '@/Components/ActivityFeed.vue';
 import DocumentList from '@/Components/DocumentList.vue';
 import EmailHistory from '@/Components/EmailHistory.vue';
@@ -96,8 +97,8 @@ async function requestReview(): Promise<void> {
             </PageHeader>
         </template>
 
-        <div class="py-12">
-            <div class="mx-auto max-w-4xl sm:px-6 lg:px-8">
+        <div class="py-6">
+            <div class="mx-auto max-w-4xl">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
@@ -153,6 +154,12 @@ async function requestReview(): Promise<void> {
                 <div class="mt-6 overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <NotesSection noteable-type="project" :noteable-id="project.id" />
+                    </div>
+                </div>
+
+                <div class="mt-6 overflow-hidden bg-white shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <CommentSection commentable-type="project" :commentable-id="project.id" />
                     </div>
                 </div>
 

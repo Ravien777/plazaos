@@ -18,7 +18,7 @@ class CheckInactiveLeadsCommandTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        User::factory()->create(['id' => 1]);
+        $this->user = User::factory()->create();
     }
 
     public function test_triggers_automation_for_stale_leads(): void
@@ -36,7 +36,7 @@ class CheckInactiveLeadsCommandTest extends TestCase
         $this->artisan('automations:check-inactive-leads')
             ->assertSuccessful();
 
-        Notification::assertSentTo(User::find(1), LeadInactiveReminder::class);
+        Notification::assertSentTo($this->user, LeadInactiveReminder::class);
     }
 
     public function test_triggers_for_leads_never_contacted(): void
@@ -50,7 +50,7 @@ class CheckInactiveLeadsCommandTest extends TestCase
         $this->artisan('automations:check-inactive-leads')
             ->assertSuccessful();
 
-        Notification::assertSentTo(User::find(1), LeadInactiveReminder::class);
+        Notification::assertSentTo($this->user, LeadInactiveReminder::class);
     }
 
     public function test_skips_active_leads(): void

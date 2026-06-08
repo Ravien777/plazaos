@@ -13,6 +13,22 @@ use Resend\Laravel\Facades\Resend;
 
 class EmailService
 {
+    public function fromAddress(): string
+    {
+        $user = User::first();
+        $dbValue = $user?->getSetting('mail_from_address');
+
+        return $dbValue ?? config('mail.from.address');
+    }
+
+    public function fromName(): string
+    {
+        $user = User::first();
+        $dbValue = $user?->getSetting('mail_from_name');
+
+        return $dbValue ?? config('mail.from.name');
+    }
+
     public function getFor(Model $emailable): Collection
     {
         return $emailable->emails()->latest()->get();
@@ -22,7 +38,7 @@ class EmailService
     {
         $user = $user ?? Auth::user();
 
-        $from = config('mail.from.address');
+        $from = $this->fromAddress();
         $to = $emailable->email ?? $emailable->contact_email ?? '';
 
         try {

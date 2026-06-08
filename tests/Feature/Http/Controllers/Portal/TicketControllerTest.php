@@ -22,7 +22,7 @@ class TicketControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        User::factory()->create(['id' => 1]);
+        $this->admin = User::factory()->create();
 
         $this->client = Client::factory()->create();
         $this->otherClient = Client::factory()->create();
@@ -36,13 +36,13 @@ class TicketControllerTest extends TestCase
             'ticketable_type' => 'client',
             'ticketable_id' => $this->client->id,
             'subject' => 'Our Issue',
-            'user_id' => 1,
+            'user_id' => $this->admin->id,
         ]);
         Ticket::factory()->create([
             'ticketable_type' => 'client',
             'ticketable_id' => $this->otherClient->id,
             'subject' => 'Their Issue',
-            'user_id' => 1,
+            'user_id' => $this->admin->id,
         ]);
 
         $response = $this->get(route('portal.tickets.index'));
@@ -83,7 +83,7 @@ class TicketControllerTest extends TestCase
         $ticket = Ticket::factory()->create([
             'ticketable_type' => 'client',
             'ticketable_id' => $this->client->id,
-            'user_id' => 1,
+            'user_id' => $this->admin->id,
         ]);
 
         $response = $this->get(route('portal.tickets.show', $ticket));
@@ -97,7 +97,7 @@ class TicketControllerTest extends TestCase
         $ticket = Ticket::factory()->create([
             'ticketable_type' => 'client',
             'ticketable_id' => $this->otherClient->id,
-            'user_id' => 1,
+            'user_id' => $this->admin->id,
         ]);
 
         $response = $this->get(route('portal.tickets.show', $ticket));

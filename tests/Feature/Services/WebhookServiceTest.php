@@ -22,8 +22,8 @@ class WebhookServiceTest extends TestCase
     {
         parent::setUp();
 
-        $user = User::factory()->create(['id' => 1]);
-        $this->actingAs($user);
+        $this->user = User::factory()->create();
+        $this->actingAs($this->user);
 
         $this->webhookService = app(WebhookService::class);
     }
@@ -46,7 +46,7 @@ class WebhookServiceTest extends TestCase
         Queue::fake();
 
         Webhook::factory()->create([
-            'user_id' => 1,
+            'user_id' => $this->user->id,
             'events' => ['lead.created', 'ticket.created'],
             'active' => true,
         ]);
@@ -62,7 +62,7 @@ class WebhookServiceTest extends TestCase
         Queue::fake();
 
         Webhook::factory()->create([
-            'user_id' => 1,
+            'user_id' => $this->user->id,
             'events' => ['lead.created'],
             'active' => false,
         ]);
@@ -78,7 +78,7 @@ class WebhookServiceTest extends TestCase
         Queue::fake();
 
         Webhook::factory()->create([
-            'user_id' => 1,
+            'user_id' => $this->user->id,
             'events' => ['client.created'],
             'active' => true,
         ]);

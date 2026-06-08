@@ -20,6 +20,12 @@ class AiControllerTest extends TestCase
         config(['services.openai.api_key' => 'test-key']);
     }
 
+    protected function tearDown(): void
+    {
+        config(['services.openai.api_key' => null]);
+        parent::tearDown();
+    }
+
     public function test_generate_outreach_returns_json(): void
     {
         Http::fake([

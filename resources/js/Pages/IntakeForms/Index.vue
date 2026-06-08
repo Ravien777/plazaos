@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PageHeader from '@/Components/PageHeader.vue';
+import DataTable from '@/Components/DataTable.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
+import { useToast } from '@/composables/useToast';
+import { useConfirm } from '@/composables/useConfirm';
 import type { PaginatedResponse } from '@/Types';
+
+const toast = useToast();
+const { confirm } = useConfirm();
 
 interface IntakeForm {
     id: string;
@@ -17,11 +23,19 @@ const props = defineProps<{
     forms: PaginatedResponse<IntakeForm>;
 }>();
 
-function destroyForm(form: IntakeForm): void {
-    if (confirm(`Delete "${form.title}"? All submissions will also be deleted. This cannot be undone.`)) {
-        router.delete(`/intake-forms/${form.id}`);
-    }
+async function destroyForm(form: IntakeForm): Promise<void> {
+    if (!await confirm({ title: 'Delete form?', message: `Delete "${form.title}"? All submissions will also be deleted. This cannot be undone.` })) return;
+    router.delete(`/intake-forms/${form.id}`, {
+        onSuccess: () => toast.success(`"${form.title}" deleted.`),
+    });
 }
+
+const columns = [
+    { key: 'title', label: 'Title' },
+    { key: 'is_active', label: 'Active' },
+    { key: 'submissions_count', label: 'Submissions' },
+    { key: 'created_at', label: 'Created' },
+];
 </script>
 
 <template>
@@ -41,79 +55,85 @@ function destroyForm(form: IntakeForm): void {
             </PageHeader>
         </template>
 
-        <div class="py-12">
-            <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div class="py-6">
+            <div class="mx-auto max-w-7xl">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-100">
-                                <thead class="bg-gray-50">
-                                    <tr>
-                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">Title</th>
-                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">Active</th>
-                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">Submissions</th>
-                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">Created</th>
-                                        <th class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-gray-100 bg-white">
-                                    <tr
-                                        v-for="form in forms.data"
-                                        :key="form.id"
-                                        class="hover:bg-gray-50"
+                        <DataTable
+                            :items="forms.data"
+                            :columns="columns"
+                            empty-icon="📋"
+                            empty-title="No intake forms yet"
+                            empty-message="Create an intake form to collect information from prospects."
+                            empty-action-label="New Form"
+                            empty-action-href="/intake-forms/create"
+                        >
+                            <template #cell-title="{ item }">
+                                <Link :href="`/intake-forms/${item.id}`" class="text-indigo-500 hover:text-indigo-600 font-medium">
+                                    {{ item.title }}
+                                </Link>
+                            </template>
+                            <template #cell-is_active="{ item }">
+                                <span
+                                    class="inline-flex rounded-full px-2 py-1 text-xs font-medium"
+                                    :class="item.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'"
+                                >
+                                    {{ item.is_active ? 'Yes' : 'No' }}
+                                </span>
+                            </template>
+                            <template #cell-submissions_count="{ item }">
+                                {{ item.submissions_count }}
+                            </template>
+                            <template #cell-created_at="{ item }">
+                                {{ new Date(item.created_at).toLocaleDateString() }}
+                            </template>
+                            <template #actions="{ item }">
+                                <div class="flex gap-2">
+                                    <Link
+                                        :href="`/intake-forms/${item.id}`"
+                                        class="inline-flex items-center justify-center min-h-[44px] min-w-[44px] text-sm text-indigo-500 hover:text-indigo-600"
                                     >
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm font-medium text-gray-800">
-                                            <Link :href="`/intake-forms/${form.id}`" class="text-indigo-500 hover:text-indigo-600">
-                                                {{ form.title }}
-                                            </Link>
-                                        </td>
-                                        <td class="whitespace-nowrap px-3 py-4">
-                                            <span
-                                                class="inline-flex rounded-full px-2 py-1 text-xs font-medium"
-                                                :class="form.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'"
-                                            >
-                                                {{ form.is_active ? 'Yes' : 'No' }}
-                                            </span>
-                                        </td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
-                                            {{ form.submissions_count }}
-                                        </td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
-                                            {{ new Date(form.created_at).toLocaleDateString() }}
-                                        </td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm">
-                                            <div class="flex gap-2">
-                                                <Link
-                                                    :href="`/intake-forms/${form.id}`"
-                                                    class="text-indigo-500 hover:text-indigo-600"
-                                                >
-                                                    View
-                                                </Link>
-                                                <Link
-                                                    :href="`/intake-forms/${form.id}/edit`"
-                                                    class="text-indigo-500 hover:text-indigo-600"
-                                                >
-                                                    Edit
-                                                </Link>
-                                                <button
-                                                    type="button"
-                                                    class="text-red-600 hover:text-red-900"
-                                                    @click="destroyForm(form)"
-                                                >
-                                                    Delete
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr v-if="forms.data.length === 0">
-                                        <td colspan="5" class="px-3 py-8 text-center text-sm text-gray-600">
-                                            No intake forms yet.
-                                            <Link href="/intake-forms/create" class="text-indigo-500 hover:text-indigo-600"> Create one </Link>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                                        View
+                                    </Link>
+                                    <Link
+                                        :href="`/intake-forms/${item.id}/edit`"
+                                        class="inline-flex items-center justify-center min-h-[44px] min-w-[44px] text-sm text-indigo-500 hover:text-indigo-600"
+                                    >
+                                        Edit
+                                    </Link>
+                                    <button
+                                        type="button"
+                                        class="inline-flex items-center justify-center min-h-[44px] min-w-[44px] text-sm text-red-600 hover:text-red-900"
+                                        @click="destroyForm(item)"
+                                    >
+                                        Delete
+                                    </button>
+                                </div>
+                            </template>
+                            <template #card="{ item }">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex-1 min-w-0">
+                                        <Link :href="`/intake-forms/${item.id}`" class="text-sm font-semibold text-indigo-600 hover:text-indigo-700 truncate block">
+                                            {{ item.title }}
+                                        </Link>
+                                    </div>
+                                    <span
+                                        class="shrink-0 ml-2 inline-flex rounded-full px-2 py-1 text-xs font-medium"
+                                        :class="item.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'"
+                                    >
+                                        {{ item.is_active ? 'Active' : 'Inactive' }}
+                                    </span>
+                                </div>
+                                <div class="mt-2 space-y-1 text-sm text-gray-500">
+                                    <div class="flex items-center gap-2">
+                                        <span>{{ item.submissions_count }} submission(s)</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span>Created {{ new Date(item.created_at).toLocaleDateString() }}</span>
+                                    </div>
+                                </div>
+                            </template>
+                        </DataTable>
 
                         <div v-if="forms.last_page > 1" class="mt-4 flex items-center justify-between">
                             <div class="text-sm text-gray-600">

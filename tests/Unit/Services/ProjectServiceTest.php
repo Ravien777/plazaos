@@ -20,7 +20,7 @@ class ProjectServiceTest extends TestCase
     {
         parent::setUp();
         $this->projectService = app(ProjectService::class);
-        User::factory()->create(['id' => 1]);
+        User::factory()->create();
     }
 
     public function test_list_returns_paginated_results(): void

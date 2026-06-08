@@ -8,12 +8,16 @@
     "require": {
         "php": "^8.2",
         "doctrine/dbal": "^4.4",
+        "google/apiclient": "^2.0",
         "inertiajs/inertia-laravel": "^2.0",
+        "laravel/fortify": "^1.37",
         "laravel/framework": "^12.0",
+        "laravel/reverb": "*",
         "laravel/sanctum": "^4.0",
         "laravel/slack-notification-channel": "^3.8",
         "laravel/tinker": "^2.10.1",
         "league/csv": "^9.28",
+        "pusher/pusher-php-server": "*",
         "resend/resend-laravel": "^1.4",
         "tightenco/ziggy": "^2.0"
     },
@@ -59,7 +63,7 @@
         "lint:test": "vendor/bin/pint --test",
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"bash artisan.sh serve\" \"bash artisan.sh queue:listen --tries=1 --timeout=0\" \"bash artisan.sh pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite --kill-others"
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74,#a7f3d0\" \"bash artisan.sh serve\" \"bash artisan.sh queue:listen --tries=1 --timeout=0\" \"bash artisan.sh pail --timeout=0\" \"bash artisan.sh reverb:start --no-interaction\" \"npm run dev\" --names=server,queue,logs,vite,reverb --kill-others"
         ],
         "test": [
             "bash artisan.sh config:clear --ansi",

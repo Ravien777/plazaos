@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Enums\LeadStatus;
 use App\Models\Email;
+use App\Models\Traits\BelongsToTeam;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
@@ -14,10 +15,11 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Lead extends Model
 {
-    use HasFactory, HasUuids;
+    use BelongsToTeam, HasFactory, HasUuids;
     use SoftDeletes;
 
     protected $fillable = [
+        'team_id',
         'company_name',
         'contact_name',
         'email',
@@ -65,5 +67,10 @@ class Lead extends Model
     public function documents(): MorphMany
     {
         return $this->morphMany(Document::class, 'documentable');
+    }
+
+    public function comments(): MorphMany
+    {
+        return $this->morphMany(Comment::class, 'commentable');
     }
 }

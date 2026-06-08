@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import { useConfirm } from '@/composables/useConfirm';
 import type { DocumentRecord } from '@/Types';
+
+const { confirm } = useConfirm();
 
 const props = defineProps<{
     documentableType: string;
@@ -14,7 +17,7 @@ const uploadError = ref('');
 
 async function fetchDocuments(): Promise<void> {
     try {
-        const res = await axios.get(`/${props.documentableType}/${props.documentableId}/documents`);
+        const res = await axios.get(route('documents.index', { documentableType: props.documentableType, documentable: props.documentableId }));
         documents.value = res.data.documents ?? [];
     } catch {
         documents.value = [];
@@ -49,7 +52,7 @@ async function uploadFile(event: Event): Promise<void> {
 }
 
 async function deleteDocument(doc: DocumentRecord): Promise<void> {
-    if (!confirm(`Delete "${doc.name}"?`)) return;
+    if (!await confirm({ title: 'Delete document?', message: `Delete "${doc.name}"?` })) return;
 
     try {
         await axios.delete(`/documents/${doc.id}`);
@@ -100,10 +103,10 @@ onMounted(fetchDocuments);
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                     <div>
-                        <a
-                            :href="`/documents/${doc.id}/download`"
-                            class="text-sm font-medium text-indigo-500 hover:text-indigo-600"
-                        >
+                    <a
+                        :href="doc.signed_download_url"
+                        class="text-sm font-medium text-indigo-500 hover:text-indigo-600"
+                    >
                             {{ doc.name }}
                         </a>
                         <p class="text-xs text-gray-600">{{ formatSize(doc.size) }}</p>

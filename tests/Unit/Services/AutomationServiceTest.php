@@ -31,7 +31,7 @@ class AutomationServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        User::factory()->create(['id' => 1]);
+        User::factory()->create();
         $this->automationService = app(AutomationService::class);
     }
 

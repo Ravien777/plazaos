@@ -25,7 +25,7 @@ class FormControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        User::factory()->create(['id' => 1]);
+        User::factory()->create();
 
         $this->client = Client::factory()->create();
         $this->clientUser = ClientUser::factory()->create(['client_id' => $this->client->id]);

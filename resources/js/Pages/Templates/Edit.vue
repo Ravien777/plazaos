@@ -48,8 +48,8 @@ function submit(): void {
             <PageHeader title="Edit Email Template" />
         </template>
 
-        <div class="py-12">
-            <div class="mx-auto max-w-4xl sm:px-6 lg:px-8">
+        <div class="py-6">
+            <div class="mx-auto max-w-4xl">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <form class="p-6" @submit.prevent="submit">
                         <div class="mb-6">

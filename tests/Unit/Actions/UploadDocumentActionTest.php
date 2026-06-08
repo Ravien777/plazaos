@@ -20,7 +20,7 @@ class UploadDocumentActionTest extends TestCase
     {
         parent::setUp();
         $this->action = app(UploadDocumentAction::class);
-        User::factory()->create(['id' => 1]);
+        User::factory()->create();
         $this->actingAs(User::find(1));
     }
 

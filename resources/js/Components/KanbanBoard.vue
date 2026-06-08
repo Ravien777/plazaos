@@ -60,10 +60,10 @@ function onDragEnd(evt: any, column: string): void {
         <div
             v-for="col in columns"
             :key="col.key"
-            class="flex min-w-64 flex-1 flex-col rounded-lg border border-stone-200 border-t-4 bg-stone-50"
+            class="flex min-w-64 flex-1 flex-col rounded-lg border border-gray-200 border-t-4 bg-gray-50"
             :class="col.color"
         >
-            <div class="border-b border-stone-200 px-3 py-2">
+            <div class="border-b border-gray-200 px-3 py-2">
                 <h3 class="text-sm font-semibold text-gray-700">
                     {{ col.label }}
                     <span class="ml-1 text-xs font-normal text-gray-400">({{ (col.key === 'todo' ? todoList : col.key === 'in_progress' ? inProgressList : doneList).length }})</span>
@@ -116,7 +116,7 @@ function onDragEnd(evt: any, column: string): void {
                 </template>
             </VueDraggable>
 
-            <div class="border-t border-stone-200 px-3 py-2">
+            <div class="border-t border-gray-200 px-3 py-2">
                 <form @submit.prevent="addTask(col.key)">
                     <input
                         v-model="newTaskInputs[col.key]"

@@ -5,7 +5,7 @@ namespace Tests\Unit\Services;
 use App\Enums\LeadStatus;
 use App\Models\Lead;
 use App\Models\User;
-use App\Notifications\LeadCreated;
+use App\Notifications\LeadImported;
 use App\Services\LeadService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
@@ -21,7 +21,7 @@ class LeadServiceTest extends TestCase
     {
         parent::setUp();
         $this->leadService = app(LeadService::class);
-        User::factory()->create(['id' => 1]);
+        User::factory()->create();
     }
 
     public function test_list_returns_paginated_results(): void
@@ -77,7 +77,7 @@ class LeadServiceTest extends TestCase
             'subject_id' => $lead->id,
             'event' => 'lead.created',
         ]);
-        Notification::assertSentTo(User::find(1), LeadCreated::class);
+        Notification::assertSentTo(User::find(1), LeadImported::class);
     }
 
     public function test_update_updates_lead_and_logs_activity(): void

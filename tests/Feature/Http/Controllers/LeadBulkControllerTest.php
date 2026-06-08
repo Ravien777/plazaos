@@ -5,6 +5,8 @@ namespace Tests\Feature\Http\Controllers;
 use App\Models\Lead;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Mockery;
+use Resend\Contracts\Client as ResendClient;
 use Tests\TestCase;
 
 class LeadBulkControllerTest extends TestCase
@@ -14,8 +16,16 @@ class LeadBulkControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $user = User::factory()->create(['id' => 1]);
+        $user = User::factory()->create();
         $this->actingAs($user);
+
+        $emailsMock = Mockery::mock();
+        $emailsMock->shouldReceive('send')->andReturn((object) ['id' => 'resend-test-id']);
+
+        $clientMock = Mockery::mock(ResendClient::class);
+        $clientMock->shouldReceive('emails')->andReturn($emailsMock);
+
+        $this->app->instance(ResendClient::class, $clientMock);
     }
 
     public function test_bulk_delete_removes_selected_leads(): void

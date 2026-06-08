@@ -25,11 +25,11 @@ class TicketController extends Controller
     {
         $this->authorize('viewAny', Ticket::class);
 
-        $tickets = $this->ticketService->list(request()->only(['status', 'priority', 'category', 'ticketable_type']));
+        $tickets = $this->ticketService->list(request()->only(['search', 'status', 'priority', 'category', 'ticketable_type']));
 
         return Inertia::render('Tickets/Index', [
             'tickets' => $tickets,
-            'filters' => request()->only(['status', 'priority', 'category']),
+            'filters' => request()->only(['search', 'status', 'priority', 'category']),
         ]);
     }
 
@@ -145,6 +145,27 @@ class TicketController extends Controller
         }
 
         return redirect()->route('tickets.index')->with('success', 'Ticket deleted successfully.');
+    }
+
+    public function trash(): Response
+    {
+        $this->authorize('viewTrash', Ticket::class);
+
+        $tickets = $this->ticketService->listTrashed(request()->only(['status']));
+
+        return Inertia::render('Tickets/Trash', [
+            'tickets' => $tickets,
+            'filters' => request()->only(['status']),
+        ]);
+    }
+
+    public function forceDestroy(Ticket $ticket): RedirectResponse
+    {
+        $this->authorize('delete', $ticket);
+
+        $ticket->forceDelete();
+
+        return redirect()->route('tickets.trash')->with('success', 'Ticket permanently deleted.');
     }
 
     public function restore(Ticket $ticket): RedirectResponse

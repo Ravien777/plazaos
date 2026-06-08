@@ -124,7 +124,7 @@ npm run build
 | `app/Http/Middleware` | HTTP middleware (HandleInertiaRequests, SecurityHeaders) |
 | `resources/js` | Vue 3 + TypeScript frontend |
 | `resources/js/Pages` | Inertia.js page components (one per route) |
-| `resources/js/Components` | Reusable Vue components |
+| `resources/js/Components` | Reusable Vue components (DataTable, FilterBar, BottomNav, etc.) |
 | `resources/js/Types` | Shared TypeScript interfaces |
 | `routes/web.php` | All web routes |
 | `routes/console.php` | Artisan console commands and scheduled tasks |
@@ -249,7 +249,7 @@ npm run build
 
 ## Testing
 
-This project uses **PHPUnit 11** with 420 tests (1387 assertions).
+This project uses **PHPUnit 11** with 432 tests (1421 assertions).
 
 ```bash
 # Run everything
@@ -563,6 +563,8 @@ The deploy script handles the rest:
 | Testing | PHPUnit 11 |
 | CI/CD | GitHub Actions |
 | Outbound Webhooks | Custom (HMAC-SHA256 signed) |
+| Data Scoping | Team-scoped isolation via global Eloquent scope (BelongsToTeam trait) |
+| Responsive | Mobile-first: DataTable (table→cards), BottomNav, FilterBar, 44px touch targets |
 
 ---
 
@@ -665,3 +667,5 @@ This is a CSRF token mismatch. Make sure you:
 - **Strict types** — All PHP files use `declare(strict_types=1)`.
 - **Polymorphic relationships** — Notes, Documents, Meetings, and Activities can attach to multiple model types (Lead, Client, Project).
 - **Outbound webhooks** — Any logged Activity automatically dispatches to subscribed webhooks via queue job, signed with HMAC-SHA256.
+- **Team data scoping** — All resource queries are automatically scoped to the authenticated user's team via a global Eloquent scope (`BelongsToTeam` trait). No manual `team_id` filtering needed.
+- **Mobile-first responsive** — Shared `DataTable.vue` renders as table on desktop and cards on mobile. `BottomNav.vue` provides icon-only navigation for small screens. All buttons have 44px minimum touch targets.

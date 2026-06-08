@@ -19,7 +19,7 @@ class DashboardTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        User::factory()->create(['id' => 1]);
+        User::factory()->create();
 
         $client = Client::factory()->create();
         $user = ClientUser::factory()->create(['client_id' => $client->id]);

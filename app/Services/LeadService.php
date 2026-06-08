@@ -46,12 +46,30 @@ class LeadService
         return $query->orderBy($sortField, $sortDirection)->paginate(25);
     }
 
+    public function listTrashed(array $filters = []): LengthAwarePaginator
+    {
+        $query = Lead::onlyTrashed();
+
+        if (!empty($filters['search'])) {
+            $search = $filters['search'];
+            $query->where(function ($q) use ($search) {
+                $q->where('company_name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('website', 'like', "%{$search}%");
+            });
+        }
+
+        $sortField = $this->resolveSortField($filters['sort_field'] ?? null);
+        $sortDirection = $this->resolveSortDirection($filters['sort_direction'] ?? null);
+
+        return $query->orderBy($sortField, $sortDirection)->paginate(25);
+    }
+
     public function create(array $data): Lead
     {
         $lead = Lead::create($data);
 
         activity()->log($lead, 'lead.created', "Lead {$lead->company_name} was created.");
-        Notification::send(User::all(), new LeadCreated($lead));
 
         return $lead;
     }
@@ -117,6 +135,17 @@ class LeadService
         }
 
         return Lead::whereIn('id', $ids)->delete();
+    }
+
+    public function bulkForceDelete(array $ids): void
+    {
+        $leads = Lead::whereIn('id', $ids)->get();
+
+        foreach ($leads as $lead) {
+            activity()->log($lead, 'lead.deleted', "Lead {$lead->company_name} was permanently deleted (bulk).");
+        }
+
+        Lead::whereIn('id', $ids)->forceDelete();
     }
 
     public function bulkUpdateStatus(array $ids, string $status): void

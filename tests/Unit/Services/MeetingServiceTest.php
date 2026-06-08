@@ -23,7 +23,7 @@ class MeetingServiceTest extends TestCase
     {
         parent::setUp();
         $this->meetingService = app(MeetingService::class);
-        User::factory()->create(['id' => 1]);
+        User::factory()->create();
     }
 
     public function test_list_returns_paginated_results(): void

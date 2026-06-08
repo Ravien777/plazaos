@@ -20,7 +20,7 @@ class TeamsMeetingProviderTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        User::factory()->create(['id' => 1]);
+        User::factory()->create();
 
         config(['services.microsoft_teams' => [
             'enabled' => true,

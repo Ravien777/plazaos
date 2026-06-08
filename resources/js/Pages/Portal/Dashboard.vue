@@ -66,7 +66,7 @@ function projectStatusLabel(s: string): string {
             <h2 class="text-xl font-semibold leading-tight text-gray-700">Dashboard</h2>
         </template>
 
-        <div class="py-12">
+        <div class="py-6">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
                     <div class="overflow-hidden rounded-lg bg-white shadow-sm">

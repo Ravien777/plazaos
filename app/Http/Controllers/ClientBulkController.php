@@ -33,6 +33,24 @@ class ClientBulkController extends Controller
         return redirect()->back()->with('success', count($data['ids']) . ' client(s) deleted successfully.');
     }
 
+    public function forceDestroy(Request $request): RedirectResponse
+    {
+        $this->authorize('delete', new Client);
+
+        $data = $request->validate([
+            'ids' => ['required', 'array', 'min:1'],
+            'ids.*' => ['required', 'string', 'exists:clients,id'],
+        ]);
+
+        try {
+            $this->clientService->bulkForceDelete($data['ids']);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to permanently delete clients. Please try again.');
+        }
+
+        return redirect()->back()->with('success', count($data['ids']) . ' client(s) permanently deleted.');
+    }
+
     public function updateStatus(Request $request): RedirectResponse
     {
         $this->authorize('update', new Client);

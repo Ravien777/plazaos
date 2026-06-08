@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\ProjectStatus;
+use App\Models\Traits\BelongsToTeam;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
@@ -15,10 +16,11 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Project extends Model
 {
-    use HasFactory, HasUuids;
+    use BelongsToTeam, HasFactory, HasUuids;
     use SoftDeletes;
 
     protected $fillable = [
+        'team_id',
         'client_id',
         'name',
         'description',
@@ -78,5 +80,10 @@ class Project extends Model
     public function tasks(): HasMany
     {
         return $this->hasMany(Task::class)->orderBy('order');
+    }
+
+    public function comments(): MorphMany
+    {
+        return $this->morphMany(Comment::class, 'commentable');
     }
 }

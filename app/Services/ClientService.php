@@ -46,6 +46,25 @@ class ClientService
         return $query->orderBy($sortField, $sortDirection)->paginate((int) $perPage);
     }
 
+    public function listTrashed(array $filters = []): LengthAwarePaginator
+    {
+        $query = Client::onlyTrashed();
+
+        if (!empty($filters['search'])) {
+            $search = $filters['search'];
+            $query->where(function ($q) use ($search) {
+                $q->where('company_name', 'like', "%{$search}%")
+                    ->orWhere('contact_name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        $sortField = $this->resolveSortField($filters['sort_field'] ?? null);
+        $sortDirection = $this->resolveSortDirection($filters['sort_direction'] ?? null);
+
+        return $query->orderBy($sortField, $sortDirection)->paginate(25);
+    }
+
     public function create(array $data): Client
     {
         $client = Client::create($data);
@@ -109,6 +128,17 @@ class ClientService
 
             $client->delete();
         }
+    }
+
+    public function bulkForceDelete(array $ids): void
+    {
+        $clients = Client::whereIn('id', $ids)->get();
+
+        foreach ($clients as $client) {
+            activity()->log($client, 'client.deleted', "Client {$client->company_name} was permanently deleted (bulk).");
+        }
+
+        Client::whereIn('id', $ids)->forceDelete();
     }
 
     public function bulkUpdateStatus(array $ids, string $status): void

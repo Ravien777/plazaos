@@ -20,13 +20,13 @@ class DispatchWebhookJobTest extends TestCase
     {
         parent::setUp();
 
-        User::factory()->create(['id' => 1]);
+        $this->user = User::factory()->create();
     }
 
     public function test_dispatches_to_url_with_signature(): void
     {
         $webhook = Webhook::factory()->create([
-            'user_id' => 1,
+            'user_id' => $this->user->id,
             'url' => 'https://example.com/webhook',
             'secret' => 'test-secret',
         ]);
@@ -55,7 +55,7 @@ class DispatchWebhookJobTest extends TestCase
     public function test_records_error_on_failure(): void
     {
         $webhook = Webhook::factory()->create([
-            'user_id' => 1,
+            'user_id' => $this->user->id,
             'url' => 'https://example.com/webhook',
         ]);
 
@@ -74,7 +74,7 @@ class DispatchWebhookJobTest extends TestCase
     public function test_records_error_on_connection_failure(): void
     {
         $webhook = Webhook::factory()->create([
-            'user_id' => 1,
+            'user_id' => $this->user->id,
             'url' => 'https://example.com/webhook',
         ]);
 

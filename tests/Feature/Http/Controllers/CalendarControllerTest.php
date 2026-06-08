@@ -48,6 +48,7 @@ class CalendarControllerTest extends TestCase
     {
         Meeting::factory()->create([
             'user_id' => $this->user->id,
+            'team_id' => $this->user->team_id,
             'start_time' => now()->addHour(),
             'status' => 'scheduled',
         ]);
@@ -64,7 +65,10 @@ class CalendarControllerTest extends TestCase
 
         Meeting::factory()->count(2)->create([
             'user_id' => $this->user->id,
+            'team_id' => $this->user->team_id,
             'status' => 'scheduled',
+            'start_time' => now()->addDay(),
+            'end_time' => now()->addDay()->addHour(),
         ]);
 
         $this->actingAs($this->user)
@@ -83,6 +87,7 @@ class CalendarControllerTest extends TestCase
     {
         $meeting = Meeting::factory()->create([
             'user_id' => $this->user->id,
+            'team_id' => $this->user->team_id,
             'title' => 'Test Meeting',
         ]);
 

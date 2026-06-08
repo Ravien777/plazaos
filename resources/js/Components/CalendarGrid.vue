@@ -201,14 +201,14 @@ function weekLabel(): string {
             <div v-if="loading" class="p-4 animate-pulse">
                 <div class="grid grid-cols-7 gap-px bg-gray-200">
                     <div v-for="i in 7" :key="i" class="bg-gray-50 px-2 py-2">
-                        <div class="mx-auto h-3 w-12 rounded bg-stone-300" />
+                        <div class="mx-auto h-3 w-12 rounded bg-gray-300" />
                     </div>
                 </div>
                 <div class="grid grid-cols-7 gap-px bg-gray-200">
                     <div v-for="i in 35" :key="i" class="min-h-24 bg-white px-2 py-1">
-                        <div class="mb-1 h-5 w-5 rounded-full bg-stone-300" />
-                        <div class="mt-1 h-3 w-3/4 rounded bg-stone-200" />
-                        <div class="mt-1 h-3 w-1/2 rounded bg-stone-200" />
+                        <div class="mb-1 h-5 w-5 rounded-full bg-gray-300" />
+                        <div class="mt-1 h-3 w-3/4 rounded bg-gray-200" />
+                        <div class="mt-1 h-3 w-1/2 rounded bg-gray-200" />
                     </div>
                 </div>
             </div>

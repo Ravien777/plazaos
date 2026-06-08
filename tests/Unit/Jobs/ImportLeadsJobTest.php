@@ -15,10 +15,12 @@ class ImportLeadsJobTest extends TestCase
 {
     use RefreshDatabase;
 
+    private User $user;
+
     protected function setUp(): void
     {
         parent::setUp();
-        User::factory()->create(['id' => 1]);
+        $this->user = User::factory()->create();
         Notification::fake();
     }
 
@@ -29,7 +31,7 @@ class ImportLeadsJobTest extends TestCase
 
         $import = LeadImport::factory()->create([
             'filepath' => 'imports/test.csv',
-            'user_id' => 1,
+            'user_id' => $this->user->id,
             'column_mapping' => ['header_row' => 0, 'fields' => ['company_name' => 'company_name', 'contact_name' => 'contact_name', 'email' => 'email']],
             'duplicate_strategy' => 'skip',
         ]);
@@ -51,7 +53,7 @@ class ImportLeadsJobTest extends TestCase
 
         $import = LeadImport::factory()->create([
             'filepath' => 'imports/skip.csv',
-            'user_id' => 1,
+            'user_id' => $this->user->id,
             'column_mapping' => ['header_row' => 0, 'fields' => ['company_name' => 'company_name', 'contact_name' => 'contact_name', 'email' => 'email']],
             'duplicate_strategy' => 'skip',
         ]);
@@ -71,7 +73,7 @@ class ImportLeadsJobTest extends TestCase
 
         $import = LeadImport::factory()->create([
             'filepath' => 'imports/update.csv',
-            'user_id' => 1,
+            'user_id' => $this->user->id,
             'column_mapping' => ['header_row' => 0, 'fields' => ['company_name' => 'company_name', 'contact_name' => 'contact_name', 'email' => 'email']],
             'duplicate_strategy' => 'update',
         ]);
@@ -89,13 +91,13 @@ class ImportLeadsJobTest extends TestCase
 
         $import = LeadImport::factory()->create([
             'filepath' => 'imports/notif.csv',
-            'user_id' => 1,
+            'user_id' => $this->user->id,
             'column_mapping' => ['header_row' => 0, 'fields' => ['company_name' => 'company_name', 'contact_name' => 'contact_name', 'email' => 'email']],
         ]);
 
         (new ImportLeadsJob($import))->handle();
 
-        Notification::assertSentTo(User::find(1), ImportCompleted::class);
+        Notification::assertSentTo($this->user, ImportCompleted::class);
     }
 
     public function test_completes_with_minimal_data(): void
@@ -105,7 +107,7 @@ class ImportLeadsJobTest extends TestCase
 
         $import = LeadImport::factory()->create([
             'filepath' => 'imports/minimal.csv',
-            'user_id' => 1,
+            'user_id' => $this->user->id,
             'column_mapping' => ['header_row' => 0, 'fields' => ['bad' => 'company_name']],
             'duplicate_strategy' => 'skip',
         ]);

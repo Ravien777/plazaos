@@ -14,7 +14,7 @@ const editTitle = ref(props.task.title);
 const priorityColors: Record<string, string> = {
     high: 'bg-red-400',
     medium: 'bg-yellow-400',
-    low: 'bg-stone-300',
+    low: 'bg-gray-300',
 };
 
 function saveTitle(): void {
@@ -37,7 +37,7 @@ function cancelEdit(): void {
 </script>
 
 <template>
-    <div class="group rounded-lg border border-stone-200 bg-white px-3 py-2 shadow-sm transition hover:shadow-md">
+    <div class="group rounded-lg border border-gray-200 bg-white px-3 py-2 shadow-sm transition hover:shadow-md">
         <div class="flex items-start justify-between gap-2">
             <div class="flex items-center gap-2 min-w-0 flex-1">
                 <span class="inline-block h-2.5 w-2.5 shrink-0 rounded-full" :class="priorityColors[task.priority]" />

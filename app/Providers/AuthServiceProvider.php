@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Models\Client;
+use App\Models\Comment;
 use App\Models\Document;
 use App\Models\Email;
 use App\Models\EmailTemplate;
@@ -23,6 +24,7 @@ use App\Models\TicketReply;
 use App\Models\User;
 use App\Models\Webhook;
 use App\Policies\ClientPolicy;
+use App\Policies\CommentPolicy;
 use App\Policies\DocumentPolicy;
 use App\Policies\EmailPolicy;
 use App\Policies\EmailTemplatePolicy;
@@ -45,6 +47,7 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 class AuthServiceProvider extends ServiceProvider
 {
     protected $policies = [
+        Comment::class => CommentPolicy::class,
         Lead::class => LeadPolicy::class,
         Note::class => NotePolicy::class,
         Client::class => ClientPolicy::class,

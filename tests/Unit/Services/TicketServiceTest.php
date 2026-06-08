@@ -24,7 +24,7 @@ class TicketServiceTest extends TestCase
     {
         parent::setUp();
         Notification::fake();
-        $user = User::factory()->create(['id' => 1]);
+        $user = User::factory()->create();
         $this->actingAs($user);
         $this->service = app(TicketService::class);
     }

@@ -96,6 +96,27 @@ class LeadController extends Controller
         return redirect()->route('leads.index')->with('success', 'Lead deleted successfully.');
     }
 
+    public function trash(): Response
+    {
+        $this->authorize('viewTrash', Lead::class);
+
+        $leads = $this->leadService->listTrashed(request()->only(['search', 'sort_field', 'sort_direction']));
+
+        return Inertia::render('Leads/Trash', [
+            'leads' => $leads,
+            'filters' => request()->only(['search', 'sort_field', 'sort_direction']),
+        ]);
+    }
+
+    public function forceDestroy(Lead $lead): RedirectResponse
+    {
+        $this->authorize('delete', $lead);
+
+        $lead->forceDelete();
+
+        return redirect()->route('leads.trash')->with('success', 'Lead permanently deleted.');
+    }
+
     public function restore(Lead $lead): RedirectResponse
     {
         $this->authorize('delete', $lead);

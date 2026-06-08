@@ -266,3 +266,46 @@ Rejected alternatives:
 
 Follow-up work:
 - Configure webhooks in production for Zapier/Make/n8n integration
+
+### Feature: Multi-User Data Scoping
+Date: 2026-06-05
+
+What was built:
+- Migration added `team_id` (UUID FK → teams.id) to 20 resource tables
+- `BelongsToTeam` trait with global scope + auto-assign on `creating` event
+- Applied trait to 19 models (Lead, Client, Project, Meeting, etc.)
+- Backfills existing records to first team if exactly one exists
+- Fixed `SyncTrelloAction` which referenced non-existent `project->team_id` column
+
+Technical decisions:
+- Global scope silently skips filtering when `auth()->user()` is null (console/queue/admin)
+- `$query->getModel()->qualifyColumn('team_id')` used instead of `static::qualifyColumn()` (Laravel 12 made qualifyColumn non-static)
+- No policy changes needed — global scope handles data isolation transparently
+- Sub-entity models (TicketReply, IntakeFormSubmission) get the trait for consistency
+- Defensive-in-depth policy checks not added — scope is sufficient, route model binding naturally 404s foreign-team records
+
+Rejected alternatives:
+- Manual `->where('team_id', ...)` everywhere (scope is automatic and implicitly understood)
+
+Follow-up work:
+- None — the scoping is fully transparent to all existing code paths
+
+### Feature: Mobile-First Responsive Design
+Date: 2026-06-05
+
+What was built:
+- `DataTable.vue` — shared component rendering as table on desktop (`sm:+`), card layout on mobile (`<sm`)
+- `FilterBar.vue` — collapsible filter panel (toggle button on mobile, always visible on desktop)
+- `BottomNav.vue` — sticky mobile bottom nav with 6 icon-only links (Dashboard, Leads, Clients, Projects, Meetings, Tickets)
+- 12 index/trash pages converted to use DataTable (Leads, Clients, Projects, Tickets, LeadSources, IntakeForms, Templates, Testimonials + 4 trash pages)
+- Touch target audit: `py-2` → `py-3` + `min-h-[44px]` on PrimaryButton, SecondaryButton, DangerButton
+- AuthenticatedLayout updated with BottomNav + `pb-20` on mobile content area
+
+Technical decisions:
+- Shared component over per-page cards — DRY, consistent, but each page provides its own `#card` scoped slot for custom layout
+- Scoped slots for cell rendering (`#cell-{key}`) — flexible without tight coupling
+- Meetings and Tasks pages skipped (already mobile-friendly: card-based/kanban)
+
+Rejected alternatives:
+- Dedicated mobile menu component (inline in layout is sufficient and simpler)
+- Table-to-card CSS-only approach (scoped slots give each page full control over mobile layout)

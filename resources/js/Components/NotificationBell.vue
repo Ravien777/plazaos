@@ -1,8 +1,15 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
-import { Link } from '@inertiajs/vue3';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { Link, usePage } from '@inertiajs/vue3';
 import axios from 'axios';
+import { useToast } from '@/composables/useToast';
+import { useEcho } from '@/composables/useEcho';
 import type { NotificationData } from '@/Types';
+
+const toast = useToast();
+const page = usePage();
+
+const userId = computed(() => page.props.auth.user?.id);
 
 const unreadCount = ref(0);
 const notifications = ref<NotificationData[]>([]);
@@ -80,11 +87,26 @@ onMounted(() => {
     fetchUnreadCount();
     interval = setInterval(fetchUnreadCount, 30000);
     document.addEventListener('click', closeOnClickOutside);
+
+    const echo = useEcho();
+    if (userId.value && echo) {
+        echo.private('App.Models.User.' + userId.value)
+            .notification((notification: Record<string, unknown>) => {
+                fetchUnreadCount();
+                fetchRecent();
+                toast.success((notification.title as string) ?? 'New notification');
+            });
+    }
 });
 
 onUnmounted(() => {
     if (interval) clearInterval(interval);
     document.removeEventListener('click', closeOnClickOutside);
+
+    const echo = useEcho();
+    if (userId.value && echo) {
+        echo.leave('App.Models.User.' + userId.value);
+    }
 });
 </script>
 

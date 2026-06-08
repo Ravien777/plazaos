@@ -65,8 +65,8 @@ function fieldValue(submission: Submission, fieldId: string): string | null {
             </PageHeader>
         </template>
 
-        <div class="py-12">
-            <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div class="py-6">
+            <div class="mx-auto max-w-7xl">
                 <div class="mb-6 overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="mb-4">

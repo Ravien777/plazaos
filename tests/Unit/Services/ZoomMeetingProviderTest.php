@@ -21,7 +21,7 @@ class ZoomMeetingProviderTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        User::factory()->create(['id' => 1]);
+        User::factory()->create();
 
         config(['services.zoom' => [
             'enabled' => true,

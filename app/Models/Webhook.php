@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Traits\BelongsToTeam;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,9 +13,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Webhook extends Model
 {
-    use HasFactory, HasUuids, SoftDeletes;
+    use BelongsToTeam, HasFactory, HasUuids, SoftDeletes;
 
     protected $fillable = [
+        'team_id',
         'user_id',
         'url',
         'events',

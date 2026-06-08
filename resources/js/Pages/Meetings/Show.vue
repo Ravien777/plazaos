@@ -2,16 +2,18 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PageHeader from '@/Components/PageHeader.vue';
 import { Head, router } from '@inertiajs/vue3';
+import { useConfirm } from '@/composables/useConfirm';
 import type { Meeting } from '@/Types';
+
+const { confirm } = useConfirm();
 
 const props = defineProps<{
     meeting: Meeting;
 }>();
 
-function destroy(): void {
-    if (confirm('Cancel this meeting?')) {
-        router.delete(`/meetings/${props.meeting.id}`);
-    }
+async function destroy(): Promise<void> {
+    if (!await confirm({ title: 'Cancel meeting?', message: 'Cancel this meeting?', confirmLabel: 'Cancel Meeting' })) return;
+    router.delete(`/meetings/${props.meeting.id}`);
 }
 
 function statusLabel(s: string): string {
@@ -77,8 +79,8 @@ function formatDate(dt: string): string {
             </PageHeader>
         </template>
 
-        <div class="py-12">
-            <div class="mx-auto max-w-3xl sm:px-6 lg:px-8">
+        <div class="py-6">
+            <div class="mx-auto max-w-3xl">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <dl class="space-y-6">

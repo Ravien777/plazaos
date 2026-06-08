@@ -31,11 +31,11 @@ class MeetingController extends Controller
         ]);
     }
 
-    public function index(string $meetableType, string $id): JsonResponse
+    public function index(string $meetableType, string $meetable): JsonResponse
     {
         $this->authorize('viewAny', Meeting::class);
 
-        $model = $this->resolveMeetable($meetableType, $id);
+        $model = $this->resolveMeetable($meetableType, $meetable);
 
         if (!$model) {
             abort(404);
@@ -66,11 +66,11 @@ class MeetingController extends Controller
         return redirect()->route('dashboard')->with('success', 'Meeting scheduled.');
     }
 
-    public function storeForMeetable(StoreMeetingRequest $request, string $meetableType, string $id): RedirectResponse
+    public function storeForMeetable(StoreMeetingRequest $request, string $meetableType, string $meetable): RedirectResponse
     {
         $this->authorize('create', Meeting::class);
 
-        $model = $this->resolveMeetable($meetableType, $id);
+        $model = $this->resolveMeetable($meetableType, $meetable);
 
         if (!$model) {
             abort(404);

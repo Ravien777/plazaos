@@ -17,7 +17,7 @@ class DashboardControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $user = User::factory()->create(['id' => 1]);
+        $user = User::factory()->create();
         $this->actingAs($user);
     }
 

@@ -18,11 +18,11 @@ class NoteController extends Controller
         private readonly NoteService $noteService
     ) {}
 
-    public function index(string $noteableType, string $id): JsonResponse
+    public function index(string $noteableType, string $noteable): JsonResponse
     {
         $this->authorize('viewAny', Note::class);
 
-        $model = $this->resolveNoteable($noteableType, $id);
+        $model = $this->resolveNoteable($noteableType, $noteable);
 
         if (!$model) {
             abort(404);
@@ -33,13 +33,13 @@ class NoteController extends Controller
         ]);
     }
 
-    public function store(Request $request, string $noteableType, string $id): RedirectResponse
+    public function store(Request $request, string $noteableType, string $noteable): RedirectResponse
     {
         $this->authorize('create', Note::class);
 
         $validated = $request->validate(['content' => ['required', 'string']]);
 
-        $model = $this->resolveNoteable($noteableType, $id);
+        $model = $this->resolveNoteable($noteableType, $noteable);
 
         if (!$model) {
             abort(404);

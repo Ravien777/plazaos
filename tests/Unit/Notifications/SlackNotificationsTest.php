@@ -32,6 +32,12 @@ class SlackNotificationsTest extends TestCase
         config(['services.slack.notifications.bot_user_oauth_token' => 'xoxb-test-token']);
     }
 
+    protected function tearDown(): void
+    {
+        config(['services.slack.notifications.bot_user_oauth_token' => null]);
+        parent::tearDown();
+    }
+
     private function notifiable(): object
     {
         return User::factory()->make([
@@ -41,7 +47,7 @@ class SlackNotificationsTest extends TestCase
 
     public function test_via_includes_slack_when_configured(): void
     {
-        $lead = Lead::factory()->make(['id' => '1']);
+        $lead = Lead::factory()->make();
         $notification = new LeadCreated($lead);
 
         $channels = $notification->via($this->notifiable());
@@ -54,7 +60,7 @@ class SlackNotificationsTest extends TestCase
     {
         config(['services.slack.notifications.bot_user_oauth_token' => '']);
 
-        $lead = Lead::factory()->make(['id' => '1']);
+        $lead = Lead::factory()->make();
         $notification = new LeadCreated($lead);
 
         $channels = $notification->via($this->notifiable());
@@ -65,7 +71,7 @@ class SlackNotificationsTest extends TestCase
 
     public function test_lead_created_to_slack_message(): void
     {
-        $lead = Lead::factory()->make(['id' => '1', 'company_name' => 'Acme Corp']);
+        $lead = Lead::factory()->make(['company_name' => 'Acme Corp']);
         $notification = new LeadCreated($lead);
 
         $message = $notification->toSlack($this->notifiable());
@@ -75,7 +81,7 @@ class SlackNotificationsTest extends TestCase
 
     public function test_lead_imported_to_slack_message(): void
     {
-        $lead = Lead::factory()->make(['id' => '1', 'company_name' => 'Acme Corp']);
+        $lead = Lead::factory()->make(['company_name' => 'Acme Corp']);
         $notification = new LeadImported($lead);
 
         $message = $notification->toSlack($this->notifiable());
@@ -85,7 +91,7 @@ class SlackNotificationsTest extends TestCase
 
     public function test_lead_inactive_reminder_to_slack_message(): void
     {
-        $lead = Lead::factory()->make(['id' => '1', 'company_name' => 'Acme Corp']);
+        $lead = Lead::factory()->make(['company_name' => 'Acme Corp']);
         $notification = new LeadInactiveReminder($lead);
 
         $message = $notification->toSlack($this->notifiable());

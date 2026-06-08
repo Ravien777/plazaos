@@ -3,6 +3,11 @@ import type { Testimonial } from '@/Types';
 
 const props = defineProps<{
     testimonials: Testimonial[];
+    removable?: boolean;
+}>();
+
+defineEmits<{
+    (e: 'remove'): void;
 }>();
 
 function starString(rating: number): string {
@@ -15,9 +20,20 @@ function copy(text: string | null): void {
 </script>
 
 <template>
-    <div class="overflow-hidden rounded-lg bg-white shadow-sm">
+    <div class="group relative overflow-hidden rounded-lg bg-white shadow-sm">
         <div class="p-6">
-            <h3 class="text-lg font-medium text-gray-800">Wall of Love ❤️</h3>
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-medium text-gray-800">Wall of Love ❤️</h3>
+                <button
+                    v-if="removable"
+                    type="button"
+                    class="text-gray-300 opacity-0 transition hover:text-red-500 group-hover:opacity-100"
+                    @click="$emit('remove')"
+                    title="Remove widget"
+                >
+                    ✕
+                </button>
+            </div>
             <div v-if="testimonials.length === 0" class="mt-4 text-sm text-gray-600">No reviews yet.</div>
             <div v-else class="mt-4 space-y-3">
                 <div v-for="t in testimonials" :key="t.id" class="rounded-md border border-gray-200 p-3">

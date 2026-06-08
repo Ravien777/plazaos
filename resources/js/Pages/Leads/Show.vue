@@ -5,13 +5,16 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PageHeader from '@/Components/PageHeader.vue';
 import StatusBadge from '@/Components/StatusBadge.vue';
 import NotesSection from '@/Components/NotesSection.vue';
+import CommentSection from '@/Components/CommentSection.vue';
 import ActivityFeed from '@/Components/ActivityFeed.vue';
 import EmailHistory from '@/Components/EmailHistory.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { useToast } from '@/composables/useToast';
+import { useConfirm } from '@/composables/useConfirm';
 import type { Lead } from '@/Types';
 
 const toast = useToast();
+const { confirm } = useConfirm();
 
 const props = defineProps<{
     lead: Lead;
@@ -46,7 +49,14 @@ function destroy(): void {
     });
 }
 
-function convertToClient(): void {
+async function convertToClient(): Promise<void> {
+    if (!await confirm({
+        title: 'Convert to Client?',
+        message: `Convert "${props.lead.company_name}" to a client? This will create a new client record, copy all notes and documents, and archive this lead.`,
+        confirmLabel: 'Convert',
+        variant: 'info',
+    })) return;
+
     router.post(`/leads/${props.lead.id}/convert`, {}, {
         preserveScroll: true,
         onSuccess: () => {
@@ -99,8 +109,8 @@ async function summarizeWebsite(): Promise<void> {
             </PageHeader>
         </template>
 
-        <div class="py-12">
-            <div class="mx-auto max-w-4xl sm:px-6 lg:px-8">
+        <div class="py-6">
+            <div class="mx-auto max-w-4xl">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
@@ -183,6 +193,12 @@ async function summarizeWebsite(): Promise<void> {
                 <div class="mt-6 overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <NotesSection noteable-type="lead" :noteable-id="lead.id" />
+                    </div>
+                </div>
+
+                <div class="mt-6 overflow-hidden bg-white shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <CommentSection commentable-type="lead" :commentable-id="lead.id" />
                     </div>
                 </div>
 

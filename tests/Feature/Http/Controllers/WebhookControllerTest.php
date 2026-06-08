@@ -19,7 +19,7 @@ class WebhookControllerTest extends TestCase
     {
         parent::setUp();
 
-        $this->user = User::factory()->create(['id' => 1]);
+        $this->user = User::factory()->create();
         $this->actingAs($this->user);
     }
 

@@ -9,14 +9,19 @@ use App\Http\Controllers\EmailTemplateController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\LeadConversionController;
+use App\Http\Controllers\MaroniController;
 use App\Http\Controllers\MeetingController;
 use App\Http\Controllers\LeadExportController;
 use App\Http\Controllers\LeadImportController;
 use App\Http\Controllers\LeadSourceController;
 use App\Http\Controllers\LeadBulkController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ClientBulkController;
 use App\Http\Controllers\ClientExportController;
+use App\Http\Controllers\ProjectBulkController;
+use App\Http\Controllers\TicketBulkController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\NotificationController;
@@ -25,13 +30,15 @@ use App\Http\Controllers\Portal\PortalLinkController;
 use App\Http\Controllers\PortalUserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\SecuritySettingsController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TestimonialController;
 use App\Http\Controllers\TicketController;
-use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\TicketReplyController;
+use App\Http\Controllers\TrelloController;
+use App\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -42,7 +49,22 @@ Route::get('/', function () {
     ]);
 });
 
+Route::get('/about', function () {
+    return Inertia::render('About', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+    ]);
+})->name('about');
+
+Route::get('/features', function () {
+    return Inertia::render('Features', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+    ]);
+})->name('features');
+
 Route::post('/webhooks/resend', [\App\Http\Controllers\ResendWebhookController::class, 'handle']);
+Route::post('/api/maroni/webhook', [\App\Http\Controllers\MaroniWebhookController::class, 'handle']);
 
 Route::get('/invite/{token}', [InvitationController::class, 'show'])->name('invitation.show');
 Route::post('/invite/{token}', [InvitationController::class, 'accept'])->name('invitation.accept');
@@ -50,6 +72,10 @@ Route::post('/invite/{token}', [InvitationController::class, 'accept'])->name('i
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
+
+Route::post('/dashboard/layout', [\App\Http\Controllers\DashboardLayoutController::class, 'update'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard.layout.update');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -71,6 +97,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/settings/notifications', [NotificationPreferenceController::class, 'index'])->name('settings.notifications');
     Route::put('/settings/notifications', [NotificationPreferenceController::class, 'update']);
 
+    Route::get('/settings/security', [SecuritySettingsController::class, 'index'])->name('settings.security');
+
     Route::get('/settings/webhooks', [WebhookController::class, 'index'])->name('settings.webhooks');
     Route::get('/settings/webhooks/create', [WebhookController::class, 'create'])->name('settings.webhooks.create');
     Route::post('/settings/webhooks', [WebhookController::class, 'store'])->name('settings.webhooks.store');
@@ -84,6 +112,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/leads/bulk/delete-by-filters', [LeadBulkController::class, 'destroyByFilters'])->middleware('throttle:3,1')->name('leads.bulk.delete-by-filters');
     Route::post('/leads/bulk/status', [LeadBulkController::class, 'updateStatus'])->middleware('throttle:5,1')->name('leads.bulk.status');
     Route::post('/leads/bulk/email', [LeadBulkController::class, 'sendEmail'])->middleware('throttle:5,1')->name('leads.bulk.email');
+    Route::post('/leads/bulk/force-delete', [LeadBulkController::class, 'forceDestroy'])->middleware('throttle:3,1')->name('leads.bulk.force-delete');
+
+    Route::post('/projects/bulk/delete', [ProjectBulkController::class, 'destroy'])->middleware('throttle:5,1')->name('projects.bulk.delete');
+    Route::post('/projects/bulk/force-delete', [ProjectBulkController::class, 'forceDestroy'])->middleware('throttle:3,1')->name('projects.bulk.force-delete');
+    Route::post('/projects/bulk/status', [ProjectBulkController::class, 'updateStatus'])->middleware('throttle:5,1')->name('projects.bulk.status');
+
+    Route::post('/tickets/bulk/delete', [TicketBulkController::class, 'destroy'])->middleware('throttle:5,1')->name('tickets.bulk.delete');
+    Route::post('/tickets/bulk/force-delete', [TicketBulkController::class, 'forceDestroy'])->middleware('throttle:3,1')->name('tickets.bulk.force-delete');
+    Route::post('/tickets/bulk/status', [TicketBulkController::class, 'updateStatus'])->middleware('throttle:5,1')->name('tickets.bulk.status');
 
     Route::get('/leads/import', [LeadImportController::class, 'create'])->name('leads.import.create');
     Route::post('/leads/import/preview', [LeadImportController::class, 'preview'])->name('leads.import.preview');
@@ -98,32 +135,41 @@ Route::middleware('auth')->group(function () {
     Route::get('/leads/import/{import}/progress', [LeadImportController::class, 'progress'])->name('leads.import.progress');
     Route::get('/leads/import/{import}', [LeadImportController::class, 'show'])->name('leads.import.show');
 
+    Route::get('/leads/trash', [LeadController::class, 'trash'])->name('leads.trash');
     Route::resource('leads', LeadController::class);
     Route::post('/leads/{lead}/restore', [LeadController::class, 'restore'])->name('leads.restore')->withTrashed();
+    Route::delete('/leads/{lead}/force-delete', [LeadController::class, 'forceDestroy'])->name('leads.force-destroy')->withTrashed();
 
-    Route::resource('lead-sources', LeadSourceController::class);
+    Route::resource('lead-sources', LeadSourceController::class)->except(['show']);
     Route::post('/lead-sources/{leadSource}/run', [LeadSourceController::class, 'run'])->middleware('throttle:3,1')->name('lead-sources.run');
 
     Route::get('/clients/export', [ClientExportController::class, 'export'])->name('clients.export');
     Route::post('/clients/bulk/delete', [ClientBulkController::class, 'destroy'])->middleware('throttle:5,1')->name('clients.bulk.delete');
     Route::post('/clients/bulk/status', [ClientBulkController::class, 'updateStatus'])->middleware('throttle:5,1')->name('clients.bulk.status');
+    Route::post('/clients/bulk/force-delete', [ClientBulkController::class, 'forceDestroy'])->middleware('throttle:3,1')->name('clients.bulk.force-delete');
 
+    Route::get('/clients/trash', [ClientController::class, 'trash'])->name('clients.trash');
     Route::resource('clients', ClientController::class);
     Route::post('/clients/{client}/restore', [ClientController::class, 'restore'])->name('clients.restore')->withTrashed();
+    Route::delete('/clients/{client}/force-delete', [ClientController::class, 'forceDestroy'])->name('clients.force-destroy')->withTrashed();
     Route::post('/clients/{client}/portal-link', [ClientController::class, 'generatePortalLink'])->name('clients.portal-link.generate');
     Route::get('/clients/{client}/portal-users', [PortalUserController::class, 'index'])->name('clients.portal-users.index');
     Route::post('/clients/{client}/portal-users', [PortalUserController::class, 'store'])->name('clients.portal-users.store');
     Route::delete('/clients/{client}/portal-users/{portalUser}', [PortalUserController::class, 'destroy'])->name('clients.portal-users.destroy');
     Route::post('/leads/{lead}/convert', [LeadConversionController::class, 'convert'])->name('leads.convert');
 
+    Route::get('/projects/trash', [ProjectController::class, 'trash'])->name('projects.trash');
     Route::resource('projects', ProjectController::class);
     Route::post('/projects/{project}/restore', [ProjectController::class, 'restore'])->name('projects.restore')->withTrashed();
+    Route::delete('/projects/{project}/force-delete', [ProjectController::class, 'forceDestroy'])->name('projects.force-destroy')->withTrashed();
 
     Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
     Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
     Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
     Route::put('/tasks/{task}/move', [TaskController::class, 'move'])->name('tasks.move');
     Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
+
+    Route::post('/trello/sync', [TrelloController::class, 'sync'])->name('trello.sync');
 
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
     Route::get('/api/calendar/events', [CalendarController::class, 'events'])->name('calendar.events');
@@ -140,7 +186,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/notifications/{notification}/read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-as-read');
 
+    Route::get('/api/search', [SearchController::class, 'index'])->name('api.search');
     Route::get('/api/entity-search', [TicketController::class, 'searchEntities'])->name('api.entity-search');
+
+    Route::get('/maroni/clients/{client}/summary', [MaroniController::class, 'summary'])->name('maroni.clients.summary');
+    Route::get('/maroni/clients/{client}/invoices', [MaroniController::class, 'invoices'])->name('maroni.clients.invoices');
+    Route::get('/maroni/clients/{client}/expenses', [MaroniController::class, 'expenses'])->name('maroni.clients.expenses');
+    Route::post('/maroni/sync-clients', [MaroniController::class, 'syncAll'])->name('maroni.sync');
 
     Route::get('/{documentableType}/{documentable}/documents', [DocumentController::class, 'index'])->name('documents.index');
     Route::post('/documents', [DocumentController::class, 'store'])->middleware('throttle:10,1')->name('documents.store');
@@ -156,8 +208,14 @@ Route::middleware('auth')->group(function () {
     Route::put('/notes/{note}', [NoteController::class, 'update'])->name('notes.update');
     Route::delete('/notes/{note}', [NoteController::class, 'destroy'])->name('notes.destroy');
 
+    Route::get('/{commentableType}/{commentable}/comments', [CommentController::class, 'index'])->name('comments.index');
+    Route::post('/{commentableType}/{commentable}/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+
+    Route::get('/tickets/trash', [TicketController::class, 'trash'])->name('tickets.trash');
     Route::resource('tickets', TicketController::class);
     Route::post('/tickets/{ticket}/restore', [TicketController::class, 'restore'])->name('tickets.restore')->withTrashed();
+    Route::delete('/tickets/{ticket}/force-delete', [TicketController::class, 'forceDestroy'])->name('tickets.force-destroy')->withTrashed();
     Route::post('/tickets/{ticket}/close', [TicketController::class, 'close'])->name('tickets.close');
     Route::post('/tickets/{ticket}/reopen', [TicketController::class, 'reopen'])->name('tickets.reopen');
     Route::post('/tickets/{ticket}/replies', [TicketReplyController::class, 'store'])->name('tickets.replies.store');

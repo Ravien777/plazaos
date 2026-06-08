@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { useConfirm } from '@/composables/useConfirm';
+
+const { confirm } = useConfirm();
 
 const props = defineProps<{
     clientId: string;
@@ -24,12 +27,12 @@ function submit(): void {
     });
 }
 
-function remove(userId: string): void {
-    if (confirm('Remove this portal user? They will lose access immediately.')) {
-        router.delete(`/clients/${props.clientId}/portal-users/${userId}`, {
-            preserveScroll: true,
-        });
-    }
+async function remove(userId: string): Promise<void> {
+    if (!await confirm({ title: 'Remove portal user?', message: 'Remove this portal user? They will lose access immediately.', confirmLabel: 'Remove' })) return;
+
+    router.delete(`/clients/${props.clientId}/portal-users/${userId}`, {
+        preserveScroll: true,
+    });
 }
 </script>
 

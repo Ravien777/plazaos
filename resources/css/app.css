@@ -15,3 +15,13 @@
     --color-border: theme('colors.gray.200');
     --color-border-input: theme('colors.gray.200');
 }
+
+.scroll-reveal {
+    opacity: 0;
+    transition-property: opacity, transform;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scroll-reveal-visible {
+    opacity: 1;
+}

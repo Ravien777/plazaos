@@ -41,6 +41,7 @@ export interface Lead {
     converted_at: string | null;
     created_at: string;
     updated_at: string;
+    deleted_at: string | null;
     activities?: Activity[];
     emails?: Email[];
 }
@@ -53,6 +54,35 @@ export interface Note {
     created_by: string;
     created_at: string;
     updated_at: string;
+}
+
+export interface SearchResult {
+    id: string;
+    type: 'lead' | 'client' | 'project' | 'meeting' | 'ticket' | 'task';
+    title: string;
+    subtitle: string;
+    url: string;
+}
+
+export interface SearchResults {
+    leads: SearchResult[];
+    clients: SearchResult[];
+    projects: SearchResult[];
+    meetings: SearchResult[];
+    tickets: SearchResult[];
+    tasks: SearchResult[];
+}
+
+export interface CommentData {
+    id: string;
+    body: string;
+    user: {
+        id: number;
+        name: string;
+        avatar: string | null;
+    };
+    created_at: string;
+    can_delete: boolean;
 }
 
 export interface Activity {
@@ -110,8 +140,10 @@ export interface Client {
     last_contacted_at: string | null;
     portal_token: string | null;
     portal_token_expires_at: string | null;
+    maroni_client_id: string | null;
     created_at: string;
     updated_at: string;
+    deleted_at: string | null;
     activities?: Activity[];
     emails?: Email[];
     projects?: Project[];
@@ -160,6 +192,7 @@ export interface Project {
     progress_percentage: number | null;
     created_at: string;
     updated_at: string;
+    deleted_at: string | null;
     client?: Client;
     activities?: Activity[];
     documents?: DocumentRecord[];
@@ -175,6 +208,7 @@ export interface DocumentRecord {
     mime_type: string;
     size: number;
     created_at: string;
+    signed_download_url: string;
 }
 
 export interface Meeting {
@@ -242,6 +276,7 @@ export interface Ticket {
     user_id: string;
     created_at: string;
     updated_at: string;
+    deleted_at: string | null;
     ticketable?: Record<string, unknown>;
     replies?: TicketReply[];
     activities?: Activity[];
@@ -329,4 +364,9 @@ export interface Webhook {
 export interface AllowedEvent {
     value: string;
     label: string;
+}
+
+export interface DashboardLayout {
+    stat_cards: string[];
+    bottom_widgets: string[];
 }

@@ -23,11 +23,11 @@ class DocumentController extends Controller
         return config('filesystems.default') === 'r2' ? 'r2' : 'local';
     }
 
-    public function index(string $documentableType, string $documentableId): JsonResponse
+    public function index(string $documentableType, string $documentable): JsonResponse
     {
         $this->authorize('viewAny', Document::class);
 
-        $model = $this->resolveDocumentable($documentableType, $documentableId);
+        $model = $this->resolveDocumentable($documentableType, $documentable);
 
         if (!$model) {
             return response()->json(['documents' => []]);

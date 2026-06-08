@@ -22,7 +22,7 @@ class ProjectControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        User::factory()->create(['id' => 1]);
+        User::factory()->create();
 
         $this->client = Client::factory()->create();
         $this->otherClient = Client::factory()->create();

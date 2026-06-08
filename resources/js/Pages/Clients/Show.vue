@@ -2,9 +2,11 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PageHeader from '@/Components/PageHeader.vue';
 import DocumentList from '@/Components/DocumentList.vue';
+import MaroniFinancialPanel from '@/Components/MaroniFinancialPanel.vue';
 import MeetingList from '@/Components/MeetingList.vue';
 import ProjectList from '@/Components/ProjectList.vue';
 import NotesSection from '@/Components/NotesSection.vue';
+import CommentSection from '@/Components/CommentSection.vue';
 import ActivityFeed from '@/Components/ActivityFeed.vue';
 import ClientUserList from '@/Components/ClientUserList.vue';
 import EmailHistory from '@/Components/EmailHistory.vue';
@@ -19,6 +21,7 @@ const toast = useToast();
 
 const props = defineProps<{
     client: Client;
+    maroniConfigured: boolean;
 }>();
 
 const portalUrl = ref<string | null>(null);
@@ -103,8 +106,8 @@ const statusClass = (s: string): string => {
             </PageHeader>
         </template>
 
-        <div class="py-12">
-            <div class="mx-auto max-w-4xl sm:px-6 lg:px-8">
+        <div class="py-6">
+            <div class="mx-auto max-w-4xl">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="flex items-center justify-between">
@@ -225,6 +228,12 @@ const statusClass = (s: string): string => {
                     </div>
                 </div>
 
+                <div v-if="maroniConfigured && client.maroni_client_id" class="mt-6 overflow-hidden bg-white shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <MaroniFinancialPanel :client-id="client.id" />
+                    </div>
+                </div>
+
                 <div class="mt-6 overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <ProjectList :projects="client.projects ?? []" />
@@ -246,6 +255,12 @@ const statusClass = (s: string): string => {
                 <div class="mt-6 overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <NotesSection noteable-type="client" :noteable-id="client.id" />
+                    </div>
+                </div>
+
+                <div class="mt-6 overflow-hidden bg-white shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <CommentSection commentable-type="client" :commentable-id="client.id" />
                     </div>
                 </div>
 
