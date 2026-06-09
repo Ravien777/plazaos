@@ -309,3 +309,32 @@ Technical decisions:
 Rejected alternatives:
 - Dedicated mobile menu component (inline in layout is sufficient and simpler)
 - Table-to-card CSS-only approach (scoped slots give each page full control over mobile layout)
+
+### Feature: Marketing Pages, UI-Configurable Integrations, Test Coverage Sprint
+Date: 2026-06-08
+
+What was built:
+- Marketing pages: MarketingLayout.vue (shared glass-header + footer), About.vue, Features.vue, ScrollReveal.vue, Welcome.vue rewritten with 7 sections
+- CSS keyframes: `float`, `marquee`, `fade-in`, `fade-in-up`, `glow-pulse`, `grid-scroll`
+- Integrations made UI-configurable via Settings: Trello (setting() method, Integrations.vue fields), Resend (AppServiceProvider override), OpenAI (AiService setting() method)
+- Full-app scan: 5 parallel agents scanned backend, frontend, database, routes/config, tests — found 10 critical, 6 high, 6 medium issues
+- All 10 critical bugs fixed: route param name mismatches (5 controllers), trash routes unreachable, SyncTrelloAction ProjectStatus enum, ResendWebhookController HMAC, user_settings PK migration, LeadSourceController show route, 3 factories, NoteFactory created_by, duplicate LeadCreated notification
+- Batch A (config): PG default port 5432→5433, R2 disk uses R2_* env vars, CommentPolicy registered, 4 Vue components use route() not hardcoded URLs
+- Batch B (code): tearDown() in 3 config-mutating tests, status indexes migration, IntakeFormField/Submission BelongsToTeam trait
+- Batch C: Resend Guzzle mock via Mockery::mock(ResendClient::class) in EmailServiceTest, EmailControllerTest, LeadBulkControllerTest
+- Batch D: 13 new test files, 71 new tests — CommentController, EmailTemplateController, MaroniController, MaroniWebhookController, NotificationController, ProjectBulkController, SecuritySettingsController, SettingsController, TicketBulkController, TrelloController, Portal/TicketReplyController, SendEmailJob, GoogleCalendarService
+- Batch E: Removed hardcoded `['id' => 1]` from User::factory()->create() across ~63 test files; fixed `$user` scope in ImportLeadsJobTest and MeetingObserverTest
+- Fixed flaky CalendarControllerTest (Meeting factory date range)
+
+Technical decisions:
+- Resend SDK uses raw Guzzle, not Laravel Http facade — used Mockery::mock(ResendClient::class) in container, not Http::fake()
+- Mocked MaroniService must allow isConfigured() as a by-default expectation (ClientMaroniObserver fires on Client creation)
+- Webhook HMAC signature tests must use payloads that round-trip identically through json_decode/json_encode (empty objects `{}` vs arrays `[]` differ)
+- Guest redirects may go to `/` instead of `route('login')` — check actual redirect target
+
+Rejected alternatives:
+- Http::fake() for Resend (SDK uses raw Guzzle, not Laravel's HTTP client)
+
+Follow-up work:
+- Review responsive layout on mobile for new marketing pages
+- Look into config caching with dynamic integration settings (caveat: config() cache won't reflect DB overrides after php artisan config:cache)

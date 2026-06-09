@@ -249,7 +249,7 @@ npm run build
 
 ## Testing
 
-This project uses **PHPUnit 11** with 432 tests (1421 assertions).
+This project uses **PHPUnit 11** with 520 tests (1658 assertions).
 
 ```bash
 # Run everything
@@ -268,12 +268,14 @@ bash artisan.sh test --testsuite=Feature
 Tests use an **SQLite in-memory database** — no PostgreSQL needed to run them. Migrations run fresh before each test.
 
 | Test location | What it tests |
-|---|---|
+|---|---|---|
 | `tests/Feature/Http/Controllers/` | HTTP endpoints: status codes, validation, redirects, auth |
+| `tests/Feature/Http/Controllers/Portal/` | Client portal HTTP endpoints |
+| `tests/Feature/Jobs/` | Queue job integration tests |
 | `tests/Feature/Auth/` | Authentication: login, register, password reset |
 | `tests/Unit/Services/` | Business logic in service classes |
 | `tests/Unit/Actions/` | Single-purpose action classes |
-| `tests/Unit/Jobs/` | Queue job logic |
+| `tests/Unit/Jobs/` | Queue job unit tests |
 
 ---
 
