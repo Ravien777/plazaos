@@ -37,21 +37,27 @@ onMounted(() => {
                         <circle cx="248" cy="186" r="28" fill="currentColor" />
                         <circle cx="68" cy="186" r="28" fill="currentColor" />
                     </svg>
-                    <span class="text-xl font-bold text-gray-800">PlazaOS</span>
+                    <span :class="['text-xl font-bold transition-colors duration-300', scrolled ? 'text-gray-800' : 'text-white']">PlazaOS</span>
                 </Link>
 
                 <nav class="hidden items-center gap-8 sm:flex">
                     <Link
                         :href="route('features')"
-                        class="text-sm font-medium text-gray-600 transition hover:text-indigo-500"
-                        :class="{ 'text-indigo-500': $page.component === 'Features' }"
+                        :class="[
+                            'text-sm font-medium transition-colors duration-300',
+                            scrolled ? 'text-gray-600 hover:text-indigo-500' : 'text-indigo-200 hover:text-white',
+                            $page.component === 'Features' ? (scrolled ? 'text-indigo-500' : 'text-white') : '',
+                        ]"
                     >
                         Features
                     </Link>
                     <Link
                         :href="route('about')"
-                        class="text-sm font-medium text-gray-600 transition hover:text-indigo-500"
-                        :class="{ 'text-indigo-500': $page.component === 'About' }"
+                        :class="[
+                            'text-sm font-medium transition-colors duration-300',
+                            scrolled ? 'text-gray-600 hover:text-indigo-500' : 'text-indigo-200 hover:text-white',
+                            $page.component === 'About' ? (scrolled ? 'text-indigo-500' : 'text-white') : '',
+                        ]"
                     >
                         About
                     </Link>
@@ -69,7 +75,7 @@ onMounted(() => {
                     <template v-else>
                         <Link
                             :href="route('login')"
-                            class="text-sm font-medium text-gray-700 transition hover:text-gray-800"
+                            :class="['text-sm font-medium transition-colors duration-300', scrolled ? 'text-gray-700 hover:text-gray-800' : 'text-indigo-200 hover:text-white']"
                         >
                             Log in
                         </Link>

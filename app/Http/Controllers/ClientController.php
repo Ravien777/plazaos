@@ -48,6 +48,17 @@ class ClientController extends Controller
         ]);
     }
 
+    public function apiList(): JsonResponse
+    {
+        $this->authorize('viewAny', Client::class);
+
+        return response()->json(
+            Client::where('team_id', auth()->user()->team_id)
+                ->orderBy('company_name')
+                ->get(['id', 'company_name'])
+        );
+    }
+
     public function index(): Response
     {
         $this->authorize('viewAny', Client::class);

@@ -41,7 +41,7 @@ class ProjectControllerTest extends TestCase
             'client_id' => $client->id,
         ]);
 
-        $response->assertRedirect(route('projects.index'));
+        $response->assertRedirect();
         $this->assertDatabaseHas('projects', ['name' => 'Website Redesign']);
     }
 

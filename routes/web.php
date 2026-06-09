@@ -26,6 +26,7 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\NotificationPreferenceController;
+use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\Portal\PortalLinkController;
 use App\Http\Controllers\PortalUserController;
 use App\Http\Controllers\ProfileController;
@@ -81,6 +82,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::prefix('onboarding')->group(function () {
+        Route::put('/step/{step}', [OnboardingController::class, 'updateStep'])->name('onboarding.step');
+        Route::post('/skip', [OnboardingController::class, 'skip'])->name('onboarding.skip');
+        Route::post('/complete', [OnboardingController::class, 'complete'])->name('onboarding.complete');
+        Route::post('/dismiss', [OnboardingController::class, 'dismiss'])->name('onboarding.dismiss');
+        Route::post('/wizard-seen', [OnboardingController::class, 'wizardSeen'])->name('onboarding.wizard-seen');
+    });
 
     Route::get('/onboard/team', [TeamController::class, 'create'])->name('team.create');
     Route::post('/onboard/team', [TeamController::class, 'store'])->name('team.store');
@@ -162,6 +171,12 @@ Route::middleware('auth')->group(function () {
     Route::resource('projects', ProjectController::class);
     Route::post('/projects/{project}/restore', [ProjectController::class, 'restore'])->name('projects.restore')->withTrashed();
     Route::delete('/projects/{project}/force-delete', [ProjectController::class, 'forceDestroy'])->name('projects.force-destroy')->withTrashed();
+    Route::post('/projects/{project}/save-template', [ProjectController::class, 'saveAsTemplate'])->name('projects.save-template');
+    Route::get('/api/clients', [ClientController::class, 'apiList'])->name('api.clients');
+    Route::get('/api/project-templates', [ProjectController::class, 'templates'])->name('api.project-templates');
+    Route::get('/api/project-templates/{project}/preview', [ProjectController::class, 'previewTemplate'])->name('api.project-templates.preview');
+    Route::get('/projects/{project}/status-ping-preview', [ProjectController::class, 'statusPingPreview'])->name('projects.status-ping-preview');
+    Route::post('/projects/{project}/send-status-ping', [ProjectController::class, 'sendStatusPing'])->middleware('throttle:5,1')->name('projects.send-status-ping');
 
     Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
     Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');

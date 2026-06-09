@@ -38,4 +38,9 @@ class ProjectPolicy
     {
         return $user->canDelete();
     }
+
+    public function saveAsTemplate(User $user, Project $project): bool
+    {
+        return $user->isOwner();
+    }
 }

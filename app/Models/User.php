@@ -94,6 +94,41 @@ class User extends Authenticatable implements PasskeyUser
         return $this->team_id === null || $this->isOwner();
     }
 
+    public function completeOnboardingStep(string $step): void
+    {
+        $data = $this->onboarding_data ?? $this->defaultOnboardingData();
+        $data['steps'][$step] = true;
+        if (collect($data['steps'])->every(fn ($v) => $v === true)) {
+            $data['completed'] = true;
+        }
+        $this->onboarding_data = $data;
+        $this->save();
+    }
+
+    public function needsOnboarding(): bool
+    {
+        $data = $this->onboarding_data ?? $this->defaultOnboardingData();
+
+        return !$data['completed'] && !$data['skipped'] && !$data['dismissed'];
+    }
+
+    public function defaultOnboardingData(): array
+    {
+        return [
+            'completed' => false,
+            'skipped' => false,
+            'dismissed' => false,
+            'wizard_seen' => false,
+            'steps' => [
+                'profile' => ($this->name !== null && $this->name !== ''),
+                'team' => $this->team_id !== null,
+                'first_lead' => false,
+                'first_project' => false,
+                'integrations' => false,
+            ],
+        ];
+    }
+
     protected function casts(): array
     {
         return [
@@ -101,6 +136,7 @@ class User extends Authenticatable implements PasskeyUser
             'password' => 'hashed',
             'notification_preferences' => 'array',
             'dashboard_layout' => 'array',
+            'onboarding_data' => 'array',
         ];
     }
 }

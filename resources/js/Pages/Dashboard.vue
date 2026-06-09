@@ -5,16 +5,39 @@ import ActivityFeed from '@/Components/ActivityFeed.vue';
 import WallOfLove from '@/Components/WallOfLove.vue';
 import SkeletonLoader from '@/Components/SkeletonLoader.vue';
 import DashboardCustomizer from '@/Components/DashboardCustomizer.vue';
+import OnboardingChecklist from '@/Components/OnboardingChecklist.vue';
+import OnboardingWizardModal from '@/Components/OnboardingWizardModal.vue';
 import { VueDraggable } from 'vue-draggable-plus';
-import { nextTick, onMounted, ref } from 'vue';
-import { Head, Link, router } from '@inertiajs/vue3';
+import { computed, nextTick, onMounted, ref } from 'vue';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import type { Activity, DashboardLayout, Meeting, Testimonial } from '@/Types';
 
+const page = usePage();
+
 const ready = ref(false);
+const showWizard = ref(false);
+const wizardTriggered = ref(false);
+
+const onboarding = computed(() => {
+    const data = page.props.onboarding as Record<string, unknown> | null;
+    if (!data) return null;
+    return data as {
+        completed: boolean;
+        skipped: boolean;
+        dismissed: boolean;
+        wizard_seen: boolean;
+        steps: Record<string, boolean>;
+    };
+});
 
 onMounted(async () => {
     await nextTick();
     ready.value = true;
+
+    if (onboarding.value && !onboarding.value.completed && !onboarding.value.dismissed && !wizardTriggered.value) {
+        wizardTriggered.value = true;
+        setTimeout(() => { showWizard.value = true; }, 500);
+    }
 });
 
 const props = defineProps<{
@@ -79,11 +102,11 @@ function removeWidget(section: 'stat_cards' | 'bottom_widgets', id: string): voi
     saveLayout();
 }
 
-const showBanner = ref(localStorage.getItem('dismissed_team_banner') !== '1');
-
-function dismissBanner(): void {
-    localStorage.setItem('dismissed_team_banner', '1');
-    showBanner.value = false;
+function dismissOnboarding(): void {
+    router.post(route('onboarding.dismiss'), {}, {
+        preserveState: true,
+        preserveScroll: true,
+    });
 }
 
 function statusLabel(s: string): string {
@@ -138,28 +161,29 @@ function formatDate(dt: string): string {
         <div class="py-6">
             <div class="mx-auto max-w-7xl">
                 <div
-                    v-if="!hasTeam && showBanner"
+                    v-if="onboarding && !onboarding.completed && !onboarding.dismissed"
                     class="mb-6 flex items-center justify-between rounded-lg border border-indigo-200 bg-indigo-50 p-4"
                 >
                     <div>
                         <p class="text-sm font-medium text-indigo-800">
-                            You're using PlazaOS solo.
+                            Welcome to PlazaOS!
                         </p>
                         <p class="text-xs text-indigo-600">
-                            Create a team to invite teammates and collaborate.
+                            {{ hasTeam ? 'Continue setting up your workspace to get the most out of PlazaOS.' : 'Set up your profile and team to get started.' }}
                         </p>
                     </div>
                     <div class="flex items-center gap-2">
-                        <Link
-                            :href="route('team.create')"
+                        <button
+                            type="button"
                             class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-500"
+                            @click="showWizard = true"
                         >
-                            Create Team
-                        </Link>
+                            Get Started
+                        </button>
                         <button
                             type="button"
                             class="inline-flex h-8 w-8 items-center justify-center rounded-md text-indigo-500 transition hover:bg-indigo-100 hover:text-indigo-700"
-                            @click="dismissBanner"
+                            @click="dismissOnboarding"
                             aria-label="Dismiss"
                         >
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -193,6 +217,17 @@ function formatDate(dt: string): string {
                         @remove="removeWidget('stat_cards', id)"
                     />
                 </VueDraggable>
+
+                <div
+                    v-if="onboarding && !onboarding.dismissed && ready"
+                    class="my-8"
+                >
+                    <OnboardingChecklist
+                        :steps="onboarding.steps"
+                        :completed="onboarding.completed"
+                        @dismiss="onboarding.dismissed = true"
+                    />
+                </div>
 
                 <VueDraggable
                     v-if="layout.bottom_widgets.length > 0"
@@ -278,5 +313,11 @@ function formatDate(dt: string): string {
         :layout="layout"
         @close="showCustomizer = false"
         @update:layout="layout = $event"
+    />
+
+    <OnboardingWizardModal
+        :show="showWizard"
+        @close="showWizard = false"
+        @done="showWizard = false"
     />
 </template>

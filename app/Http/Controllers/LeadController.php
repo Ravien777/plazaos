@@ -47,6 +47,8 @@ class LeadController extends Controller
             return redirect()->back()->with('error', 'Failed to create lead. Please try again.');
         }
 
+        $request->user()->completeOnboardingStep('first_lead');
+
         return redirect()->route('leads.index')->with('success', 'Lead created successfully.');
     }
 

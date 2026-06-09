@@ -46,6 +46,8 @@ class TeamController extends Controller
             'role' => 'owner',
         ]);
 
+        $user->completeOnboardingStep('team');
+
         return redirect()->route('dashboard');
     }
 

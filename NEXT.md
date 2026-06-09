@@ -2,10 +2,9 @@
 
 ## 🧠 Core Directives & Constraints
 **Project:** PlazaOS (Transitioning to a Team Platform for SMEs)
-**Target Audience:** Small teams (1 to 20 members maximum). 
-**The Golden Rule (The "15-Year-Old Test"):** The UI/UX must be so intuitive that a 15-year-old could use it without any training. 
+**Target Audience:** Small teams (1 to 20 members maximum).
+**The Golden Rule (The "15-Year-Old Test"):** The UI/UX must be so intuitive that a 15-year-old could use it without any training.
 **Anti-Patterns:** DO NOT build enterprise features. No complex RBAC, no Gantt charts, no deep hierarchical permissions, no steep learning curves.
-
 **Tech Stack:** Laravel 12, Vue 3, Inertia.js, TypeScript, Tailwind CSS, PostgreSQL 16.
 
 ---
@@ -142,18 +141,19 @@
 
 ## 🛡️ Phase 4: Security & Polish
 
-### Feature 9: Two-Factor Authentication (2FA)
-**Goal:** Secure the accounts of the team.
-**15-Year-Old Test:** "I log in, and it asks me for a code from my phone app."
+### Feature 9: Passwordless Login & Passkeys (WebAuthn)
+**Goal:** Secure accounts without annoying 6-digit codes.
+**15-Year-Old Test:** "I log in with my face or my fingerprint, and I'm in."
 
 #### Actionable Steps:
 1.  **Backend (Laravel):**
-    *   Install and configure Laravel Fortify.
-    *   Enable `Features::twoFactorAuthentication()` in the Fortify config.
+    *   Install a WebAuthn package (e.g., `asbiin/laravel-webauthn`).
+    *   Configure Laravel Fortify to support passwordless challenges.
 2.  **Frontend (Vue):**
-    *   Add a "Security" tab in the user settings.
-    *   Show a "Enable 2FA" button. When clicked, show the QR code and recovery codes.
-    *   **DO NOT** force 2FA on day one. Make it optional but highly recommended in the UI.
+    *   Add a "Security" tab in user settings.
+    *   Show a "Add Passkey" button. When clicked, trigger the browser's native WebAuthn API (`navigator.credentials.create`).
+    *   On the login page, add a "Sign in with Passkey" button that triggers `navigator.credentials.get`.
+    *   **DO NOT** force users to delete their passwords immediately. Allow Passkeys as a faster, optional login method.
 
 ### Feature 10: Quick Wins (UI/UX Polish)
 **Goal:** Make the app feel premium and forgiving.
@@ -163,6 +163,58 @@
 2.  **Loading Skeletons:** Replace standard spinners with Tailwind `animate-pulse` skeleton screens for tables and cards while data is fetching.
 3.  **Toast Notifications:** Use a library like `vue-sonner` or `v-toaster`. Show a green toast for success ("Lead created!") and a red toast for errors. Auto-dismiss after 3 seconds.
 4.  **Confirm Destructive Actions:** Create a `<ConfirmModal>` component. Use it for *any* delete or archive action. Use plain English: "Are you sure you want to delete this lead? This cannot be undone."
+
+---
+
+## 🚀 Phase 5: 10x Value Features (The "Magic" Layer)
+
+### Feature 11: Context-Aware AI "Magic" Buttons
+**Goal:** Eliminate writer's block for emails and notes by using AI that actually understands the client context.
+**15-Year-Old Test:** "I click the sparkles icon next to the email box, and it writes a perfect update for me."
+
+#### Actionable Steps:
+1.  **Backend (Laravel):**
+    *   Create an `AiDraftingService`. Use Laravel's HTTP client to call an LLM API (e.g., OpenAI/Anthropic).
+    *   Create a `POST /api/ai/draft` endpoint. It accepts `context_type` (e.g., 'email', 'note') and `context_id` (e.g., client_id).
+    *   The backend gathers context: Client name, recent activities, project status, and the user's partial input (if any). It constructs a strict system prompt: *"You are an assistant for a creative agency. Draft a polite, concise message based on this context..."*
+2.  **Frontend (Vue):**
+    *   Create a `<MagicButton>` component. It displays a simple ✨ icon.
+    *   Place it inside or next to `<textarea>` elements (Email composer, Notes, Comments).
+    *   **Interaction:** Clicking it sends the context to the API. Show a shimmering loading skeleton *inside* the textarea. 
+    *   Once the response arrives, inject the text. Add a small "Regenerate" or "Undo" icon that appears briefly after insertion.
+
+### Feature 12: Project Templates & "Cloning"
+**Goal:** Standardize agency workflows. Stop recreating the same 15 tasks for every new website redesign.
+**15-Year-Old Test:** "I click 'Use Template', and all my standard tasks instantly appear in the new project."
+
+#### Actionable Steps:
+1.  **Database:** 
+    *   Add `is_template` (boolean, default false) and `template_name` (string, nullable) to the `projects` table.
+2.  **Backend (Laravel):**
+    *   Create a `CloneProject` Action. It takes a source project ID, a new client ID, and a new project name.
+    *   It duplicates the project record. Then, it loops through the source project's `tasks` and duplicates them, assigning them to the new project. (Keep it simple: do not clone comments or activity logs).
+3.  **Frontend (Vue):**
+    *   **Saving:** Add a "Save as Template" button on the Project Show page (visible only to Owners). It prompts for a `template_name`.
+    *   **Creating:** On the "Create Project" page, add a "Start from Template" dropdown above the task list. 
+    *   When a template is selected, show a preview list of the tasks that will be created.
+
+### Feature 13: Automated "Status Pings" (Client Happiness)
+**Goal:** Proactively update clients without spending 20 minutes writing a "weekly update" email.
+**15-Year-Old Test:** "I click 'Send Update', and the client gets a beautiful email showing exactly what we did this week."
+
+#### Actionable Steps:
+1.  **Backend (Laravel):**
+    *   Create a `GenerateStatusPing` Action. It queries the `activities` and `completed tasks` for a specific project within the last 7 days.
+    *   Create a beautiful, clean HTML Blade email template (`resources/views/emails/status-ping.blade.php`). It should have sections for: "✅ Completed This Week", "🚧 In Progress", and "📅 Next Steps".
+    *   Create a `StatusPingMailable` that accepts the project and the compiled data.
+2.  **Frontend (Vue):**
+    *   Add a "Send Status Update" button on the Project Show page (near the top header).
+    *   **Interaction:** Clicking it opens a simple modal showing a preview of the auto-generated email content. 
+    *   Include a text area to add a "Personal Note" at the top of the email.
+    *   User clicks "Send to Client".
+3.  **Backend (Laravel - Post-Send):**
+    *   Dispatch the email to the primary client contact.
+    *   Log an activity: "Sent weekly status ping to [Client Name]".
 
 ---
 
@@ -176,19 +228,15 @@ To ensure the app passes the "15-Year-Old Test" and fits the SME constraint, **D
 4.  **No Complex Automation:** Do not build a visual workflow builder (like Zapier). If you build email templates, keep it to simple text replacement.
 5.  **No API Key Management:** Do not build a UI for generating personal access tokens. This is an SME app, not a developer tool.
 6.  **No "Settings Overload":** Do not create 50 toggle switches in the settings page. Group settings logically and hide advanced options behind an "Advanced" accordion.
+7.  **No AI Chatbots:** Do not build a floating "Chat with AI" widget. AI should only exist as contextual "Magic" buttons inside existing workflows.
 
 ---
 
 ## 🏗️ Architectural Reminders
-*   **Actions over Controllers:** Continue using the `App\Actions` pattern. All new business logic (inviting users, posting comments) must go into dedicated Action classes.
+*   **Actions over Controllers:** Continue using the `App\Actions` pattern. All new business logic (inviting users, posting comments, cloning projects, generating AI drafts) must go into dedicated Action classes.
 *   **Form Requests:** Validate all incoming data using dedicated Form Request classes.
 *   **Polymorphism:** Ensure the new `Comments` and `Activities` models use polymorphic relationships (`commentable`, `subject`) so they can be attached to any current or future model.
-*   **Frontend State:** Keep Vue components dumb. Pass data via Inertia `props`. Use `ref` only for local UI state (like dropdown toggles or loading spinners).
-
-
------------------
-
-> **Completed:** Trello integration (one-way sync), double header fix.
+*   **Frontend State:** Keep Vue components dumb. Pass data via Inertia `props`. Use `ref` only for local UI state (like dropdown toggles, loading spinners, or modal visibility).
 
 ---
 
@@ -198,11 +246,11 @@ To ensure the app passes the "15-Year-Old Test" and fits the SME constraint, **D
 Maroni is a financial web app (Next.js, TypeScript) handling accounting, invoices, payroll, and expenses. PlazaOS is the CRM. Both apps share clients as a common entity.
 
 **Architecture:**
-- **Client sync:** PlazaOS → Maroni (CRM is source of truth). Uses existing PlazaOS webhook system for `client.created` / `client.updated` events.
-- **Financial data:** PlazaOS pulls live from Maroni API (no local storage of invoices/expenses).
-- **Events:** Maroni pushes events (invoice.paid, invoice.created) to PlazaOS via signed webhook.
+*   **Client sync:** PlazaOS → Maroni (CRM is source of truth). Uses existing PlazaOS webhook system for `client.created` / `client.updated` events.
+*   **Financial data:** PlazaOS pulls live from Maroni API (no local storage of invoices/expenses).
+*   **Events:** Maroni pushes events (`invoice.paid`, `invoice.created`) to PlazaOS via signed webhook.
 
-```
+```text
 PlazaOS (Laravel)                          Maroni (Next.js)
 ┌─────────────────────┐                   ┌──────────────────────┐
 │  Webhook dispatch   │  client.created   │  POST /api/plazaos-  │
@@ -227,94 +275,3 @@ PlazaOS (Laravel)                          Maroni (Next.js)
 │  webhook            │                   │  invoice.paid        │
 │  (signature-verif.) │                   │  invoice.created     │
 └─────────────────────┘                   └──────────────────────┘
-```
-
-### PlazaOS — Implementation Order
-
-#### Step 1: Config + Database
-- **`config/maroni.php`** — API base URL, API key, webhook secret (from `.env`)
-- **Migration:** Add to `clients` table:
-  - `maroni_client_id` (string, nullable, unique)
-  - `maroni_sync_status` (string, nullable: `synced` / `failed`)
-  - `last_maroni_synced_at` (datetime, nullable)
-
-#### Step 2: MaroniService (`app/Services/MaroniService.php`)
-HTTP client wrapping Maroni's REST API:
-- `syncClient(Client $client)` — create/update client in Maroni, returns `maroni_client_id`
-- `getClientInvoices(Client $client)` — list invoices for client
-- `getClientExpenses(Client $client)` — list expenses for client
-- `getClientSummary(Client $client)` — total billed, outstanding, paid
-- `getDashboardSummary()` — global KPIs (monthly revenue, outstanding total)
-
-#### Step 3: MaroniWebhookController (`app/Http/Controllers/MaroniWebhookController.php`)
-Receives inbound webhooks from Maroni:
-- `POST /api/maroni/webhook` — signature-verified with shared secret
-- Events: `invoice.created`, `invoice.paid`, `client.updated`
-- Logs activities on the relevant client
-
-#### Step 4: ClientMaroniObserver (`app/Observers/ClientMaroniObserver.php`)
-Hooks into Client `created` / `updated` events:
-- **Outbound via Webhook (recommended first):** Maroni registers a webhook in PlazaOS Settings → Webhooks for `client.created` + `client.updated`. No new code needed — the existing webhook infrastructure handles it.
-- **Direct API (fallback):** Observer calls `MaroniService::syncClient()` directly, stores `maroni_client_id`.
-
-#### Step 5: Bulk Sync Command (`app/Console/Commands/SyncClientsToMaroni.php`)
-- `php artisan maroni:sync-clients` — sends all clients to Maroni, sets `maroni_client_id`
-- Useful for initial one-time sync after setup
-- Route: `POST /maroni/sync-clients` for on-demand trigger from UI
-
-#### Step 6: Settings Page
-- Add `maroni_base_url`, `maroni_api_key`, `maroni_webhook_secret` to `SettingsController::SETTING_KEYS` + validation
-- Add "Maroni" section to `Settings/Integrations.vue` with:
-  - Base URL, API Key, Webhook Secret inputs
-  - "Sync Clients" button
-  - Connection status indicator
-
-#### Step 7: Client Show — Financial Section
-- Add "Financial" panel to `Clients/Show.vue`:
-  - Total billed, total paid, outstanding balance (from `getClientSummary`)
-  - Recent invoices list with external link to Maroni
-  - Recent expenses list
-
-#### Step 8: Dashboard — Financial KPIs
-- Add KPI cards to `Dashboard.vue` (when Maroni is configured):
-  - Monthly revenue
-  - Outstanding invoices total
-  - Recent payments
-
-#### Step 9: Schedule (`routes/console.php`)
-- `php artisan maroni:sync-clients` — nightly (catch any missed webhooks)
-- `php artisan maroni:sync-clients --new` — every 5 min (optional, for near-real-time sync)
-
-### Maroni (Next.js) — What Needs to Be Built
-
-#### PlazaOS Webhook Receiver
-```
-POST /api/plazaos-webhook
-```
-- Validate HMAC signature with shared secret
-- Handle `client.created`, `client.updated` events
-- Create/update client in Maroni
-- Store `plazaos_client_id` on Maroni's client record
-
-#### Read API Endpoints (shared API key auth)
-```
-GET  /api/clients/:id/invoices      → Invoice[]
-GET  /api/clients/:id/expenses      → Expense[]
-GET  /api/clients/:id/summary       → { totalBilled, totalPaid, outstanding }
-GET  /api/dashboard/summary         → { monthlyRevenue, outstandingTotal, recentPayments }
-```
-
-#### Outbound Webhook Sender
-When financial events happen in Maroni, send signed POST to `PlazaOS_URL/api/maroni/webhook`:
-- `invoice.created` → { event, client_id, invoice_id, amount, url }
-- `invoice.paid`    → { event, client_id, invoice_id, amount, paid_at }
-
-### Key Design Decisions
-| Decision | Choice |
-|---|---|
-| Source of truth for clients | PlazaOS (CRM wins) |
-| Financial data storage | None — fetched live from Maroni API |
-| Client sync direction | PlazaOS → Maroni (via webhooks) |
-| Financial events direction | Maroni → PlazaOS (via signed webhook) |
-| Auth | Shared API key in `.env` + HMAC signatures |
-| Initial sync | Bulk command `maroni:sync-clients` | 

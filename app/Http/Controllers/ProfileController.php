@@ -39,6 +39,8 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
+        $request->user()->completeOnboardingStep('profile');
+
         return Redirect::route('profile.edit');
     }
 

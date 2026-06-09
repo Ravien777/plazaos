@@ -29,6 +29,8 @@ class Project extends Model
         'start_date',
         'due_date',
         'progress_percentage',
+        'is_template',
+        'template_name',
     ];
 
     protected function casts(): array
@@ -39,6 +41,7 @@ class Project extends Model
             'start_date' => 'date',
             'due_date' => 'date',
             'progress_percentage' => 'integer',
+            'is_template' => 'boolean',
         ];
     }
 

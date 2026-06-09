@@ -41,6 +41,7 @@ class SettingsController extends Controller
     public function edit(): Response
     {
         $user = request()->user();
+        $user->completeOnboardingStep('integrations');
         $settings = [];
 
         foreach (self::SETTING_KEYS as $key) {

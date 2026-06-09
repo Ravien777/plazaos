@@ -37,6 +37,9 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
                 'client_user' => $request->user('client')?->load('client'),
             ],
+            'onboarding' => $request->user()
+                ? ($request->user()->onboarding_data ?? $request->user()->defaultOnboardingData())
+                : null,
         ];
     }
 }

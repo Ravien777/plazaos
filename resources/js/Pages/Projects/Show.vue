@@ -1,20 +1,23 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import KanbanBoard from '@/Components/KanbanBoard.vue';
+import Modal from '@/Components/Modal.vue';
 import PageHeader from '@/Components/PageHeader.vue';
 import StatusBadge from '@/Components/StatusBadge.vue';
+import StatusPingModal from '@/Components/StatusPingModal.vue';
 import NotesSection from '@/Components/NotesSection.vue';
 import CommentSection from '@/Components/CommentSection.vue';
 import ActivityFeed from '@/Components/ActivityFeed.vue';
 import DocumentList from '@/Components/DocumentList.vue';
 import EmailHistory from '@/Components/EmailHistory.vue';
 import TicketList from '@/Components/TicketList.vue';
-import { Head, Link, router } from '@inertiajs/vue3';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { useToast } from '@/composables/useToast';
 import type { Project, User } from '@/Types';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 const toast = useToast();
+const { auth } = usePage().props as any;
 
 const props = defineProps<{
     project: Project;
@@ -23,12 +26,16 @@ const props = defineProps<{
 
 const requestingReview = ref(false);
 const reviewSent = ref(false);
+const saveTemplateModal = ref(false);
+const templateName = ref('');
+const savingTemplate = ref(false);
+const statusPingModal = ref(false);
 
-const groupedTasks: Record<string, any[]> = {
+const groupedTasks = computed(() => ({
     todo: (props.project.tasks ?? []).filter((t: any) => t.status === 'todo'),
     in_progress: (props.project.tasks ?? []).filter((t: any) => t.status === 'in_progress'),
     done: (props.project.tasks ?? []).filter((t: any) => t.status === 'done'),
-};
+}));
 
 function statusLabel(s: string): string {
     const labels: Record<string, string> = {
@@ -54,14 +61,41 @@ function destroy(): void {
     });
 }
 
+async function saveAsTemplate(): Promise<void> {
+    if (!templateName.value.trim()) return;
+    savingTemplate.value = true;
+    try {
+        await router.post(`/projects/${props.project.id}/save-template`, {
+            template_name: templateName.value,
+        }, {
+            preserveScroll: true,
+            onSuccess: () => {
+                toast.success('Project saved as template.');
+                saveTemplateModal.value = false;
+                templateName.value = '';
+            },
+            onError: () => {
+                toast.error('Failed to save template.');
+            },
+        });
+    } finally {
+        savingTemplate.value = false;
+    }
+}
+
 async function requestReview(): Promise<void> {
     requestingReview.value = true;
-    try {
-        await fetch(`/projects/${props.project.id}/request-review`, { method: 'POST' });
-        reviewSent.value = true;
-    } finally {
-        requestingReview.value = false;
-    }
+    router.post(`/projects/${props.project.id}/request-review`, {}, {
+        preserveScroll: true,
+        onSuccess: () => { reviewSent.value = true; },
+        onError: () => { toast.error('Failed to request review.'); },
+        onFinish: () => { requestingReview.value = false; },
+    });
+}
+
+function onStatusPingSent(): void {
+    statusPingModal.value = false;
+    toast.success('Status update sent to ' + (props.project.client?.contact_name ?? 'client'));
 }
 </script>
 
@@ -81,6 +115,20 @@ async function requestReview(): Promise<void> {
                         {{ requestingReview ? 'Sending...' : 'Request Review' }}
                     </button>
                     <span v-else class="text-xs font-medium text-green-600">Review requested ✓</span>
+                    <button
+                        v-if="project.client?.email"
+                        @click="statusPingModal = true"
+                        class="inline-flex items-center rounded-md bg-emerald-600 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-emerald-500"
+                    >
+                        Send Status Update
+                    </button>
+                    <button
+                        v-if="auth.user?.role === 'owner'"
+                        @click="saveTemplateModal = true"
+                        class="inline-flex items-center rounded-md border border-gray-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 shadow-sm transition hover:bg-gray-50"
+                    >
+                        Save as Template
+                    </button>
                     <Link
                         :href="`/projects/${project.id}/edit`"
                         class="inline-flex items-center rounded-md bg-gray-700 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-600"
@@ -204,4 +252,44 @@ async function requestReview(): Promise<void> {
             </div>
         </div>
     </AuthenticatedLayout>
+
+    <Modal :show="saveTemplateModal" max-width="sm" @close="saveTemplateModal = false">
+        <div class="px-6 py-5">
+            <h3 class="text-lg font-semibold text-gray-800">Save as Template</h3>
+            <p class="mt-2 text-sm text-gray-600">Give your template a name so you can reuse it later.</p>
+            <input
+                v-model="templateName"
+                type="text"
+                placeholder="e.g. Website Redesign"
+                class="mt-4 block w-full rounded-md border-gray-200 shadow-sm focus:border-indigo-400 focus:ring-indigo-400 sm:text-sm"
+                @keydown.enter="saveAsTemplate"
+            />
+        </div>
+        <div class="flex items-center justify-end gap-3 border-t border-gray-100 px-6 py-4">
+            <button
+                type="button"
+                class="inline-flex items-center rounded-md border border-gray-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 transition hover:bg-gray-50"
+                @click="saveTemplateModal = false"
+            >
+                Cancel
+            </button>
+            <button
+                type="button"
+                :disabled="savingTemplate || !templateName.trim()"
+                class="inline-flex items-center rounded-md bg-gray-700 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
+                @click="saveAsTemplate"
+            >
+                {{ savingTemplate ? 'Saving...' : 'Save Template' }}
+            </button>
+        </div>
+    </Modal>
+
+    <StatusPingModal
+        :show="statusPingModal"
+        :project-id="project.id"
+        :client-email="project.client?.email ?? ''"
+        :client-name="project.client?.contact_name ?? ''"
+        @close="statusPingModal = false"
+        @sent="onStatusPingSent"
+    />
 </template>
