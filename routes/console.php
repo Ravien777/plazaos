@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Console\Commands\CheckInactiveLeads;
+use App\Console\Commands\HandleExpiredTrials;
 use App\Console\Commands\ScrapeLeadSources;
 use App\Console\Commands\SendDigestEmails;
 use App\Console\Commands\SendMeetingReminders;
@@ -23,3 +24,4 @@ Schedule::command(SendDigestEmails::class)->dailyAt('08:00');
 Schedule::command(SyncTrello::class)->everyFifteenMinutes();
 Schedule::command(SyncClientsToMaroni::class, ['--new'])->everyFiveMinutes();
 Schedule::command(SyncClientsToMaroni::class)->daily();
+Schedule::command(HandleExpiredTrials::class)->daily();

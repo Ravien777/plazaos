@@ -16,6 +16,7 @@ use App\Observers\MeetingObserver;
 use App\Observers\ProjectObserver;
 use App\Models\User;
 use App\Services\ActivityService;
+use App\Services\BillingService;
 use App\Services\MaroniService;
 use App\Services\WebhookService;
 use Illuminate\Support\Facades\Vite;
@@ -30,6 +31,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(MaroniService::class);
+        $this->app->singleton(BillingService::class);
     }
 
     public function boot(): void

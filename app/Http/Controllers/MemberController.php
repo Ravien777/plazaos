@@ -64,4 +64,27 @@ class MemberController extends Controller
         return redirect()->route('team.members')
             ->with('status', 'Member removed from the team.');
     }
+
+    public function leave(): RedirectResponse
+    {
+        $user = auth()->user();
+        $team = $user->team;
+
+        if ($team === null) {
+            return redirect()->route('team.create');
+        }
+
+        if ($user->isOwner()) {
+            return redirect()->route('team.members')
+                ->with('error', 'Owners cannot leave the team. Transfer ownership or delete the workspace instead.');
+        }
+
+        $user->update([
+            'team_id' => null,
+            'role' => 'member',
+        ]);
+
+        return redirect()->route('team.create')
+            ->with('status', 'You have left the team.');
+    }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Models\Plan;
 use App\Models\Team;
 use App\Models\TeamInvitation;
 use App\Models\User;
@@ -15,10 +16,14 @@ class InviteTeamMemberAction
 {
     public function execute(Team $team, string $email): TeamInvitation
     {
+        $subscription = $team->subscription;
+        $plan = $subscription?->plan ?? Plan::where('slug', 'free')->first();
+        $maxUsers = $plan?->max_users ?? 1;
+
         $currentCount = $team->members()->count() + $team->invitations()->whereNull('accepted_at')->count();
 
-        if ($currentCount >= 20) {
-            throw new \RuntimeException('Team is full (max 20 members).');
+        if ($currentCount >= $maxUsers) {
+            throw new \RuntimeException("Team has reached the seat limit ({$maxUsers}). Upgrade your plan to invite more members.");
         }
 
         if ($team->members()->where('email', $email)->exists()) {

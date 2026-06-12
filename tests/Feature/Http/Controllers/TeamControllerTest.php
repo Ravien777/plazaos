@@ -135,4 +135,42 @@ class TeamControllerTest extends TestCase
 
         $response->assertForbidden();
     }
+
+    public function test_destroy_deletes_team(): void
+    {
+        $user = User::factory()->create();
+        $team = Team::factory()->create(['owner_id' => $user->id]);
+        $user->update(['team_id' => $team->id, 'role' => 'owner']);
+
+        $response = $this->actingAs($user)->delete(route('team.destroy'));
+
+        $response->assertRedirect(route('team.create'));
+        $response->assertSessionHas('status');
+
+        $this->assertSoftDeleted($team);
+    }
+
+    public function test_destroy_forbidden_for_member(): void
+    {
+        $owner = User::factory()->create();
+        $team = Team::factory()->create(['owner_id' => $owner->id]);
+        $owner->update(['team_id' => $team->id, 'role' => 'owner']);
+        $member = User::factory()->create(['team_id' => $team->id, 'role' => 'member']);
+
+        $response = $this->actingAs($member)->delete(route('team.destroy'));
+
+        $response->assertForbidden();
+    }
+
+    public function test_destroy_clears_user_team(): void
+    {
+        $user = User::factory()->create();
+        $team = Team::factory()->create(['owner_id' => $user->id]);
+        $user->update(['team_id' => $team->id, 'role' => 'owner']);
+
+        $this->actingAs($user)->delete(route('team.destroy'));
+
+        $user->refresh();
+        $this->assertNull($user->team_id);
+    }
 }

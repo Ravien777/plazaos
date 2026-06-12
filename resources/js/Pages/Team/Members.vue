@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { router } from '@inertiajs/vue3';
+import { router, useForm } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import InitialsAvatar from '@/Components/InitialsAvatar.vue';
 import EmptyState from '@/Components/EmptyState.vue';
@@ -12,9 +12,16 @@ const props = defineProps<{
     isOwner: boolean;
 }>();
 
+const leaveForm = useForm({});
+
 async function removeMember(id: number, name: string): Promise<void> {
     if (!await confirm({ title: 'Remove member?', message: `Remove ${name} from the team?`, confirmLabel: 'Remove' })) return;
     router.delete(route('team.members.remove', id));
+}
+
+async function leaveTeam(): Promise<void> {
+    if (!await confirm({ title: 'Leave team?', message: 'Are you sure you want to leave this team? You can create your own team afterwards.', confirmLabel: 'Leave' })) return;
+    leaveForm.post(route('team.leave'));
 }
 </script>
 
@@ -27,7 +34,7 @@ async function removeMember(id: number, name: string): Promise<void> {
         </template>
 
         <div class="py-6">
-            <div class="mx-auto max-w-7xl">
+            <div class="mx-auto max-w-7xl space-y-6">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg p-6">
                     <EmptyState
                         v-if="members.length === 0"
@@ -83,6 +90,24 @@ async function removeMember(id: number, name: string): Promise<void> {
                                 </button>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <div v-if="!isOwner" class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
+                    <div class="border-l-4 border-red-400 bg-red-50 p-6">
+                        <h3 class="text-lg font-medium text-red-800">
+                            Leave Team
+                        </h3>
+                        <p class="mt-1 text-sm text-red-600">
+                            Leaving the team will remove you from this workspace. You can create your own team afterwards.
+                        </p>
+                        <button
+                            class="mt-3 rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-500 disabled:opacity-50"
+                            :disabled="leaveForm.processing"
+                            @click="leaveTeam"
+                        >
+                            {{ leaveForm.processing ? 'Leaving...' : 'Leave Team' }}
+                        </button>
                     </div>
                 </div>
             </div>

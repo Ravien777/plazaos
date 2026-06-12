@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import { useForm, router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
@@ -15,6 +16,10 @@ const inviteForm = useForm({
     email: '',
 });
 
+const deleteConfirm = ref('');
+
+const deleteForm = useForm({});
+
 function updateTeam(): void {
     form.put(route('team.update'));
 }
@@ -28,6 +33,11 @@ function sendInvite(): void {
 
 function cancelInvitation(id: number): void {
     router.delete(route('team.invitations.destroy', id));
+}
+
+function deleteWorkspace(): void {
+    if (deleteConfirm.value !== 'DELETE') return;
+    deleteForm.delete(route('team.destroy'));
 }
 </script>
 
@@ -111,6 +121,32 @@ function cancelInvitation(id: number): void {
                                 </button>
                             </li>
                         </ul>
+                    </div>
+                </div>
+
+                <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
+                    <div class="border-l-4 border-red-400 bg-red-50 p-6">
+                        <h3 class="text-lg font-medium text-red-800">
+                            Delete Workspace
+                        </h3>
+                        <p class="mt-1 text-sm text-red-600">
+                            This will permanently delete all team data including leads, clients, projects, and documents. This action cannot be undone.
+                        </p>
+                        <div class="mt-3 flex items-center gap-3">
+                            <input
+                                v-model="deleteConfirm"
+                                type="text"
+                                placeholder='Type "DELETE" to confirm'
+                                class="block w-48 rounded-md border-red-300 shadow-sm focus:border-red-400 focus:ring-red-400 sm:text-sm"
+                            />
+                            <button
+                                class="rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-500 disabled:opacity-50"
+                                :disabled="deleteForm.processing || deleteConfirm !== 'DELETE'"
+                                @click="deleteWorkspace"
+                            >
+                                {{ deleteForm.processing ? 'Deleting...' : 'Delete Workspace' }}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

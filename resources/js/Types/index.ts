@@ -370,3 +370,42 @@ export interface DashboardLayout {
     stat_cards: string[];
     bottom_widgets: string[];
 }
+
+export interface Plan {
+    id: string;
+    stripe_price_id: string | null;
+    slug: string;
+    name: string;
+    description: string | null;
+    monthly_price_cents: number;
+    max_users: number | null;
+    features: string[] | null;
+    is_active: boolean;
+    sort_order: number;
+}
+
+export interface Subscription {
+    id: string;
+    team_id: string;
+    plan_id: string;
+    stripe_subscription_id: string | null;
+    stripe_customer_id: string | null;
+    status: string;
+    trial_ends_at: string | null;
+    current_period_ends_at: string | null;
+    canceled_at: string | null;
+    ended_at: string | null;
+    seats: number;
+    plan?: Plan;
+}
+
+export interface Invoice {
+    id: string;
+    number: string;
+    amount_due: number;
+    amount_paid: number;
+    status: string;
+    created: number;
+    pdf_url: string | null;
+    paid_at: number | null;
+}

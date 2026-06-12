@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Plan;
+use App\Models\Subscription;
+use App\Models\Team;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -44,6 +47,28 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        $team = Team::create([
+            'name' => "{$user->name}'s Team",
+            'owner_id' => $user->id,
+        ]);
+
+        $user->update([
+            'team_id' => $team->id,
+            'role' => 'owner',
+        ]);
+
+        $proPlan = Plan::where('slug', 'pro')->first();
+
+        if ($proPlan) {
+            Subscription::create([
+                'team_id' => $team->id,
+                'plan_id' => $proPlan->id,
+                'status' => 'trialing',
+                'trial_ends_at' => now()->addDays(config('billing.stripe.trial_days', 14)),
+                'seats' => 1,
+            ]);
+        }
 
         event(new Registered($user));
 

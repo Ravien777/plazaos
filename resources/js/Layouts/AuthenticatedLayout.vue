@@ -213,6 +213,13 @@ onUnmounted(() => {
                                 Integrations
                             </Link>
                             <Link
+                                :href="route('settings.billing')"
+                                class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                                @click="userMenuOpen = false"
+                            >
+                                Billing
+                            </Link>
+                            <Link
                                 :href="route('settings.webhooks')"
                                 class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                                 @click="userMenuOpen = false"

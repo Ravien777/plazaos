@@ -64,8 +64,17 @@ Route::get('/features', function () {
     ]);
 })->name('features');
 
+Route::get('/pricing', function () {
+    return Inertia::render('Pricing', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+        'plans' => \App\Models\Plan::where('is_active', true)->orderBy('sort_order')->get(),
+    ]);
+})->name('pricing');
+
 Route::post('/webhooks/resend', [\App\Http\Controllers\ResendWebhookController::class, 'handle']);
 Route::post('/api/maroni/webhook', [\App\Http\Controllers\MaroniWebhookController::class, 'handle']);
+Route::post('/webhooks/stripe', [\App\Http\Controllers\StripeWebhookController::class, 'handle']);
 
 Route::get('/invite/{token}', [InvitationController::class, 'show'])->name('invitation.show');
 Route::post('/invite/{token}', [InvitationController::class, 'accept'])->name('invitation.accept');
@@ -95,8 +104,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/onboard/team', [TeamController::class, 'store'])->name('team.store');
     Route::get('/team/settings', [TeamController::class, 'edit'])->name('team.edit');
     Route::put('/team/settings', [TeamController::class, 'update'])->name('team.update');
+    Route::delete('/team/settings', [TeamController::class, 'destroy'])->name('team.destroy');
     Route::get('/team/members', [MemberController::class, 'index'])->name('team.members');
     Route::post('/team/members/invite', [InvitationController::class, 'store'])->name('team.members.invite');
+    Route::post('/team/leave', [MemberController::class, 'leave'])->name('team.leave');
     Route::delete('/team/members/{user}', [MemberController::class, 'destroy'])->name('team.members.remove');
     Route::delete('/team/invitations/{invitation}', [InvitationController::class, 'destroy'])->name('team.invitations.destroy');
 
@@ -107,6 +118,14 @@ Route::middleware('auth')->group(function () {
     Route::put('/settings/notifications', [NotificationPreferenceController::class, 'update']);
 
     Route::get('/settings/security', [SecuritySettingsController::class, 'index'])->name('settings.security');
+
+    Route::get('/settings/billing', [\App\Http\Controllers\BillingController::class, 'index'])->name('settings.billing');
+    Route::post('/billing/checkout/{plan}', [\App\Http\Controllers\BillingController::class, 'checkout'])->name('billing.checkout');
+    Route::get('/billing/success', [\App\Http\Controllers\BillingController::class, 'success'])->name('billing.success');
+    Route::get('/billing/cancel', [\App\Http\Controllers\BillingController::class, 'cancel'])->name('billing.cancel');
+    Route::post('/billing/portal', [\App\Http\Controllers\BillingController::class, 'portal'])->name('billing.portal');
+    Route::post('/billing/cancel-subscription', [\App\Http\Controllers\BillingController::class, 'cancelSubscription'])->name('billing.cancel-subscription');
+    Route::post('/billing/resume-subscription', [\App\Http\Controllers\BillingController::class, 'resumeSubscription'])->name('billing.resume-subscription');
 
     Route::get('/settings/webhooks', [WebhookController::class, 'index'])->name('settings.webhooks');
     Route::get('/settings/webhooks/create', [WebhookController::class, 'create'])->name('settings.webhooks.create');

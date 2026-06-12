@@ -30,10 +30,12 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->validateCsrfTokens(except: [
             'webhooks/resend',
             'api/maroni/webhook',
+            'webhooks/stripe',
         ]);
 
         $middleware->alias([
             'ensure.client' => \App\Http\Middleware\EnsureClient::class,
+            'billing' => \App\Http\Middleware\CheckBillingAccess::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

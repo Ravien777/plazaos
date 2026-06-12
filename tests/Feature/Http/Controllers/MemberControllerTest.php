@@ -75,4 +75,37 @@ class MemberControllerTest extends TestCase
         $response->assertRedirect(route('team.members'));
         $response->assertSessionHas('error');
     }
+
+    public function test_leave_removes_member_from_team(): void
+    {
+        $member = User::factory()->create(['team_id' => $this->team->id, 'role' => 'member']);
+
+        $response = $this->actingAs($member)->post(route('team.leave'));
+
+        $response->assertRedirect(route('team.create'));
+        $response->assertSessionHas('status');
+
+        $member->refresh();
+        $this->assertNull($member->team_id);
+    }
+
+    public function test_owner_cannot_leave(): void
+    {
+        $response = $this->actingAs($this->owner)->post(route('team.leave'));
+
+        $response->assertRedirect(route('team.members'));
+        $response->assertSessionHas('error');
+
+        $this->owner->refresh();
+        $this->assertNotNull($this->owner->team_id);
+    }
+
+    public function test_leave_redirects_if_no_team(): void
+    {
+        $solo = User::factory()->create();
+
+        $response = $this->actingAs($solo)->post(route('team.leave'));
+
+        $response->assertRedirect(route('team.create'));
+    }
 }

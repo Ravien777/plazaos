@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Team;
 use App\Models\User;
+use App\Services\BillingService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -97,5 +98,33 @@ class TeamController extends Controller
         ]);
 
         return redirect()->route('team.edit');
+    }
+
+    public function destroy(): RedirectResponse
+    {
+        $user = auth()->user();
+        $team = $user->team;
+
+        if ($team === null) {
+            return redirect()->route('team.create');
+        }
+
+        Gate::authorize('delete', $team);
+
+        try {
+            app(BillingService::class)->cancelSubscription($team);
+        } catch (\Exception $e) {
+            // Stripe may not be configured; continue with deletion
+        }
+
+        $team->members()->update([
+            'team_id' => null,
+            'role' => 'member',
+        ]);
+
+        $team->delete();
+
+        return redirect()->route('team.create')
+            ->with('status', 'Workspace deleted successfully.');
     }
 }
