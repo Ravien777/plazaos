@@ -39,13 +39,13 @@ php artisan serve
 
 Make sure these are installed on your machine:
 
-| Tool | Version | Why |
-|---|---|---|
-| [PHP](https://php.net) | 8.4+ | Extensions required: `pdo_pgsql`, `mbstring`, `xml`, `curl`, `zip`, `bcmath`, `intl`, `gd` |
-| [PostgreSQL](https://postgresql.org) | 16+ | Primary database |
-| [Node.js](https://nodejs.org) | 24+ | Frontend build tools |
-| [Composer](https://getcomposer.org) | latest | PHP package manager |
-| [Redis](https://redis.io) | 7+ | Queue and cache (production only, optional for local dev) |
+| Tool                                 | Version | Why                                                                                        |
+| ------------------------------------ | ------- | ------------------------------------------------------------------------------------------ |
+| [PHP](https://php.net)               | 8.4+    | Extensions required: `pdo_pgsql`, `mbstring`, `xml`, `curl`, `zip`, `bcmath`, `intl`, `gd` |
+| [PostgreSQL](https://postgresql.org) | 16+     | Primary database                                                                           |
+| [Node.js](https://nodejs.org)        | 24+     | Frontend build tools                                                                       |
+| [Composer](https://getcomposer.org)  | latest  | PHP package manager                                                                        |
+| [Redis](https://redis.io)            | 7+      | Queue and cache (production only, optional for local dev)                                  |
 
 ### Check your setup
 
@@ -89,6 +89,7 @@ composer run dev
 ```
 
 This launches 4 parallel processes in a single terminal:
+
 - **Server** — `php artisan serve` on port 8000
 - **Queue** — `php artisan queue:listen` processes background jobs
 - **Logs** — `php artisan pail` shows real-time log output
@@ -110,32 +111,32 @@ npm run build
 
 ## Project Structure
 
-| Directory | What's inside |
-|---|---|
-| `app/Http/Controllers` | Request handlers — receive HTTP requests, call services, return responses |
-| `app/Http/Requests` | Form validation rules per action |
-| `app/Models` | Eloquent database models (Lead, Client, Project, Meeting, Note, Document, etc.) |
-| `app/Services` | Business logic — complex operations live here, not in controllers |
-| `app/Actions` | Single-purpose operations (ConvertLeadToClient, UploadDocument, SendEmail) |
-| `app/Policies` | Authorization rules (who can view/create/update/delete each resource) |
-| `app/Enums` | PHP enums (LeadStatus, ProjectStatus, MeetingStatus, SourceType) |
-| `app/Jobs` | Background queue jobs (ImportLeadsJob, ScrapeLeadSourceJob, DispatchWebhookJob) |
-| `app/Http/Middleware` | HTTP middleware (HandleInertiaRequests, SecurityHeaders) |
-| `resources/js` | Vue 3 + TypeScript frontend |
-| `resources/js/Pages` | Inertia.js page components (one per route) |
-| `resources/js/Components` | Reusable Vue components (DataTable, FilterBar, BottomNav, etc.) |
-| `resources/js/Types` | Shared TypeScript interfaces |
-| `routes/web.php` | All web routes |
-| `routes/console.php` | Artisan console commands and scheduled tasks |
-| `database/migrations` | Database schema changes (one file per change) |
-| `database/factories` | Test data factories (generate fake records) |
-| `database/seeders` | Seed data for development |
-| `tests` | PHPUnit tests |
-| `config` | All Laravel configuration files |
-| `bin` | Utility scripts (deploy, pg-start, pg-stop, php) |
-| `supervisor` | Production process manager configs |
-| `docker` | PostgreSQL data directory + PHP extension overrides |
-| `.github/workflows` | CI/CD pipeline (GitHub Actions) |
+| Directory                 | What's inside                                                                   |
+| ------------------------- | ------------------------------------------------------------------------------- |
+| `app/Http/Controllers`    | Request handlers — receive HTTP requests, call services, return responses       |
+| `app/Http/Requests`       | Form validation rules per action                                                |
+| `app/Models`              | Eloquent database models (Lead, Client, Project, Meeting, Note, Document, etc.) |
+| `app/Services`            | Business logic — complex operations live here, not in controllers               |
+| `app/Actions`             | Single-purpose operations (ConvertLeadToClient, UploadDocument, SendEmail)      |
+| `app/Policies`            | Authorization rules (who can view/create/update/delete each resource)           |
+| `app/Enums`               | PHP enums (LeadStatus, ProjectStatus, MeetingStatus, SourceType)                |
+| `app/Jobs`                | Background queue jobs (ImportLeadsJob, ScrapeLeadSourceJob, DispatchWebhookJob) |
+| `app/Http/Middleware`     | HTTP middleware (HandleInertiaRequests, SecurityHeaders)                        |
+| `resources/js`            | Vue 3 + TypeScript frontend                                                     |
+| `resources/js/Pages`      | Inertia.js page components (one per route)                                      |
+| `resources/js/Components` | Reusable Vue components (DataTable, FilterBar, BottomNav, etc.)                 |
+| `resources/js/Types`      | Shared TypeScript interfaces                                                    |
+| `routes/web.php`          | All web routes                                                                  |
+| `routes/console.php`      | Artisan console commands and scheduled tasks                                    |
+| `database/migrations`     | Database schema changes (one file per change)                                   |
+| `database/factories`      | Test data factories (generate fake records)                                     |
+| `database/seeders`        | Seed data for development                                                       |
+| `tests`                   | PHPUnit tests                                                                   |
+| `config`                  | All Laravel configuration files                                                 |
+| `bin`                     | Utility scripts (deploy, pg-start, pg-stop, php)                                |
+| `supervisor`              | Production process manager configs                                              |
+| `docker`                  | PostgreSQL data directory + PHP extension overrides                             |
+| `.github/workflows`       | CI/CD pipeline (GitHub Actions)                                                 |
 
 ---
 
@@ -143,51 +144,51 @@ npm run build
 
 ### Database
 
-| Task | Command |
-|---|---|
-| Run migrations | `bash artisan.sh migrate` |
-| Rollback last migration | `bash artisan.sh migrate:rollback` |
-| Refresh (rollback + migrate) | `bash artisan.sh migrate:fresh` |
-| Refresh + seed | `bash artisan.sh migrate:fresh --seed` |
-| Seed the database | `bash artisan.sh db:seed --force` |
-| Show migration status | `bash artisan.sh migrate:status` |
+| Task                         | Command                                |
+| ---------------------------- | -------------------------------------- |
+| Run migrations               | `bash artisan.sh migrate`              |
+| Rollback last migration      | `bash artisan.sh migrate:rollback`     |
+| Refresh (rollback + migrate) | `bash artisan.sh migrate:fresh`        |
+| Refresh + seed               | `bash artisan.sh migrate:fresh --seed` |
+| Seed the database            | `bash artisan.sh db:seed --force`      |
+| Show migration status        | `bash artisan.sh migrate:status`       |
 
 ### Code Generation
 
-| Task | Command |
-|---|---|
-| Model + migration + factory | `bash artisan.sh make:model -m -f Lead` |
-| Resource controller | `bash artisan.sh make:controller LeadController --resource` |
-| Migration | `bash artisan.sh make:migration add_status_to_leads_table` |
-| Service | (create manually in `app/Services`) |
-| Policy | `bash artisan.sh make:policy LeadPolicy --model=Lead` |
-| Form request | `bash artisan.sh make:request StoreLeadRequest` |
+| Task                        | Command                                                     |
+| --------------------------- | ----------------------------------------------------------- |
+| Model + migration + factory | `bash artisan.sh make:model -m -f Lead`                     |
+| Resource controller         | `bash artisan.sh make:controller LeadController --resource` |
+| Migration                   | `bash artisan.sh make:migration add_status_to_leads_table`  |
+| Service                     | (create manually in `app/Services`)                         |
+| Policy                      | `bash artisan.sh make:policy LeadPolicy --model=Lead`       |
+| Form request                | `bash artisan.sh make:request StoreLeadRequest`             |
 
 ### Testing
 
-| Task | Command |
-|---|---|
-| Run all tests | `bash artisan.sh test` or `composer run test` |
-| Run a specific test file | `bash artisan.sh test --filter=LeadControllerTest` |
+| Task                     | Command                                                   |
+| ------------------------ | --------------------------------------------------------- |
+| Run all tests            | `bash artisan.sh test` or `composer run test`             |
+| Run a specific test file | `bash artisan.sh test --filter=LeadControllerTest`        |
 | Run a single test method | `bash artisan.sh test --filter="test_store_creates_lead"` |
-| Run without coverage | `bash artisan.sh test --no-coverage` |
+| Run without coverage     | `bash artisan.sh test --no-coverage`                      |
 
 ### Debugging
 
-| Task | Command |
-|---|---|
-| Interactive shell (Tinker) | `bash artisan.sh tinker` |
-| List all routes | `bash artisan.sh route:list` |
-| Clear config cache | `bash artisan.sh config:clear` |
-| Show all registered commands | `bash artisan.sh list` |
+| Task                         | Command                        |
+| ---------------------------- | ------------------------------ |
+| Interactive shell (Tinker)   | `bash artisan.sh tinker`       |
+| List all routes              | `bash artisan.sh route:list`   |
+| Clear config cache           | `bash artisan.sh config:clear` |
+| Show all registered commands | `bash artisan.sh list`         |
 
 ### Queue
 
-| Task | Command |
-|---|---|
-| Process jobs (once) | `bash artisan.sh queue:work --once` |
-| Process jobs (continuously) | `bash artisan.sh queue:work` |
-| Show failed jobs | `bash artisan.sh queue:failed` |
+| Task                        | Command                             |
+| --------------------------- | ----------------------------------- |
+| Process jobs (once)         | `bash artisan.sh queue:work --once` |
+| Process jobs (continuously) | `bash artisan.sh queue:work`        |
+| Show failed jobs            | `bash artisan.sh queue:failed`      |
 
 ---
 
@@ -266,15 +267,15 @@ bash artisan.sh test --testsuite=Feature
 
 Tests use an **SQLite in-memory database** — no PostgreSQL needed to run them. Migrations run fresh before each test.
 
-| Test location | What it tests |
-|---|---|
-| `tests/Feature/Http/Controllers/` | HTTP endpoints: status codes, validation, redirects, auth |
-| `tests/Feature/Http/Controllers/Portal/` | Client portal HTTP endpoints |
-| `tests/Feature/Jobs/` | Queue job integration tests |
-| `tests/Feature/Auth/` | Authentication: login, register, password reset |
-| `tests/Unit/Services/` | Business logic in service classes |
-| `tests/Unit/Actions/` | Single-purpose action classes |
-| `tests/Unit/Jobs/` | Queue job unit tests |
+| Test location                            | What it tests                                             |
+| ---------------------------------------- | --------------------------------------------------------- |
+| `tests/Feature/Http/Controllers/`        | HTTP endpoints: status codes, validation, redirects, auth |
+| `tests/Feature/Http/Controllers/Portal/` | Client portal HTTP endpoints                              |
+| `tests/Feature/Jobs/`                    | Queue job integration tests                               |
+| `tests/Feature/Auth/`                    | Authentication: login, register, password reset           |
+| `tests/Unit/Services/`                   | Business logic in service classes                         |
+| `tests/Unit/Actions/`                    | Single-purpose action classes                             |
+| `tests/Unit/Jobs/`                       | Queue job unit tests                                      |
 
 ---
 
@@ -289,11 +290,11 @@ Pushing to the `production` branch triggers automatic deployment via GitHub Acti
 
 Requires these **GitHub secrets** configured in the repo settings:
 
-| Secret | Value |
-|---|---|
-| `DEPLOY_HOST` | VPS IP address |
-| `DEPLOY_USER` | SSH username |
-| `DEPLOY_KEY` | SSH private key (the CI uses this to log into the VPS) |
+| Secret        | Value                                                  |
+| ------------- | ------------------------------------------------------ |
+| `DEPLOY_HOST` | VPS IP address                                         |
+| `DEPLOY_USER` | SSH username                                           |
+| `DEPLOY_KEY`  | SSH private key (the CI uses this to log into the VPS) |
 
 ---
 
@@ -442,6 +443,7 @@ stdout_logfile_maxbytes=10MB
 ```
 
 Then:
+
 ```bash
 sudo supervisorctl reread
 sudo supervisorctl update
@@ -487,30 +489,30 @@ Caddy automatically provisions a Let's Encrypt SSL certificate. Your site should
 
 ### Environment Variables (Production)
 
-| Variable | Production value | Purpose |
-|---|---|---|
-| `APP_ENV` | `production` | Environment mode |
-| `APP_DEBUG` | `false` | Hide error details |
-| `APP_URL` | `https://yourdomain.com` | Base URL for link generation |
-| `LOG_LEVEL` | `warning` | Reduce log verbosity |
-| `DB_HOST` | `127.0.0.1` | PostgreSQL host |
-| `DB_PORT` | `5432` | PostgreSQL port |
-| `DB_DATABASE` | `plazaos` | Database name |
-| `DB_USERNAME` | (app database user) | Database user |
-| `DB_PASSWORD` | (strong password) | Database password |
-| `DB_SSLMODE` | `require` | Enforce TLS for database |
-| `SESSION_DRIVER` | `redis` | Fast session storage |
-| `SESSION_SECURE_COOKIE` | `true` | HTTPS-only cookies |
-| `CACHE_STORE` | `redis` | Fast cache |
-| `QUEUE_CONNECTION` | `redis` | Async job processing |
-| `MAIL_MAILER` | `resend` | Email sending |
-| `RESEND_API_KEY` | (your Resend key) | Resend API key |
-| `FILESYSTEM_DISK` | `r2` | File storage (Cloudflare R2) |
-| `AWS_ACCESS_KEY_ID` | (R2 access key) | R2 credentials |
-| `AWS_SECRET_ACCESS_KEY` | (R2 secret key) | R2 credentials |
-| `AWS_BUCKET` | (your bucket name) | R2 bucket |
-| `AWS_URL` | (R2 public URL) | R2 endpoint |
-| `AWS_ENDPOINT` | (R2 S3 API URL) | R2 API endpoint |
+| Variable                | Production value         | Purpose                      |
+| ----------------------- | ------------------------ | ---------------------------- |
+| `APP_ENV`               | `production`             | Environment mode             |
+| `APP_DEBUG`             | `false`                  | Hide error details           |
+| `APP_URL`               | `https://yourdomain.com` | Base URL for link generation |
+| `LOG_LEVEL`             | `warning`                | Reduce log verbosity         |
+| `DB_HOST`               | `127.0.0.1`              | PostgreSQL host              |
+| `DB_PORT`               | `5432`                   | PostgreSQL port              |
+| `DB_DATABASE`           | `plazaos`                | Database name                |
+| `DB_USERNAME`           | (app database user)      | Database user                |
+| `DB_PASSWORD`           | (strong password)        | Database password            |
+| `DB_SSLMODE`            | `require`                | Enforce TLS for database     |
+| `SESSION_DRIVER`        | `redis`                  | Fast session storage         |
+| `SESSION_SECURE_COOKIE` | `true`                   | HTTPS-only cookies           |
+| `CACHE_STORE`           | `redis`                  | Fast cache                   |
+| `QUEUE_CONNECTION`      | `redis`                  | Async job processing         |
+| `MAIL_MAILER`           | `resend`                 | Email sending                |
+| `RESEND_API_KEY`        | (your Resend key)        | Resend API key               |
+| `FILESYSTEM_DISK`       | `r2`                     | File storage (Cloudflare R2) |
+| `AWS_ACCESS_KEY_ID`     | (R2 access key)          | R2 credentials               |
+| `AWS_SECRET_ACCESS_KEY` | (R2 secret key)          | R2 credentials               |
+| `AWS_BUCKET`            | (your bucket name)       | R2 bucket                    |
+| `AWS_URL`               | (R2 public URL)          | R2 endpoint                  |
+| `AWS_ENDPOINT`          | (R2 S3 API URL)          | R2 API endpoint              |
 
 ### Subsequent Deploys
 
@@ -645,6 +647,7 @@ Then check `storage/logs/laravel.log` for the email contents.
 ### "419 Page Expired" on form submissions
 
 This is a CSRF token mismatch. Make sure you:
+
 1. Are accessing the site via `http://localhost:8000` (not `127.0.0.1`)
 2. Haven't cleared cookies recently (the session token changes)
 3. For Inertia forms, use the `<form>` helper which includes the CSRF token automatically
